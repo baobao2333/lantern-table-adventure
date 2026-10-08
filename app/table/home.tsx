@@ -307,7 +307,7 @@ export default function Home() {
             <div>
               <strong>旅人</strong>
               <small>
-                v{data?.version || "0.2.0"} ·{" "}
+                v{data?.version || "0.2.1"} ·{" "}
                 {data?.local ? "本机冒险桌" : "私人冒险桌"}
               </small>
             </div>
@@ -789,7 +789,7 @@ export default function Home() {
         )}
         <footer className="app-footer">
           <span>
-            ✦ 灯火之下 v{data?.version || "0.2.0"} · 原创故事，透明骰子
+            ✦ 灯火之下 v{data?.version || "0.2.1"} · 原创故事，透明骰子
           </span>
           <button onClick={() => navigate("rules")}>
             SRD 5.1 教学子集 · CC BY 4.0

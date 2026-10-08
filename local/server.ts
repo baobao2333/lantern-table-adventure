@@ -15,7 +15,7 @@ import { SQLiteD1 } from "./sqlite";
 import { SettingsStore, LocalError } from "./settings";
 import { createProvider, stopProvider } from "./provider";
 
-export const VERSION = "0.2.0";
+export const VERSION = "0.2.1";
 const releaseDirectory = dirname(fileURLToPath(import.meta.url));
 const dataDirectory = process.env.LANTERN_DATA_DIR
   ? resolve(process.env.LANTERN_DATA_DIR)

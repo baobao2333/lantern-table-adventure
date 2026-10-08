@@ -110,7 +110,7 @@ export async function handleGET(request: Request, userId: string) {
       userId,
       aiReady: runtime().aiReady,
       local: !!runtime().local,
-      version: "0.2.0",
+      version: "0.2.1",
       heroes,
       campaigns: CAMPAIGNS.map(
         ({

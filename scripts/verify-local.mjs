@@ -12,6 +12,9 @@ const packageDirectory =
   packageIndex < 0
     ? resolve(projectRoot, "dist", "local")
     : resolve(process.argv[packageIndex + 1]);
+const release = JSON.parse(
+  await readFile(join(packageDirectory, "release.json"), "utf8"),
+);
 const nodeIndex = process.argv.indexOf("--node"),
   executable =
     nodeIndex < 0 ? process.execPath : resolve(process.argv[nodeIndex + 1]);
@@ -105,7 +108,7 @@ try {
   const bootstrap = (await request("/api/table")).result;
   assert.equal(bootstrap.userId, "local-owner");
   assert.equal(bootstrap.local, true);
-  assert.equal(bootstrap.version, "0.2.0");
+  assert.equal(bootstrap.version, release.version);
   assert.equal(bootstrap.aiReady, false);
   assert.equal(
     (

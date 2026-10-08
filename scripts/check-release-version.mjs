@@ -38,6 +38,12 @@ export async function assertReleaseVersion(
     pkg.version
   )
     throw new Error("Local server VERSION must match package.json.");
+  const service = await readFile(
+    join(projectRoot, "lib", "server", "service.ts"),
+    "utf8",
+  );
+  if (service.match(/version:\s*["']([^"']+)["']/)?.[1] !== pkg.version)
+    throw new Error("Shared bootstrap version must match package.json.");
   const changes = await readFile(join(projectRoot, "CHANGELOG.md"), "utf8");
   if (!changes.split(/\r?\n/).includes(`## v${pkg.version}`))
     throw new Error("CHANGELOG.md must contain the release version heading.");
