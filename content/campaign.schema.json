@@ -1,0 +1,77 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://lantern-table.local/campaign.schema.json",
+  "title": "Lantern Table campaign format v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schemaVersion", "rulesVersion", "revision", "order", "id", "title", "subtitle", "description", "minutes", "theme", "difficulty", "hook", "flags", "clues", "scenes", "endings"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schemaVersion": {"const": 1},
+    "rulesVersion": {"const": "srd-5.1-teaching-1"},
+    "revision": {"type": "integer", "minimum": 1},
+    "order": {"type": "integer", "minimum": 1, "maximum": 1000},
+    "id": {"$ref": "#/definitions/id"},
+    "title": {"$ref": "#/definitions/shortText"},
+    "subtitle": {"$ref": "#/definitions/shortText"},
+    "description": {"$ref": "#/definitions/text"},
+    "minutes": {"$ref": "#/definitions/shortText"},
+    "theme": {"$ref": "#/definitions/shortText"},
+    "difficulty": {"$ref": "#/definitions/shortText"},
+    "hook": {"$ref": "#/definitions/text"},
+    "flags": {"type": "array", "maxItems": 12, "uniqueItems": true, "items": {"$ref": "#/definitions/id"}},
+    "clues": {"type": "object", "maxProperties": 16, "propertyNames": {"$ref": "#/definitions/id"}, "additionalProperties": {"$ref": "#/definitions/note"}},
+    "endings": {"type": "object", "minProperties": 2, "maxProperties": 10, "required": ["retreat"], "propertyNames": {"$ref": "#/definitions/id"}, "additionalProperties": {"$ref": "#/definitions/note"}},
+    "scenes": {"type": "array", "minItems": 2, "maxItems": 10, "items": {"$ref": "#/definitions/scene"}}
+  },
+  "definitions": {
+    "id": {"type": "string", "pattern": "^[a-z][a-z0-9-]{0,47}$"},
+    "shortText": {"type": "string", "minLength": 1, "maxLength": 120},
+    "text": {"type": "string", "minLength": 1, "maxLength": 1400},
+    "note": {"type": "object", "additionalProperties": false, "required": ["title", "text"], "properties": {"title": {"$ref": "#/definitions/shortText"}, "text": {"$ref": "#/definitions/text"}}},
+    "scene": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "title", "description", "npc", "actions"],
+      "properties": {
+        "id": {"$ref": "#/definitions/id"}, "title": {"$ref": "#/definitions/shortText"},
+        "description": {"$ref": "#/definitions/text"}, "npc": {"$ref": "#/definitions/text"},
+        "safeRest": {"type": "boolean"}, "enemy": {"$ref": "#/definitions/enemy"},
+        "actions": {"type": "array", "minItems": 2, "maxItems": 8, "items": {"$ref": "#/definitions/action"}}
+      }
+    },
+    "enemy": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "hp", "maxHp", "ac", "attackBonus", "damageDie", "damageBonus", "dex"],
+      "properties": {
+        "name": {"$ref": "#/definitions/shortText"},
+        "hp": {"type": "integer", "minimum": 4, "maximum": 30},
+        "maxHp": {"type": "integer", "minimum": 4, "maximum": 30},
+        "ac": {"type": "integer", "minimum": 10, "maximum": 15},
+        "attackBonus": {"type": "integer", "minimum": 0, "maximum": 5},
+        "damageDie": {"enum": [4, 6]}, "damageBonus": {"type": "integer", "minimum": 0, "maximum": 2},
+        "dex": {"type": "integer", "minimum": -2, "maximum": 3}
+      }
+    },
+    "action": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "kind", "title", "description"],
+      "properties": {
+        "id": {"$ref": "#/definitions/id"}, "kind": {"enum": ["automatic", "check", "combat"]},
+        "title": {"$ref": "#/definitions/shortText"}, "description": {"$ref": "#/definitions/text"},
+        "skill": {"enum": ["athletics", "stealth", "investigation", "perception", "insight", "persuasion", "arcana"]},
+        "dc": {"type": "integer", "minimum": 5, "maximum": 20}, "consequence": {"$ref": "#/definitions/text"},
+        "clue": {"$ref": "#/definitions/id"}, "flag": {"$ref": "#/definitions/id"},
+        "requiresClue": {"$ref": "#/definitions/id"}, "advantageFlag": {"$ref": "#/definitions/id"},
+        "next": {"type": "integer", "minimum": 1, "maximum": 9}, "ending": {"$ref": "#/definitions/id"},
+        "failureDamage": {"type": "integer", "minimum": 1, "maximum": 3},
+        "timeCost": {"type": "integer", "minimum": 1, "maximum": 2}
+      },
+      "allOf": [
+        {"if": {"properties": {"kind": {"enum": ["check", "combat"]}}}, "then": {"not": {"required": ["timeCost"]}}},
+        {"not": {"required": ["next", "ending"]}},
+        {"if": {"properties": {"kind": {"const": "check"}}}, "then": {"required": ["skill", "dc", "consequence"]}, "else": {"not": {"anyOf": [{"required": ["skill"]}, {"required": ["dc"]}, {"required": ["consequence"]}, {"required": ["failureDamage"]}, {"required": ["advantageFlag"]}]}}},
+        {"if": {"properties": {"kind": {"const": "combat"}}}, "then": {"required": ["next"], "not": {"anyOf": [{"required": ["ending"]}, {"required": ["flag"]}, {"required": ["requiresClue"]}, {"required": ["timeCost"]}]}}}
+      ]
+    }
+  }
+}

@@ -1,0 +1,250 @@
+{
+  "$schema": "../campaign.schema.json",
+  "schemaVersion": 1,
+  "rulesVersion": "srd-5.1-teaching-1",
+  "revision": 1,
+  "id": "silent-bell",
+  "title": "失声的钟楼",
+  "subtitle": "有些承诺，只有你能让它再次响起。",
+  "minutes": "20–30 分钟",
+  "theme": "河谷奇幻",
+  "difficulty": "适合第一次跑团",
+  "description": "山镇的钟停了，夜雾却开始沿着河岸寻找一个名字。你有一夜时间，决定该唤醒什么，又该放开什么。",
+  "hook": "旅人酒馆的炉火快熄了。老板娘把一盏灯推到你面前：『钟楼三天没响，今天雾里有人敲门。请替我带回守钟人的消息。』",
+  "clues": {
+    "promise": {
+      "title": "未寄出的信",
+      "text": "守钟人奥伦答应在冬至为女儿敲一次钟。信末画着一枚三瓣花。"
+    },
+    "rhythm": {
+      "title": "三个短音",
+      "text": "桥栏刻着一段旧镇歌：短、短、长。钟声原本用来指引迷路的人。"
+    },
+    "truth": {
+      "title": "裂开的钟舌",
+      "text": "钟舌上的裂纹里缠着一根红线。不是有人毁钟，而是奥伦为救人挡住了落石。"
+    }
+  },
+  "scenes": [
+    {
+      "id": "inn",
+      "title": "灯还亮着的酒馆",
+      "npc": "老板娘伊芙担心奥伦；她知道镇歌，也记得奥伦常把未寄出的信放在衣袋。",
+      "description": "屋外的雾贴着窗玻璃。桌上是一封潮湿的信、一张通往钟楼的草图，以及老板娘刚装满油的提灯。",
+      "actions": [
+        {
+          "id": "read-letter",
+          "title": "小心展开潮湿的信",
+          "description": "读清被雨水洇开的字迹。",
+          "skill": "investigation",
+          "dc": 10,
+          "clue": "promise",
+          "consequence": "信纸进一步破损，暂时读不全；你仍能前往石桥。",
+          "kind": "check"
+        },
+        {
+          "id": "ask-eve",
+          "title": "向伊芙打听镇歌",
+          "description": "无需掷骰；认真听完她的回忆。",
+          "clue": "rhythm",
+          "flag": "prepared",
+          "kind": "automatic"
+        },
+        {
+          "id": "leave-inn",
+          "title": "带上提灯，前往石桥",
+          "description": "准备好了便出发，线索不是通行门票。",
+          "next": 1,
+          "kind": "automatic"
+        }
+      ],
+      "safeRest": true
+    },
+    {
+      "id": "bridge",
+      "title": "雾中的石桥",
+      "npc": "修桥工泰勒守在桥边；他不是敌人，担心再有人落水。",
+      "description": "石桥中央塌了一段。修桥工举起手示意你停下，桥下水流很急。左侧还有一条贴着石壁的窄路。",
+      "actions": [
+        {
+          "id": "convince-taylor",
+          "title": "请修桥工用绳索协助",
+          "description": "解释你的来意，争取安全通过。",
+          "skill": "persuasion",
+          "dc": 12,
+          "next": 2,
+          "consequence": "他仍不放心；你花了时间，但可以换一种办法。",
+          "advantageFlag": "prepared",
+          "kind": "check"
+        },
+        {
+          "id": "cross-ledge",
+          "title": "抓住石壁凸起，攀过缺口",
+          "description": "抓牢凸起，靠臂力沿石壁横移。",
+          "skill": "athletics",
+          "dc": 12,
+          "next": 2,
+          "failureDamage": 2,
+          "consequence": "碎石滑落，损失 2 点生命，雾变得更浓。",
+          "kind": "check"
+        },
+        {
+          "id": "move-plank",
+          "title": "搬动长木板搭起临时桥",
+          "description": "用力量把木板稳稳架好。",
+          "skill": "athletics",
+          "dc": 12,
+          "next": 2,
+          "consequence": "木板卡在碎石间；你耗费时间，仍可重新选择。",
+          "kind": "check"
+        },
+        {
+          "id": "wait-help",
+          "title": "留下帮忙，等待桥修好",
+          "description": "无需掷骰；能通过，但会耗费更多时间。",
+          "next": 2,
+          "flag": "late",
+          "kind": "automatic",
+          "timeCost": 1
+        }
+      ]
+    },
+    {
+      "id": "tower",
+      "title": "钟楼下的守望者",
+      "npc": "雾影只想守住钟楼；提及奥伦的承诺或镇歌可能让它平静。",
+      "description": "一道由雾凝成的身影挡住楼梯，手里握着生锈的长柄钩。它问：『你是来带走他的吗？』墙边躺着裂开的钟舌。",
+      "enemy": {
+        "name": "迷途雾影",
+        "hp": 12,
+        "maxHp": 12,
+        "ac": 12,
+        "attackBonus": 3,
+        "damageDie": 4,
+        "damageBonus": 1,
+        "dex": 1
+      },
+      "actions": [
+        {
+          "id": "understand-shadow",
+          "title": "听懂雾影真正担心的事",
+          "description": "用洞悉找出它的执念。",
+          "skill": "insight",
+          "dc": 12,
+          "next": 3,
+          "clue": "truth",
+          "consequence": "雾影误解了你的话，钟楼里的雾越来越重。",
+          "advantageFlag": "promise",
+          "kind": "check"
+        },
+        {
+          "id": "sing-song",
+          "title": "轻唱旧镇歌，让它认出你",
+          "description": "已有镇歌线索时无需掷骰。",
+          "requiresClue": "rhythm",
+          "next": 3,
+          "clue": "truth",
+          "kind": "automatic"
+        },
+        {
+          "id": "sneak-tower",
+          "title": "借雾遮掩，从侧门潜入",
+          "description": "你可避开冲突，但暂时不会知道钟舌的真相。",
+          "skill": "stealth",
+          "dc": 13,
+          "next": 3,
+          "consequence": "雾影看见了你；雾更浓了，但仍能交涉。",
+          "kind": "check"
+        },
+        {
+          "id": "wait-in-silence",
+          "kind": "automatic",
+          "title": "放下武器，陪它等雾散一点",
+          "description": "无需掷骰；保持距离静静等待，代价是更多时间。",
+          "next": 3,
+          "clue": "truth",
+          "flag": "late",
+          "timeCost": 1
+        },
+        {
+          "id": "fight-shadow",
+          "title": "拔出武器，为自己开路",
+          "description": "进入战斗，先掷双方先攻。击败它后进入钟室。",
+          "kind": "combat",
+          "next": 3,
+          "clue": "truth"
+        }
+      ]
+    },
+    {
+      "id": "bell",
+      "title": "最后一声钟",
+      "npc": "奥伦的回声只能记起自己还欠一个承诺；他需要有人替他作出选择。",
+      "description": "钟室里没有活人，只有奥伦的回声站在断裂的钟下。提灯照出三瓣花的刻痕。他问你：『她还在等吗？』",
+      "actions": [
+        {
+          "id": "repair-bell",
+          "title": "修好钟，让承诺响起",
+          "description": "用奥秘辨认维系回声的符文；掌握钟舌真相时获得优势。",
+          "skill": "arcana",
+          "dc": 12,
+          "ending": "ring",
+          "advantageFlag": "truth",
+          "consequence": "回声逐渐消散；你仍可用镇歌或真诚的话语送别。",
+          "kind": "check"
+        },
+        {
+          "id": "release-oren",
+          "title": "告诉奥伦，他已经救下了大家",
+          "description": "已有钟舌真相时无需掷骰。",
+          "requiresClue": "truth",
+          "ending": "release",
+          "kind": "automatic"
+        },
+        {
+          "id": "sing-farewell",
+          "title": "替他唱完最后一段镇歌",
+          "description": "已有镇歌线索时无需掷骰。",
+          "requiresClue": "rhythm",
+          "ending": "song",
+          "kind": "automatic"
+        },
+        {
+          "id": "carry-message",
+          "title": "带回消息，把选择交给他的家人",
+          "description": "无需掷骰；离开也是你可以作出的决定。",
+          "ending": "return",
+          "kind": "automatic"
+        }
+      ],
+      "safeRest": true
+    }
+  ],
+  "endings": {
+    "ring": {
+      "title": "钟声越过河谷",
+      "text": "你修复了钟。短、短、长的声音穿过雾，奥伦的回声终于放下了双手。天亮时，镇上的人打开了门。"
+    },
+    "release": {
+      "title": "承诺之外",
+      "text": "你让奥伦知道，救下人们本身就已是一份礼物。他轻轻点头，雾从钟楼退去。那口钟虽然不再响，却有人记得他的名字。"
+    },
+    "song": {
+      "title": "没有钟的镇歌",
+      "text": "你唱到最后一句时，楼下也有人跟着唱起来。奥伦的回声消散在晨光里，河谷找到了另一种指引归人的声音。"
+    },
+    "return": {
+      "title": "带回一个名字",
+      "text": "你带着消息回到酒馆。伊芙听了很久，把那盏灯重新加满油。冒险没有替所有人决定答案，但你让他们有了选择。"
+    },
+    "retreat": {
+      "title": "灯没有熄",
+      "text": "你退回了有人烟的地方。钟楼仍在雾中，但你活着带回了所见；下次出发，你会更有准备。"
+    }
+  },
+  "flags": [
+    "prepared",
+    "late"
+  ],
+  "order": 1
+}

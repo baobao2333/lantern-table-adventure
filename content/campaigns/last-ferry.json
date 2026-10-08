@@ -1,0 +1,219 @@
+{
+  "$schema": "../campaign.schema.json",
+  "schemaVersion": 1,
+  "rulesVersion": "srd-5.1-teaching-1",
+  "revision": 1,
+  "id": "last-ferry",
+  "title": "最后一班渡船",
+  "subtitle": "天亮之前，河的两岸都需要一盏灯。",
+  "minutes": "25–40 分钟",
+  "theme": "暴雨与抉择",
+  "difficulty": "再试一点挑战",
+  "description": "洪水将至，渡船迟迟未归。灯塔、船员与岸上的村民，都在等你决定先救谁。",
+  "hook": "暴雨敲着码头的屋顶。摆渡人留下的纸条只有一行：『别让西岸的灯灭掉。』而东岸的人已经开始收拾行李。",
+  "clues": {
+    "route": {
+      "title": "退潮时的旧水道",
+      "text": "船员的笔记标明一条避开暗礁的旧水道；岸边的芦苇可以辨认入口。"
+    },
+    "lens": {
+      "title": "备用透镜",
+      "text": "货箱里有一片备用灯塔透镜。装回灯塔就能引导渡船避开暗礁。"
+    },
+    "signal": {
+      "title": "船员的求救灯号",
+      "text": "三次遮灯、一次长亮。搁浅的渡船就在灯塔下游，船员还活着。"
+    }
+  },
+  "scenes": [
+    {
+      "id": "dock",
+      "title": "空荡的渡口",
+      "npc": "码头看守阿澄知道仓库有备用透镜，担心渡船搁浅。",
+      "description": "绳索拍打木桩。看守阿澄守着一盏快被风吹灭的灯，桌上摊开船员笔记，仓库半掩的门后堆着货箱。",
+      "actions": [
+        {
+          "id": "read-route",
+          "title": "读懂船员留下的水道笔记",
+          "description": "辨认潦草地图与退潮时间。",
+          "skill": "investigation",
+          "dc": 11,
+          "clue": "route",
+          "consequence": "雨水模糊了地图；你仍可以问看守或直接出发。",
+          "kind": "check"
+        },
+        {
+          "id": "get-lens",
+          "title": "和看守一起找出备用透镜",
+          "description": "无需掷骰；你们按货单逐箱检查。",
+          "clue": "lens",
+          "kind": "automatic"
+        },
+        {
+          "id": "leave-dock",
+          "title": "沿河堤前往灯塔",
+          "description": "准备好后动身。",
+          "next": 1,
+          "kind": "automatic"
+        }
+      ],
+      "safeRest": true
+    },
+    {
+      "id": "levee",
+      "title": "正在崩塌的河堤",
+      "npc": "一名巡河人正试着搬开阻路的木梁。",
+      "description": "河水越过了最低的石阶，一根断裂木梁挡住路。巡河人向你招手，芦苇丛后露出一段旧堤。",
+      "actions": [
+        {
+          "id": "lift-beam",
+          "title": "与巡河人一起搬开木梁",
+          "description": "靠力量打开道路。",
+          "skill": "athletics",
+          "dc": 12,
+          "next": 2,
+          "consequence": "木梁又沉了一截，你耗费时间但仍可换条路。",
+          "kind": "check"
+        },
+        {
+          "id": "old-channel",
+          "title": "辨认芦苇中的安全水道",
+          "description": "有旧水道线索时获得优势。",
+          "skill": "perception",
+          "dc": 12,
+          "next": 2,
+          "advantageFlag": "route",
+          "failureDamage": 2,
+          "consequence": "踩进一处淤坑，损失 2 点生命。",
+          "kind": "check"
+        },
+        {
+          "id": "follow-guide",
+          "title": "跟巡河人走更远的安全路",
+          "description": "无需掷骰，代价是更多时间。",
+          "next": 2,
+          "flag": "late",
+          "kind": "automatic",
+          "timeCost": 1
+        }
+      ]
+    },
+    {
+      "id": "lighthouse",
+      "title": "熄灭的灯塔",
+      "npc": "守灯人被惊慌的河兽困在屋内，知道渡船正在下游打灯号。",
+      "description": "灯塔的门框裂开了，一只被洪水逼上岸的河兽盘踞在台阶上。楼上的窗户里，一盏小灯正被人遮住又放开。",
+      "enemy": {
+        "name": "惊慌河兽",
+        "hp": 14,
+        "maxHp": 14,
+        "ac": 12,
+        "attackBonus": 3,
+        "damageDie": 4,
+        "damageBonus": 1,
+        "dex": 0
+      },
+      "actions": [
+        {
+          "id": "calm-beast",
+          "title": "观察河兽的恐惧，慢慢引开它",
+          "description": "它需要退路，不一定需要战斗。",
+          "skill": "insight",
+          "dc": 12,
+          "next": 3,
+          "clue": "signal",
+          "consequence": "它受到惊吓，河水继续上涨。",
+          "kind": "check"
+        },
+        {
+          "id": "read-signal",
+          "title": "看清灯号并从后窗进去",
+          "description": "有水道线索时获得优势。",
+          "skill": "perception",
+          "dc": 12,
+          "advantageFlag": "route",
+          "next": 3,
+          "clue": "signal",
+          "consequence": "雨幕挡住了视线，你花费了更多时间。",
+          "kind": "check"
+        },
+        {
+          "id": "offer-shelter",
+          "kind": "automatic",
+          "title": "和巡河人打开旁边的避雨棚",
+          "description": "无需掷骰；慢慢给河兽留出退路，代价是更多时间。",
+          "next": 3,
+          "clue": "signal",
+          "flag": "late",
+          "timeCost": 1
+        },
+        {
+          "id": "fight-beast",
+          "title": "击退河兽，救出守灯人",
+          "description": "进入战斗；河兽失去战斗能力后会逃回河里。",
+          "kind": "combat",
+          "next": 3,
+          "clue": "signal"
+        }
+      ]
+    },
+    {
+      "id": "lantern",
+      "title": "两岸的灯",
+      "npc": "守灯人愿意协助修灯；船员仍在求救，但河水已很高。",
+      "description": "灯室里的支架还在，透镜却碎了。下游的求救光点很微弱。你可以点亮大灯、冒险接近渡船，也可以先组织岸上的撤离。",
+      "actions": [
+        {
+          "id": "restore-light",
+          "title": "装上备用透镜，引导船员脱险",
+          "description": "已有备用透镜时无需掷骰。",
+          "requiresClue": "lens",
+          "ending": "light",
+          "kind": "automatic"
+        },
+        {
+          "id": "rescue-boat",
+          "title": "循灯号下河救援",
+          "description": "有水道线索时获得优势。",
+          "skill": "athletics",
+          "dc": 13,
+          "advantageFlag": "route",
+          "ending": "rescue",
+          "failureDamage": 2,
+          "consequence": "水流太急，损失 2 点生命；你仍可修灯或组织撤离。",
+          "kind": "check"
+        },
+        {
+          "id": "evacuate",
+          "title": "先让岸上的人撤到高地",
+          "description": "无需掷骰；你无法同时顾及所有地方。",
+          "ending": "shore",
+          "kind": "automatic"
+        }
+      ],
+      "safeRest": true
+    }
+  ],
+  "endings": {
+    "light": {
+      "title": "两岸都看见了光",
+      "text": "备用透镜把灯光送到水面。船员沿着光驶出暗礁，岸上的人也找到了高地的方向。阿澄在渡口等到最后一班船。"
+    },
+    "rescue": {
+      "title": "带回最后一班船",
+      "text": "你与船员一起把缆绳拉紧，挣过最险的一段急流。黎明前，渡船载着幸存者靠岸。灯塔仍黑着，但这一次有人回家。"
+    },
+    "shore": {
+      "title": "高地上的灯",
+      "text": "你带村民撤到了高地。他们把一盏盏灯放在石阶上，为还在河里的人留出方向。不是每个答案都圆满，但你承担了自己的选择。"
+    },
+    "retreat": {
+      "title": "等下一次潮落",
+      "text": "你退到安全的高地，把所见交给了巡河人。救援仍在继续，活着归来让你还能做下一件事。"
+    }
+  },
+  "flags": [
+    "late"
+  ],
+  "order": 2
+}

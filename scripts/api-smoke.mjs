@@ -1,0 +1,28 @@
+import assert from 'node:assert/strict';
+const origin=process.argv[2];
+if (origin!=='http://127.0.0.1:5173') throw new Error('This smoke test is limited to the known local preview, never production.');
+const call=async(body,query='',signedIn=true)=> {
+  const response=await fetch(origin+'/api/table'+query,{method:body?'POST':'GET',headers:{...(signedIn?{Cookie:'__sites_local_auth=1'}:{}),...(body?{'Content-Type':'application/json',Origin:origin}:{})},...(body?{body:JSON.stringify(body)}:{})});
+  return {status:response.status,data:await response.json()};
+};
+assert.equal((await call(undefined,'',false)).status,401);
+assert.equal((await call(undefined,'?id='+crypto.randomUUID())).status,404);
+assert.equal((await call({op:'game.create'})).status,400);
+const bootstrap=await call(); assert.equal(bootstrap.status,200); assert.equal(bootstrap.data.campaigns[0].id,'silent-bell');
+const hero=await call({op:'hero.create',classId:'rogue',name:'API验收旅人',background:'Local acceptance character'}); assert.equal(hero.status,200);
+const created=await call({op:'game.create',heroId:hero.data.hero.id,campaignId:'last-ferry',mode:'solo'}); assert.equal(created.status,200);
+let view=created.data.view;
+assert.ok(!('campaignSnapshot' in view.game));
+const requestId=crypto.randomUUID(), body={op:'game.command',id:view.game.id,expectedVersion:view.version,requestId,command:{kind:'action',actionId:'read-route'}};
+const staged=await call(body); assert.equal(staged.status,200); assert.ok(staged.data.view.game.pending);
+const repeated=await call(body); assert.equal(repeated.status,200); assert.equal(repeated.data.view.version,staged.data.view.version); assert.deepEqual(repeated.data.view.game.pending,staged.data.view.game.pending);
+assert.equal((await call({...body,requestId:crypto.randomUUID()})).status,409);
+view=staged.data.view;
+const rollBody={...body,expectedVersion:view.version,requestId:crypto.randomUUID(),command:{kind:'roll'}};
+const rolled=await call(rollBody); assert.equal(rolled.status,200); assert.equal(rolled.data.view.game.pending,null);
+const repeatedRoll=await call(rollBody); assert.equal(repeatedRoll.status,200); assert.deepEqual(repeatedRoll.data.view,rolled.data.view);
+const restored=await call(undefined,'?id='+view.game.id); assert.deepEqual(restored.data.view,rolled.data.view);
+const party=await call({op:'game.create',heroId:hero.data.hero.id,campaignId:'silent-bell',mode:'party'}); assert.equal(party.data.view.game.status,'waiting');
+const selfJoin=await call({op:'game.join',heroId:hero.data.hero.id,roomCode:party.data.view.game.roomCode,requestId:crypto.randomUUID()}); assert.equal(selfJoin.data.view.game.players.length,1);
+assert.equal((await call({op:'game.command',id:party.data.view.game.id,expectedVersion:0,requestId:crypto.randomUUID(),command:{kind:'action',actionId:'leave-inn'}})).status,400);
+console.log(JSON.stringify({status:'PASS',checks:['anonymous rejection','membership rejection','input validation','campaign ordering','creation','staged dice','request idempotency','stale-version rejection','roll idempotency','D1 restoration','party waiting','duplicate membership prevention'],aiNarrationVerified:rolled.data.view.game.messages.some(m=>m.ai),localOnly:true}));

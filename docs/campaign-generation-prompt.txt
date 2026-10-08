@@ -1,0 +1,29 @@
+You author an ORIGINAL Chinese-language campaign for Lantern Table, a level-1 SRD 5.1 teaching adventure. You will receive content/campaign.schema.json, docs/campaign-format.md, and one complete accepted campaign. These files are the authoritative format and capability contract. Return ONE valid JSON object only, without markdown fences or explanatory text. Use UTF-8 Chinese prose, English identifiers, two-space indentation, and a trailing newline. Do not copy another project's story, characters, UI text or assets.
+
+Before output, internally plan 4-6 scenes with a clear human-scale conflict, memorable NPC motivations, clues that change understanding, and at least 3 meaningfully different story endings. Aim for a 20-40 minute first adventure, not an encyclopedic campaign. Let observation, conversation and taking a cost solve problems as well as combat. Do not dictate player motives or force moral judgments.
+
+FORMAT
+- $schema: ../campaign.schema.json; schemaVersion: 1; rulesVersion: srd-5.1-teaching-1.
+- Supply a unique stable id, revision (1 for new content), order, all required presentation fields, flags, clues, scenes and endings.
+- IDs match ^[a-z][a-z0-9-]{0,47}$. Scene IDs and action IDs are unique across the campaign. Flag IDs cannot collide with clue IDs. All references must be declared.
+- Do not invent fields. No JavaScript, expression strings, scripts, eval, file paths, URLs, remote calls, custom spells, random tables or execution hooks.
+- Scene next uses a ZERO-BASED array index strictly greater than the current index and less than scenes.length. Never combine next and ending. No backward jumps or loops.
+- npc contains ONLY safe current public knowledge; hidden truths belong in clue.text and appear after acquisition. Do not leak future scenes or endings in action labels, lobby prose or current NPC context.
+
+SUPPORTED ACTIONS
+- automatic: at least one supported effect (next, ending, clue, flag). No skill/dc/consequence/failureDamage/advantageFlag. May have timeCost 1-2, explicitly described as danger from delay.
+- check: skill, dc, consequence required; permitted skills are athletics, stealth, investigation, perception, insight, persuasion, arcana. Choose the skill matching the actual behavior. Usually DC 10-13, schema allows 5-20. A success grants declared effects. A failure stays in the same scene, adds 1 danger and consumes this attempt. Optional failureDamage 1-3 is additional damage. Failure prose must describe exactly these mechanics. No automatic success/failure on skill natural 1/20.
+- combat: a scene enemy and a next index are required. Optional clue is awarded on victory. No flag, timeCost, ending, requiresClue or check fields. At most one combat action per scene. Enemy initial hp equals maxHp; use only the schema's small numerical ranges. Default enemies should be survivable for one level-1 hero.
+- requiresClue hides an action until that clue is held. advantageFlag gives a check advantage when its declared clue OR flag is held. Flags have no implicit numerical effect; a flag named late does not increase danger. Use timeCost instead.
+
+PROGRESSION AND SAFETY
+- EVERY scene must contain an unconditional automatic next/ending with no requiresClue. It may incur a disclosed timeCost, but must not require items, potions, spells, a roll, combat or a prior successful check. The entire story must remain completable if every check fails.
+- Essential clues must have an automatic accessible source. Optional checked clues can unlock richer alternatives. Avoid mutually dependent clues, producers that become accessible only after their own consumers, and clues awarded only when ending the adventure.
+- Every scene and story ending must be executable from the initial state. Every declared clue/flag has a useful producer. Avoid dead definitions and mechanical rewards the engine cannot grant.
+- Mark reasonable safeRest locations, including an opportunity AFTER danger/combat. One party short rest per safe location takes one hour, adds 2 danger, may spend a hero's one hit die, restores fighter second wind, but not spell slots or potions.
+- Keep retreat as a reserved ending suitable BOTH for voluntary withdrawal and rescue after any member reaches 0 HP. Do not write death. The teaching house rule rescues the whole party and ends the adventure instead of death saves.
+- Danger caps at 6; at 4+, the engine appends a general delayed-rescue cost to a non-retreat ending. Do not contradict it with an unconditional perfect outcome.
+- No unsupplied rewards, inventory changes, healing, money, upgrades, conditions, reactions, movement mechanics or spell effects in prose. Changing rules requires an engine/schema change, not a story sentence.
+
+INTERNAL REVIEW BEFORE OUTPUT
+Trace each next/ending reference; check clue dependencies; traverse a route with every check failed and no combat; traverse every authored ending; verify prose/number agreement. Provide specific sensory writing and NPC reactions, but keep story facts separate from mechanics. Human review and the project's validator remain required even if you believe the JSON is correct.
