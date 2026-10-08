@@ -1,12 +1,8 @@
 import type { Ability, Hero, HeroClass, Skill } from "./types";
+import { BUILDER_SKILLS } from "./character-builder.ts";
 
 export const ABILITIES: Record<Ability, string> = { STR: "力量", DEX: "敏捷", CON: "体质", INT: "智力", WIS: "感知", CHA: "魅力" };
-export const SKILLS: Record<Skill, { name: string; ability: Ability }> = {
-  athletics: { name: "运动", ability: "STR" }, stealth: { name: "隐匿", ability: "DEX" },
-  investigation: { name: "调查", ability: "INT" }, perception: { name: "察觉", ability: "WIS" },
-  insight: { name: "洞悉", ability: "WIS" }, persuasion: { name: "游说", ability: "CHA" },
-  arcana: { name: "奥秘", ability: "INT" },
-};
+export const SKILLS: Record<Skill, { name: string; ability: Ability }> = BUILDER_SKILLS;
 export const CLASSES = {
   fighter: { name: "战士", subtitle: "可靠的前线守护者", icon: "sword", color: "#dba16b", hp: 12, ac: 16,
     abilities: { STR: 16, DEX: 12, CON: 14, INT: 10, WIS: 13, CHA: 8 }, skills: ["athletics", "perception"] as Skill[],
@@ -21,7 +17,7 @@ export const CLASSES = {
 export function abilityMod(score: number) { return Math.floor((score - 10) / 2); }
 export function skillMod(hero: Hero, skill: Skill) {
   const proficient = hero.skills.includes(skill);
-  const expertise = hero.classId === "rogue" && ["stealth", "investigation"].includes(skill);
+  const expertise = hero.build ? hero.build.expertise.includes(skill) : hero.classId === "rogue" && ["stealth", "investigation"].includes(skill);
   return abilityMod(hero.abilities[SKILLS[skill].ability]) + (proficient ? expertise ? 4 : 2 : 0);
 }
 export function createHero(id: string, classId: HeroClass, name: string, background = "") : Hero {

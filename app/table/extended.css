@@ -1,0 +1,494 @@
+.builder-modal {
+  width: min(820px, 100%);
+  max-width: 820px;
+}
+.builder-tabs {
+  display: flex;
+  gap: 5px;
+  margin: 20px 0;
+  padding: 5px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #10171e;
+}
+.builder-tabs button {
+  flex: 1;
+  border: 0;
+  border-radius: 5px;
+  padding: 9px 5px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+}
+.builder-tabs button.selected {
+  color: var(--gold);
+  background: #d7aa6220;
+}
+.builder-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 18px;
+}
+.builder .field select,
+.settings-modal .field select {
+  background: #151e26;
+  color: var(--text);
+}
+.builder > p {
+  font-size: 13px;
+  line-height: 1.9;
+  margin: 14px 0;
+}
+.builder h4 {
+  font-size: 13px;
+  color: var(--gold);
+  margin: 18px 0 10px;
+}
+.builder-abilities {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+  margin: 18px 0;
+}
+.builder-abilities label {
+  text-align: center;
+  font-size: 11px;
+  color: var(--muted);
+}
+.builder-abilities select,
+.builder-abilities input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding: 8px;
+  margin: 6px 0;
+  border: 1px solid #3a4855;
+  border-radius: 5px;
+  background: #141c24;
+  color: var(--text);
+  text-align: center;
+  font-size: 17px;
+}
+.builder-abilities small {
+  display: block;
+  color: var(--gold);
+  font-size: 10px;
+}
+.choice-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 9px;
+  margin: 13px 0 20px;
+}
+.check-choice {
+  display: flex;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 12px;
+  background: #111921;
+  line-height: 1.6;
+  cursor: pointer;
+}
+.check-choice:has(input:checked) {
+  background: #c99a4c13;
+  border-color: #ac854659;
+}
+.check-choice input {
+  accent-color: var(--gold);
+  flex-shrink: 0;
+  width: 15px;
+  height: 15px;
+  margin: 3px 0 0;
+}
+.check-choice small {
+  display: block;
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-top: 3px;
+}
+.builder-preview {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
+  padding: 15px;
+  margin-top: 22px;
+  background: #30413424;
+  border: 1px solid #50695366;
+  border-radius: 7px;
+  font-size: 12px;
+  color: #b6c6b8;
+}
+.builder-preview strong {
+  font-size: 18px;
+  color: #dde7d5;
+}
+.builder .field {
+  margin-bottom: 16px;
+}
+.builder textarea {
+  resize: vertical;
+}
+.builder .choice-grid:has(.check-choice small:not(:empty)) {
+  grid-template-columns: repeat(2, 1fr);
+}
+.settings-modal fieldset {
+  border: 0;
+  padding: 0;
+  margin: 18px 0 0;
+  min-width: 0;
+}
+.settings-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 22px 0;
+}
+.setting-success {
+  color: #a9c7a4;
+  font-size: 13px;
+}
+.version-note {
+  font-size: 11px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.character-details {
+  margin: 17px 0;
+  border-top: 1px solid var(--line);
+  padding-top: 14px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.character-details summary {
+  cursor: pointer;
+  color: var(--gold);
+  font-size: 12px;
+}
+.character-details h4 {
+  color: #c5cdc8;
+  font-size: 12px;
+  margin: 20px 0 8px;
+}
+.character-details p {
+  margin: 8px 0;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+.inventory-line {
+  font-size: 11px;
+  color: #8999a5;
+}
+.character-details .ability-grid {
+  margin: 18px 0;
+}
+.character-details .skill-list {
+  gap: 8px;
+}
+.character-background {
+  white-space: pre-line;
+}
+.spell-actions {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+.spell-actions h4 {
+  color: var(--gold);
+  font-size: 12px;
+  margin: 0 0 10px;
+}
+.spell-choice {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  text-align: left;
+  width: 100%;
+  padding: 10px 11px;
+  border: 1px solid #31404c;
+  border-radius: 6px;
+  background: #17232d;
+  color: #c4ced3;
+  font-size: 11px;
+  margin: 6px 0;
+}
+.spell-choice > span > svg {
+  display: inline;
+  vertical-align: middle;
+  margin-right: 5px;
+  color: var(--gold);
+}
+.spell-choice small {
+  display: block;
+  font-size: 9px;
+  line-height: 1.8;
+  color: #8f9fab;
+  margin-top: 5px;
+}
+.spell-choice b {
+  font-size: 9px;
+  white-space: nowrap;
+  color: var(--gold);
+  font-weight: 400;
+}
+.combat-card .spell-actions {
+  max-width: 100%;
+}
+.combat-card .spell-choice {
+  font-size: 12px;
+}
+.proposal-controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+.world-proposal .pending-header p {
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+.world-proposal .stakes {
+  margin: 12px 0;
+}
+.world-proposal .check-values > span:last-child strong {
+  font-size: 14px;
+}
+.map-locations {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 13px;
+}
+.map-locations button {
+  font-size: 10px;
+  color: #8495a1;
+  border: 1px solid #2d3c47;
+  background: #141e26;
+  padding: 9px 7px;
+  border-radius: 5px;
+  text-align: left;
+}
+.map-locations button.adjacent {
+  color: #c7cfce;
+  border-color: #56665b;
+  background: #293b3026;
+}
+.map-locations button.current {
+  opacity: 1;
+  color: var(--gold);
+  border-color: #8c724955;
+  background: #b1884b14;
+}
+.npc-entry {
+  padding: 12px 0;
+  border-top: 1px solid #2c384255;
+}
+.npc-entry strong {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 12px;
+  color: #cfd4cb;
+}
+.npc-entry small {
+  font-size: 9px;
+  font-weight: 400;
+  color: var(--gold);
+}
+.npc-entry p {
+  font-size: 10px;
+  line-height: 1.85;
+  color: #97a5ad;
+  margin: 5px 0;
+}
+.npc-want {
+  color: #b1b9a7 !important;
+}
+.objective-list details {
+  font-size: 11px;
+  margin: 11px 0;
+  color: #899aa5;
+}
+.objective-list summary {
+  display: flex;
+  gap: 7px;
+  cursor: pointer;
+}
+.objective-list .done {
+  color: #a7bf9f;
+}
+.objective-list p {
+  font-size: 10px;
+  line-height: 1.9;
+  margin: 6px 0 0 17px;
+}
+.world-clock {
+  margin: 14px 0;
+}
+.world-clock > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 10px;
+  color: #adb8c0;
+}
+.world-clock small {
+  font-size: 9px;
+  color: var(--gold);
+}
+.clock-track {
+  height: 4px;
+  background: #2b3741;
+  border-radius: 3px;
+  margin-top: 7px;
+  overflow: hidden;
+}
+.clock-track i {
+  display: block;
+  height: 100%;
+  background: #b68f61;
+}
+.backstory-hook p {
+  font-size: 11px;
+  line-height: 1.9;
+  color: #b3bbb0;
+  margin: 9px 0;
+}
+.backstory-hook small {
+  font-size: 9px;
+  line-height: 1.8;
+  color: #7f929f;
+}
+.world-journal summary {
+  font-size: 11px;
+  cursor: pointer;
+  color: var(--gold);
+}
+.world-journal {
+  max-height: 420px;
+  overflow: auto;
+}
+.world-journal p {
+  padding: 13px 0;
+  border-bottom: 1px solid #27333d;
+  color: #a0aeb6;
+  font-size: 10px;
+  line-height: 1.85;
+}
+.world-journal p > small {
+  display: block;
+  color: #6f8593;
+  font-size: 9px;
+  margin-bottom: 5px;
+}
+.adventure-side .character-stats {
+  padding: 12px 0;
+}
+.resource-actions .retreat-button {
+  font-size: 10px;
+  color: #a89384;
+}
+.side-card .subtle-note {
+  margin: 9px 0;
+  font-size: 10px;
+}
+.settings-modal .scope-note {
+  font-size: 12px;
+  line-height: 1.9;
+}
+.builder-modal > .subtle-note {
+  margin-top: 14px;
+}
+.table-app fieldset:disabled {
+  opacity: 0.7;
+}
+.table-app input:focus-visible,
+.table-app select:focus-visible,
+.table-app textarea:focus-visible {
+  outline: 1px solid var(--gold);
+  outline-offset: 2px;
+}
+.builder-tabs button:focus-visible {
+  outline: 2px solid var(--gold);
+}
+@media (min-width: 1450px) {
+  .campaign-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-width: 800px) {
+  .version-note {
+    font-size: 9px;
+    white-space: normal;
+    max-width: 100px;
+    text-align: right;
+  }
+  .builder-modal {
+    padding: 30px 19px !important;
+  }
+  .builder-tabs {
+    gap: 2px;
+  }
+  .builder-tabs button {
+    font-size: 11px;
+    padding: 10px 3px;
+  }
+  .builder-abilities {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .builder-columns {
+    gap: 0 12px;
+  }
+  .choice-grid,
+  .builder .choice-grid:has(.check-choice small:not(:empty)) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .check-choice {
+    padding: 9px 8px;
+    font-size: 11px;
+    gap: 7px;
+  }
+  .builder-preview {
+    gap: 8px 13px;
+  }
+  .proposal-controls .button {
+    flex: 1;
+    justify-content: center;
+    font-size: 11px;
+  }
+  .settings-actions .button {
+    font-size: 11px;
+  }
+  .world-proposal .pending-header {
+    gap: 13px;
+  }
+  .world-proposal .pending-header p {
+    font-size: 11px;
+  }
+  .world-proposal .check-values {
+    gap: 12px;
+  }
+  .world-proposal .check-values > span {
+    padding-right: 13px;
+  }
+  .world-proposal .check-values > span:last-child strong {
+    font-size: 11px;
+  }
+  .builder .field {
+    font-size: 12px;
+  }
+  .resource-actions .retreat-button {
+    grid-column: 1/-1;
+  }
+  .adventure-side .character-details .ability-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+  .topbar-right {
+    gap: 9px;
+  }
+}

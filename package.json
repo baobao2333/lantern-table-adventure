@@ -1,6 +1,6 @@
 {
-  "name": "site-creator-vinext-starter",
-  "version": "0.1.0",
+  "name": "lantern-table-adventure",
+  "version": "0.2.0",
   "private": true,
   "engines": {
     "node": ">=22.15.0"
@@ -9,6 +9,9 @@
     "install:ci": "node scripts/install-ci.mjs",
     "dev": "node scripts/run-framework.mjs dev",
     "build": "node scripts/content-workflow.mjs --sync && node scripts/run-framework.mjs build",
+    "build:local": "node scripts/content-workflow.mjs --sync && node scripts/build-local.mjs",
+    "release:windows": "node scripts/package-release.mjs",
+    "verify:local": "node scripts/verify-local.mjs",
     "content:sync": "node scripts/content-workflow.mjs --sync",
     "content:check": "node scripts/content-workflow.mjs",
     "test": "node --test tests/*.test.mjs",
@@ -44,6 +47,7 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
+    "esbuild": "^0.27.4",
     "@cloudflare/vite-plugin": "1.37.1",
     "@cloudflare/workers-types": "4.20260515.1",
     "@tailwindcss/postcss": "4.2.1",

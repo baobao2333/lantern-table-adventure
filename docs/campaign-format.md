@@ -1,5 +1,7 @@
 # 剧本配置与扩展
 
+本页描述 `schemaVersion: 1` 的线性教学短篇。可回访地点、NPC 关系和持续事件使用 [持续战役格式](world-format.md) 与独立的 [world.schema.json](../content/world.schema.json)。不要混合两套字段。
+
 一份剧本是一份 UTF-8 JSON。它描述故事、场景、可执行行动和结局，规则引擎负责结算，AI 负责理解输入与叙事。新增符合现有能力的冒险，只需增加 JSON 文件，再运行校验和构建；不用为每个剧本写业务代码。
 
 唯一格式定义是 [JSON Schema](../content/campaign.schema.json)，跨字段与可达性检查在 [content-validation.mjs](../lib/game/content-validation.mjs)。已有的 [失声的钟楼](../content/campaigns/silent-bell.json) 是完整范例；本说明解释这些约束，不另设一套字段定义。

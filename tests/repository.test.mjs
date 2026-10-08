@@ -5,6 +5,7 @@ import {readFile} from 'node:fs/promises';
 import {registerHooks} from 'node:module';
 import {createGame} from '../lib/game/engine.ts';
 import {createHero} from '../lib/game/characters.ts';
+import {configureRuntime} from '../lib/server/runtime.ts';
 
 // Exercise the repository's real SQL with a narrow in-memory D1 adapter.
 globalThis.__lanternTestEnvironment={};
@@ -26,11 +27,12 @@ function fixture(t) {
     });
     return {...bind(),bind};
   };
-  globalThis.__lanternTestEnvironment.DB={prepare,async batch(statements) {
+  const database={prepare,async batch(statements) {
     sql.exec('BEGIN');
     try {const result=statements.map(s=>s.execute()); sql.exec('COMMIT'); return result;}
     catch(error) {sql.exec('ROLLBACK'); throw error;}
   }};
+  configureRuntime({DB:database,aiReady:false});
   return sql;
 }
 async function seed() {

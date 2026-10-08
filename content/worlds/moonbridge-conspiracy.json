@@ -1,0 +1,1087 @@
+{
+  "$schema": "../world.schema.json",
+  "format": "situation-v1",
+  "schemaVersion": 2,
+  "rulesVersion": "srd-5.1-table-2",
+  "revision": 1,
+  "order": 0,
+  "id": "moonbridge-conspiracy",
+  "title": "月桥镇：被偷走的月光",
+  "subtitle": "八处地点，一座会回应你的河谷小镇",
+  "description": "镇上的暖炉突然亮得耀眼，河上的月灯却一盏盏熄灭。你可以先救渡船居民、追查失踪的账本，或寻找旧神龛与观测站的联系。人们各有难处；你选择怎样介入，也选择最后要保护什么。冒险会保存地点、线索、承诺和已发生的事，可以分次继续。",
+  "minutes": "3–5 次游玩 · 时长随选择变化",
+  "theme": "河谷谜案 · 救援 · 身份疑云",
+  "difficulty": "一级角色 · 先说明风险再行动",
+  "hook": "你推开月桥旅店的门，湿冷的河风追进来。炉边，一个浑身沾着银色粉末的年轻人握着空茶杯。她说，昨夜采石场开了新泵，镇上的暖炉从此不缺火；可渡船的引航灯全灭了。店主把一张镇图摊在桌上：档案库、集市、渡口和旧神龛都还开着门。你想先问谁，或先去哪里？",
+  "locations": [
+    {
+      "id": "inn",
+      "title": "月桥旅店",
+      "description": "河谷的旅人把湿斗篷挂在同一条木架上。炉火暖得反常，门外的河灯却越来越暗。店主保留着旧镇歌，年轻采石工梅拉正担心留下的同伴。这里适合整理发现或休息。",
+      "npcIds": [
+        "innkeeper",
+        "mela"
+      ],
+      "exits": [
+        "market",
+        "archive",
+        "ferry",
+        "shrine"
+      ],
+      "safeRest": true
+    },
+    {
+      "id": "market",
+      "title": "暖炉集市",
+      "description": "面包摊重新点起了火，孩子围着廉价的发光石取暖。商人们称赞采石场的新泵，也有人悄悄收起带有议会印记的货票。货物、消息和帮手都可以在这里寻找。",
+      "npcIds": [
+        "broker"
+      ],
+      "exits": [
+        "inn",
+        "archive",
+        "quarry",
+        "council",
+        "ferry"
+      ],
+      "safeRest": false
+    },
+    {
+      "id": "archive",
+      "title": "河务档案库",
+      "description": "旧水线刻在档案柜的腿上。窗边晾着潮湿的账册，柜底传来缓慢的滴水声。管理员在保护文件与保护自己之间犹豫；通往庭院的水渠能容一只小桶通过。",
+      "npcIds": [
+        "archivist"
+      ],
+      "exits": [
+        "inn",
+        "market",
+        "council",
+        "observatory"
+      ],
+      "safeRest": false
+    },
+    {
+      "id": "quarry",
+      "title": "银脉采石场",
+      "description": "一台新泵把银色微光从地下抽进镇上的暖炉管线。工人说这让冻病的人熬过了昨夜，也让岩壁后的水声越来越响。泵有检修闸门，旁边的石槽刻着旧引航灯的标志。一只被银光惊动的洞穴蜥蜴守在检修闸旁，时而撞击空桶；可以设法安抚、绕开，或在需要时迎战。",
+      "npcIds": [
+        "foreman"
+      ],
+      "exits": [
+        "market",
+        "ferry",
+        "observatory"
+      ],
+      "safeRest": false
+    },
+    {
+      "id": "ferry",
+      "title": "失灯渡口",
+      "description": "渡船停在河心的浅滩旁，乘客正举着白布招手。岸边有散木、系船绳和几只旧浮标。船长不愿带船撞上暗礁，却一直在寻找其他救人的办法。",
+      "npcIds": [
+        "captain"
+      ],
+      "exits": [
+        "inn",
+        "market",
+        "quarry",
+        "shrine"
+      ],
+      "safeRest": false
+    },
+    {
+      "id": "observatory",
+      "title": "山坡观测站",
+      "description": "一面裂开的银镜对着河谷，刻度盘同时指向渡口与神龛。守站人把旧观测图压在工具箱底，害怕公开承认自己没弄懂镇灯的真正用途。这里有工作台，也有避雨的小屋。",
+      "npcIds": [
+        "astronomer"
+      ],
+      "exits": [
+        "archive",
+        "quarry",
+        "shrine",
+        "council"
+      ],
+      "safeRest": true
+    },
+    {
+      "id": "shrine",
+      "title": "无名者神龛",
+      "description": "神像的面孔被水磨平了，石壁上却仍有三道通向河谷的细槽。守龛人记得旧祷词，也愿意听陌生人讲述自己的来历。名字与记忆在这里可以成为问题，尚未成为答案。",
+      "npcIds": [
+        "caretaker"
+      ],
+      "exits": [
+        "inn",
+        "ferry",
+        "observatory",
+        "council"
+      ],
+      "safeRest": true
+    },
+    {
+      "id": "council",
+      "title": "河谷议事厅",
+      "description": "领事坐在长桌尽头，暖炉公会与渡口居民隔着一张空椅对视。所有人都知道镇灯出了问题，尚没人愿意先承担责任。你可以争取具体协助、提出调查问题；证据与已完成的行动将决定哪些最终方案能够兑现。",
+      "npcIds": [
+        "regent"
+      ],
+      "exits": [
+        "market",
+        "archive",
+        "observatory",
+        "shrine"
+      ],
+      "safeRest": false
+    }
+  ],
+  "npcs": [
+    {
+      "id": "innkeeper",
+      "name": "店主艾妲",
+      "role": "照看旅人、熟悉旧镇歌的旅店主人",
+      "want": "让这家店继续成为镇民能平安说话的地方，先照顾受惊的人。",
+      "secret": "她保存的镇歌最后一段不是祈福，而是让三处镇灯重新同步的拍子；她一直以为那只是老人的迷信。",
+      "location": "inn"
+    },
+    {
+      "id": "mela",
+      "name": "采石工梅拉",
+      "role": "带着银粉与货运见闻逃进旅店的年轻工人",
+      "want": "确认同伴平安，让自己的证词被认真听见，避免所有工人都被当成罪犯。",
+      "secret": "她见过盖着议会印记的检修命令；她离开采石场后一直不敢说出工头的名字。",
+      "location": "inn"
+    },
+    {
+      "id": "broker",
+      "name": "货商赛文",
+      "role": "给暖炉公会送货、也认识渡口帮工的集市商人",
+      "want": "保住生意与家人的取暖来源；在明确可行的计划下愿意协调帮手。",
+      "secret": "最近的银镜碎片并非新采矿石，全部来自旧镇灯；他留下了对应货票。",
+      "location": "market"
+    },
+    {
+      "id": "archivist",
+      "name": "管理员蕾娅",
+      "role": "整理河务账册的谨慎文书",
+      "want": "保护原始记录，让调查有可核对的证据，避免未经核实的指控。",
+      "secret": "领事要求她把镇灯维护费记为新泵开支；她把原页藏进了遭水浸湿的旧账册。",
+      "location": "archive"
+    },
+    {
+      "id": "foreman",
+      "name": "工头伯恩",
+      "role": "知道泵站结构的暖炉公会工头",
+      "want": "让工人不再挨冻、让病房暖炉继续工作；愿意停泵，但需要听见镇灯失效的实际证据。",
+      "secret": "新泵借用了镇灯的银镜和地下通道。他察觉过水声异常，但相信议会批准过的检修命令。",
+      "location": "quarry"
+    },
+    {
+      "id": "captain",
+      "name": "船长伊朔",
+      "role": "熟悉暗礁与渡船乘客的老船长",
+      "want": "先救出河心乘客；不愿为了显得勇敢而把更多人送进急流。",
+      "secret": "旧浮标的铃声一直与观测站呼应。他昨夜听见铃声错开，担心河底发生了变化。",
+      "location": "ferry"
+    },
+    {
+      "id": "astronomer",
+      "name": "守站人奥林",
+      "role": "会修银镜、却对旧镇约了解有限的观测员",
+      "want": "修复镇灯，并找到自己能够验证的办法；希望别人不要把所有旧知识的遗失都归罪于他。",
+      "secret": "他发现神龛、观测站和渡口组成封印，但尚缺正确节拍；他没有把这项疑问写入巡检报告。",
+      "location": "observatory"
+    },
+    {
+      "id": "caretaker",
+      "name": "守龛人素芙",
+      "role": "记录名字、誓约与镇民记忆的守龛人",
+      "want": "让旧誓约被理解，让来访者自己决定怎样解释身份；不愿以神迹之名制造未经证明的承诺。",
+      "secret": "石壁缺损的旧名也出现在镇约上，那是见证人的名字；它是否属于来访者，需要更多证据，不能仅凭熟悉感认定。",
+      "location": "shrine"
+    },
+    {
+      "id": "regent",
+      "name": "领事莉莎",
+      "role": "负责月桥镇政务、批准新泵的地方领事",
+      "want": "维持政权与镇民信任，避免失温和河难；不会仅凭恭维、威胁或身份宣称让出统治权。",
+      "secret": "她批准了偷取镇灯材料的临时方案，并要求改写费用记录。她原以为能在春季补回材料，现在害怕承认判断失误。",
+      "location": "council"
+    }
+  ],
+  "clues": {
+    "old-vow": {
+      "title": "镇歌中的旧约",
+      "text": "旧镇歌说，渡口铃、山镜与石龛应以同一节拍守望河底；镇灯既是引航设施，也是共同维护的封印。"
+    },
+    "cargo-route": {
+      "title": "盖印的夜间货运",
+      "text": "梅拉或后来赶来的工人证明，采石场的新泵用过旧镇灯的银镜。货物经过集市，随附议会批准的检修命令。"
+    },
+    "lens-pattern": {
+      "title": "银镜碎片的去向",
+      "text": "货票与碎片上的磨痕相互对应：从镇灯拆下的银镜被装进了新泵，并非来自新的矿脉。"
+    },
+    "evacuation-plan": {
+      "title": "渡船救援计划",
+      "text": "集市帮工与船长确认了浅滩、岸绳和接应位置。只要有人落实救援，乘客便有机会从河心撤回岸边。"
+    },
+    "ledger-proof": {
+      "title": "未改写的维护账页",
+      "text": "原始账页记录镇灯材料被转交新泵；修改稿把这笔费用写成了新采矿石。蕾娅保留了两页的对应日期和领事签记。"
+    },
+    "diversion-orders": {
+      "title": "临时借用的批准命令",
+      "text": "议会批准新泵借用镇灯材料，承诺春季归还。命令证明这不是工人私盗，也证明领事早已知道材料来自何处。"
+    },
+    "bypass-map": {
+      "title": "泵站旁路示意",
+      "text": "新泵的检修闸能把镇灯银镜与暖炉主管分开。直接砸泵会让病房失暖；关闭旁路可以先停止偷光，再安排替代热源。"
+    },
+    "siphon-idle": {
+      "title": "新泵已停止偷光",
+      "text": "银镜旁路已被关闭，封印不再持续失去月光。病房正使用旧炉，镇民仍需要商议长期取暖办法。"
+    },
+    "river-map": {
+      "title": "浮标与三处守望点",
+      "text": "浮标上的刻线与观测站、神龛形成三角。沿河水声与灯光的偏移能反推出山镜该恢复的角度。"
+    },
+    "bell-timing": {
+      "title": "错开的铃声",
+      "text": "渡口铃的回声落后了两个拍子。重新同步它与山镜、石龛，可以帮助恢复封印；大声呼喊本身不会产生神力。"
+    },
+    "seal-procedure": {
+      "title": "可核对的修复步骤",
+      "text": "先停止新泵偷光，再校准山镜与渡口节拍，最后让石龛刻槽重新接上微光。工匠与守龛人都能参与，不要求来访者拥有未记载的法术。"
+    },
+    "stable-light": {
+      "title": "重新稳定的镇灯",
+      "text": "山镜、渡口铃与石龛已重新同步，河底封印恢复稳定。暖炉与镇灯的长期分配问题仍需要公开处理。"
+    },
+    "ferry-evacuated": {
+      "title": "乘客已回到岸上",
+      "text": "河心乘客已经撤回岸边，船长核对过人数。渡船设施是否能立即恢复运营是另一件事，不能由救援成功自动推断。"
+    },
+    "true-name-fragment": {
+      "title": "石壁上缺损的旧名",
+      "text": "神龛与镇约上留有同一个缺损名字。它可能与来访者的记忆、师承或信仰有关，但现有证据没有证明任何人就是神，也没有赋予神力。"
+    }
+  },
+  "objectives": {
+    "witness-safe": {
+      "title": "让证人敢于开口",
+      "description": "梅拉确认自己的证言被认真保留，工人的处境也被听见。"
+    },
+    "supply-traced": {
+      "title": "查明银镜来源",
+      "description": "把旧镇灯的材料与新泵货运对应起来。"
+    },
+    "rescue-prepared": {
+      "title": "组织渡船接应",
+      "description": "协调能够在岸边落实的救援计划。"
+    },
+    "proof-secured": {
+      "title": "保存改账证据",
+      "description": "取得可公开核对的原始账页与修改稿。"
+    },
+    "conspiracy-mapped": {
+      "title": "查清批准经过",
+      "description": "区分议会批准、公会执行与普通工人的责任。"
+    },
+    "siphon-located": {
+      "title": "找到偷光旁路",
+      "description": "看懂泵站如何分走封印的月光。"
+    },
+    "siphon-stopped": {
+      "title": "停止偷取月光",
+      "description": "关闭银镜旁路，使封印不再持续失光。"
+    },
+    "residents-safe": {
+      "title": "救回河心居民",
+      "description": "让渡船乘客真实回到岸上，而非仅提出计划。"
+    },
+    "threat-mapped": {
+      "title": "理解河底危机",
+      "description": "确认渡口、山镜和石龛共同守着河底封印。"
+    },
+    "seal-understood": {
+      "title": "找到修复方法",
+      "description": "取得工匠能够核对并执行的修复步骤。"
+    },
+    "seal-repaired": {
+      "title": "恢复河底封印",
+      "description": "实际同步三处守望点，让镇灯恢复稳定。"
+    },
+    "history-recovered": {
+      "title": "留下身份线索",
+      "description": "记录旧名与记忆的联系，保留尚未解决的问题。"
+    }
+  },
+  "opportunities": [
+    {
+      "id": "hear-old-song",
+      "location": "inn",
+      "title": "从镇歌寻找旧约",
+      "prompt": "通过询问店主、复原漏掉的词句、研究歌谣或其他合理办法，弄清镇歌与河灯的关系。",
+      "skills": [
+        "investigation",
+        "insight",
+        "persuasion",
+        "arcana"
+      ],
+      "dc": 10,
+      "requires": [],
+      "success": {
+        "text": "艾妲唱出了被省略的最后一段。你记录下三处守望点应当共享同一节拍的旧约。",
+        "clues": [
+          "old-vow"
+        ],
+        "objectives": [],
+        "trustNpc": "innkeeper"
+      },
+      "failure": {
+        "text": "旧歌的意思仍没能确定，炉边的人继续争论。你花了时间，可以去神龛核对刻文，或寻找别的证据。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "hear-mela",
+      "location": "inn",
+      "title": "让受惊的工人讲清见闻",
+      "prompt": "安抚梅拉、耐心核对货运经历，或用能建立信任的方式记录她亲眼看见的事；不要替她编造证词。",
+      "skills": [
+        "insight",
+        "persuasion",
+        "investigation"
+      ],
+      "dc": 10,
+      "requires": [],
+      "success": {
+        "text": "梅拉愿意留下证言，并说明银镜货物与议会检修命令的关系。你也记下了她对同伴的担忧。",
+        "clues": [
+          "cargo-route"
+        ],
+        "objectives": [
+          "witness-safe"
+        ],
+        "trustNpc": "mela"
+      },
+      "failure": {
+        "text": "梅拉仍不敢把见闻说完整。你没有取得证词，追问耗费了时间；集市的货票也可能指向同一批材料。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "trace-market-cargo",
+      "location": "market",
+      "title": "追查发光石与银镜货票",
+      "prompt": "核对磨痕、观察摊贩交接、谈妥查看货票，或提出其他能真实确认材料来源的方法。",
+      "skills": [
+        "investigation",
+        "perception",
+        "persuasion",
+        "stealth"
+      ],
+      "dc": 12,
+      "requires": [],
+      "success": {
+        "text": "你把碎片磨痕与货票对应起来，确认新泵使用了从旧镇灯拆下的银镜。",
+        "clues": [
+          "lens-pattern"
+        ],
+        "objectives": [
+          "supply-traced"
+        ],
+        "trustNpc": "broker"
+      },
+      "failure": {
+        "text": "纷乱的货票没能形成可靠对应，商贩也开始收摊。你花了时间，尚未证明银镜来自哪里。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "organize-shore-team",
+      "location": "market",
+      "title": "组织岸边救援计划",
+      "prompt": "协调集市帮工、向货商说明接应安排、观察适合系岸绳的位置，或用合理办法组织渡口救援。",
+      "skills": [
+        "persuasion",
+        "investigation",
+        "perception",
+        "athletics"
+      ],
+      "dc": 12,
+      "requires": [],
+      "success": {
+        "text": "帮工与船长商量好岸绳、浅滩和接应位置。救援有了可执行的计划，乘客此刻仍在河心。",
+        "clues": [
+          "evacuation-plan"
+        ],
+        "objectives": [
+          "rescue-prepared"
+        ],
+        "trustNpc": "broker"
+      },
+      "failure": {
+        "text": "接应安排仍有混乱，大家没能确定各自的位置。乘客还在等待，你花了时间，也可以直接去渡口另想办法。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "recover-original-ledger",
+      "location": "archive",
+      "title": "找回未改写的账页",
+      "prompt": "辨认水痕与装订顺序、请管理员协助，或设计不会凭空制造证据的办法找出并核对原始记录。",
+      "skills": [
+        "investigation",
+        "perception",
+        "persuasion",
+        "stealth"
+      ],
+      "dc": 12,
+      "requires": [],
+      "success": {
+        "text": "你保留了原始账页与修改稿，日期、金额和领事签记能够相互核对。改账的证据已保存。",
+        "clues": [
+          "ledger-proof"
+        ],
+        "objectives": [
+          "proof-secured"
+        ],
+        "trustNpc": "archivist"
+      },
+      "failure": {
+        "text": "潮湿的纸页仍无法可靠对应，管理员先把它们分开晾干。你没有取得证据，整理耗费了时间。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "verify-approved-orders",
+      "location": "archive",
+      "title": "核对夜间检修批准",
+      "prompt": "依据货运见闻比对命令编号、询问文书、查找副本，或通过其他能验证批准经过的办法调查。",
+      "skills": [
+        "investigation",
+        "insight",
+        "persuasion",
+        "perception"
+      ],
+      "dc": 12,
+      "requires": [
+        "cargo-route"
+      ],
+      "success": {
+        "text": "你找到与货运相符的临时借用命令。议会批准、公会执行与普通工人的责任终于能够分开讨论。",
+        "clues": [
+          "diversion-orders"
+        ],
+        "objectives": [
+          "conspiracy-mapped"
+        ],
+        "trustNpc": "archivist"
+      },
+      "failure": {
+        "text": "相关命令的编号仍没能核实。你尚不能确定谁批准了借用，查阅耗费了时间。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "inspect-siphon",
+      "location": "quarry",
+      "title": "看懂新泵的偷光旁路",
+      "prompt": "依据银镜来源检查检修闸、观察管线流向、询问工头，或用不伤害工人的办法弄清泵的结构。",
+      "skills": [
+        "investigation",
+        "perception",
+        "arcana",
+        "persuasion"
+      ],
+      "dc": 12,
+      "requires": [
+        "lens-pattern"
+      ],
+      "success": {
+        "text": "你确认银镜旁路把镇灯月光分走，并记录了能先停止偷光、暂留旧炉取暖的检修办法。",
+        "clues": [
+          "bypass-map"
+        ],
+        "objectives": [
+          "siphon-located"
+        ],
+        "trustNpc": "foreman"
+      },
+      "failure": {
+        "text": "交错的管线仍没有被辨认清楚。泵继续运行，检查耗费了时间。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "close-siphon-with-workers",
+      "location": "quarry",
+      "title": "处理泵房蜥蜴并关闭旁路",
+      "prompt": "按旁路示意协同工人，观察蜥蜴的惊慌反应并用现场声响引开它，绕过阻挡，或用合适工具与力气关闭检修闸。这里也允许迎战蜥蜴；目标是停止偷光，不是凭空修好封印。",
+      "skills": [
+        "athletics",
+        "investigation",
+        "stealth",
+        "persuasion"
+      ],
+      "dc": 12,
+      "requires": [
+        "bypass-map"
+      ],
+      "success": {
+        "text": "检修闸前的阻碍已解除，工人关闭银镜旁路，新泵停止偷取镇灯月光。病房改用旧炉，长期取暖仍需另行解决。",
+        "clues": [
+          "siphon-idle"
+        ],
+        "objectives": [
+          "siphon-stopped"
+        ],
+        "trustNpc": "foreman"
+      },
+      "failure": {
+        "text": "闸门没能按计划关闭，工人退开重新检查受力位置。没有人完成停泵，折腾耗费了更多时间。",
+        "clock": 2
+      },
+      "encounter": {
+        "name": "惊慌的洞穴蜥蜴",
+        "hp": 8,
+        "maxHp": 8,
+        "ac": 11,
+        "attackBonus": 2,
+        "damageDie": 4,
+        "damageBonus": 0,
+        "dex": 0
+      }
+    },
+    {
+      "id": "isolate-siphon-valve",
+      "location": "quarry",
+      "title": "从银镜接头切断偷光",
+      "prompt": "根据已知银镜来源，绕过主闸处理可接触的镜片接头，或提出其他只停止偷光、不宣称凭空造出材料的办法。",
+      "skills": [
+        "stealth",
+        "investigation",
+        "arcana",
+        "athletics"
+      ],
+      "dc": 15,
+      "requires": [
+        "lens-pattern"
+      ],
+      "success": {
+        "text": "你隔开了银镜接头，新泵停止偷取镇灯月光。工人用旧炉维持病房，封印本身还等待修复。",
+        "clues": [
+          "siphon-idle"
+        ],
+        "objectives": [
+          "siphon-stopped"
+        ]
+      },
+      "failure": {
+        "text": "接头仍在发亮，你没能隔开它。尝试耗费了更多时间，泵仍继续偷光。",
+        "clock": 2
+      }
+    },
+    {
+      "id": "execute-ferry-rescue",
+      "location": "ferry",
+      "title": "按岸边计划接回乘客",
+      "prompt": "利用已经协调好的接应位置，牵引小艇、管理岸绳、组织乘客顺序，或采用与计划相容的救援办法。",
+      "skills": [
+        "athletics",
+        "persuasion",
+        "perception",
+        "investigation"
+      ],
+      "dc": 10,
+      "requires": [
+        "evacuation-plan"
+      ],
+      "success": {
+        "text": "接应者把河心乘客带回岸边，船长逐一核对了人数。救援已经完成，渡船设备还需要检查。",
+        "clues": [
+          "ferry-evacuated"
+        ],
+        "objectives": [
+          "residents-safe"
+        ],
+        "trustNpc": "captain"
+      },
+      "failure": {
+        "text": "第一轮接应没能抵达浅滩，大家收回岸绳保住准备。乘客仍在河心，救援耗费了更多时间。",
+        "clock": 2
+      }
+    },
+    {
+      "id": "improvise-ferry-crossing",
+      "location": "ferry",
+      "title": "设计另一种渡河救援",
+      "prompt": "用现场木板和系船绳构成牵引浮台、沿岸找近路、协调船长，或提出其他有实际支点的办法。没有记载的装备与法术不能由描述自动获得。",
+      "skills": [
+        "athletics",
+        "investigation",
+        "perception",
+        "persuasion"
+      ],
+      "dc": 15,
+      "requires": [],
+      "success": {
+        "text": "你落实了现场的另一种接应办法，把乘客带回岸边。船长核对人数后确认，河心已没有等待救援的人。",
+        "clues": [
+          "ferry-evacuated"
+        ],
+        "objectives": [
+          "residents-safe"
+        ],
+        "trustNpc": "captain"
+      },
+      "failure": {
+        "text": "临时接应没能到达乘客所在的浅滩。你退回岸边重新评估，尚未完成救援，时间又向前推进。",
+        "clock": 2
+      }
+    },
+    {
+      "id": "read-ferry-markers",
+      "location": "ferry",
+      "title": "辨认浮标与错拍铃声",
+      "prompt": "观察浮标刻线、比较铃声回音、询问船长，或从现场迹象判断河底与三处镇灯的联系。",
+      "skills": [
+        "perception",
+        "investigation",
+        "arcana",
+        "insight"
+      ],
+      "dc": 10,
+      "requires": [],
+      "success": {
+        "text": "你记录了浮标刻线与错开的两个拍子，确认渡口、观测站与神龛共同维持河底封印。",
+        "clues": [
+          "river-map",
+          "bell-timing"
+        ],
+        "objectives": [
+          "threat-mapped"
+        ],
+        "trustNpc": "captain"
+      },
+      "failure": {
+        "text": "水声与铃声暂时混在一起，刻线也没能形成可靠图示。观察耗费了时间，河底危机仍有疑问。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "decode-old-calibration",
+      "location": "observatory",
+      "title": "把旧约变成修复步骤",
+      "prompt": "用镇歌核对观测图、与守站人合作理解刻度，或把旧约转成能实际执行的校准方法。",
+      "skills": [
+        "arcana",
+        "investigation",
+        "persuasion",
+        "perception"
+      ],
+      "dc": 12,
+      "requires": [
+        "old-vow"
+      ],
+      "success": {
+        "text": "你与奥林把旧约对上观测图，列出停止偷光、校准山镜、同步三处节拍的修复步骤。",
+        "clues": [
+          "seal-procedure"
+        ],
+        "objectives": [
+          "seal-understood"
+        ],
+        "trustNpc": "astronomer"
+      },
+      "failure": {
+        "text": "旧约与刻度还有一处矛盾，没有形成可靠步骤。推算耗费了时间；浮标图也可能提供另一种校准办法。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "triangulate-river-lights",
+      "location": "observatory",
+      "title": "从浮标反推校准角度",
+      "prompt": "根据浮标图观察山镜与石龛的位置、测量偏移，或用已有线索建立能够核对的修复方案。",
+      "skills": [
+        "investigation",
+        "perception",
+        "arcana"
+      ],
+      "dc": 12,
+      "requires": [
+        "river-map"
+      ],
+      "success": {
+        "text": "你从浮标与三处守望点的关系反推出校准顺序，奥林确认这是一份能够执行的修复方案。",
+        "clues": [
+          "seal-procedure"
+        ],
+        "objectives": [
+          "seal-understood"
+        ],
+        "trustNpc": "astronomer"
+      },
+      "failure": {
+        "text": "角度误差仍太大，没有得到可执行的校准方案。测量耗费了时间；神龛的旧约还可以核对。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "repair-at-observatory",
+      "location": "observatory",
+      "title": "以山镜为中心修复封印",
+      "prompt": "在偷光已经停止的前提下，按修复步骤校准银镜、协调守站人与渡口，或以其他有实际依据的办法同步三处守望点。",
+      "skills": [
+        "arcana",
+        "investigation",
+        "athletics",
+        "persuasion"
+      ],
+      "dc": 15,
+      "requires": [
+        "seal-procedure",
+        "siphon-idle"
+      ],
+      "success": {
+        "text": "山镜、渡口铃与石龛终于接上同一节拍，河底封印恢复稳定。镇灯亮起，长期分配仍待议事厅决定。",
+        "clues": [
+          "stable-light"
+        ],
+        "objectives": [
+          "seal-repaired"
+        ],
+        "trustNpc": "astronomer"
+      },
+      "failure": {
+        "text": "山镜短暂亮起后再次偏移，封印尚未修好。你保留了步骤，校准耗费了更多时间，也可去神龛尝试另一种同步办法。",
+        "clock": 2
+      }
+    },
+    {
+      "id": "synchronize-at-shrine",
+      "location": "shrine",
+      "title": "以石龛节拍修复封印",
+      "prompt": "在偷光停止后，利用已经核实的渡口节拍、石槽与守龛人的帮助同步三处镇灯。歌唱或仪式只是协调方法，不会授予角色未拥有的神力。",
+      "skills": [
+        "arcana",
+        "investigation",
+        "persuasion",
+        "perception"
+      ],
+      "dc": 15,
+      "requires": [
+        "bell-timing",
+        "siphon-idle"
+      ],
+      "success": {
+        "text": "素芙与渡口、观测站协同恢复了石槽中的微光。三处守望点同步，河底封印重新稳定。",
+        "clues": [
+          "stable-light"
+        ],
+        "objectives": [
+          "seal-repaired"
+        ],
+        "trustNpc": "caretaker"
+      },
+      "failure": {
+        "text": "节拍仍在两处之间错开，石槽没有稳定发亮。封印尚未修复，同步耗费了更多时间；观测站还能核对角度。",
+        "clock": 2
+      }
+    },
+    {
+      "id": "study-missing-name",
+      "location": "shrine",
+      "title": "调查缺损旧名与自己的记忆",
+      "prompt": "辨认石刻、与守龛人比较镇约、讲述已认可的背景，或追问名字引起的熟悉感。背景宣称可以引出问题，不能代替证据或改变角色能力。",
+      "skills": [
+        "investigation",
+        "insight",
+        "arcana",
+        "persuasion"
+      ],
+      "dc": 10,
+      "requires": [],
+      "success": {
+        "text": "你记录了镇约、石壁旧名与记忆之间的联系，也复原了三处守望点的旧约。身份真相仍未确定，问题可以留待以后的旅程。",
+        "clues": [
+          "true-name-fragment",
+          "old-vow"
+        ],
+        "objectives": [
+          "history-recovered"
+        ],
+        "trustNpc": "caretaker"
+      },
+      "failure": {
+        "text": "石刻的缺损仍没能填上，熟悉感没有变成证据。素芙把这个问题记下，调查耗费了时间，你的能力没有改变。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "final-shared-repair",
+      "location": "council",
+      "title": "达成公开修复与取暖协议",
+      "prompt": "居民已获救、偷光已停止、封印已修复后，提出让议会、公会和渡口共同维护镇灯，并分担替代取暖的责任。可以协商措辞与执行方式，不能宣布别人无条件服从。",
+      "skills": [
+        "persuasion",
+        "insight",
+        "investigation"
+      ],
+      "dc": 12,
+      "requires": [
+        "ferry-evacuated",
+        "siphon-idle",
+        "stable-light"
+      ],
+      "success": {
+        "text": "各方确认了已经完成的救援与修复，接受共同维护和公开记账的安排。你选择让月桥镇带着责任分工重新生活。",
+        "clues": [],
+        "objectives": [],
+        "ending": "shared-repair"
+      },
+      "failure": {
+        "text": "各方仍未同意分担方式，会议继续争论。已有救援与修复不会被撤销，但这次没有达成最终协议，耗费了时间。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "final-public-accountability",
+      "location": "council",
+      "title": "以原始账页要求公开问责",
+      "prompt": "居民已获救、证据已保留、封印已修复后，公开核对改账事实并要求独立监督。目标是可执行的问责安排，不是凭一句话取得政权。",
+      "skills": [
+        "persuasion",
+        "investigation",
+        "insight"
+      ],
+      "dc": 15,
+      "requires": [
+        "ferry-evacuated",
+        "ledger-proof",
+        "stable-light"
+      ],
+      "success": {
+        "text": "原始账页在众人面前被核对，领事承认批准借用与改账。会议接受独立监督，你选择让证据与责任留在公开记录中。",
+        "clues": [],
+        "objectives": [],
+        "ending": "public-accountability"
+      },
+      "failure": {
+        "text": "证据本身仍被保留，但会议没能就监督办法取得同意。这次没有完成公开问责，争论耗费了更多时间。",
+        "clock": 2
+      }
+    },
+    {
+      "id": "final-open-vow",
+      "location": "council",
+      "title": "把旧约交还给共同见证者",
+      "prompt": "居民已获救、偷光已停止、封印已修复后，以神龛旧约与缺损名字为起点，邀请镇民建立开放的守望记录。未知身份不构成统治或神力的凭据。",
+      "skills": [
+        "persuasion",
+        "insight",
+        "arcana",
+        "investigation"
+      ],
+      "dc": 12,
+      "requires": [
+        "ferry-evacuated",
+        "siphon-idle",
+        "stable-light",
+        "true-name-fragment"
+      ],
+      "success": {
+        "text": "镇民决定让旧约由公开记录和轮值守望继续承担。你留下了名字的疑问，选择把共同守护的权利交回每个愿意见证的人。",
+        "clues": [],
+        "objectives": [],
+        "ending": "open-vow"
+      },
+      "failure": {
+        "text": "大家愿意谈旧约，但还没同意怎样共同记录与轮值。未知名字没有赋予你权威，会议耗费了时间，最终安排尚未达成。",
+        "clock": 1
+      }
+    }
+  ],
+  "clocks": [
+    {
+      "id": "town-inquiry",
+      "title": "镇民公开调查",
+      "max": 60,
+      "thresholds": [
+        {
+          "at": 8,
+          "text": "另一位采石工赶到旅店，公开说明夜间银镜货运。镇民开始认真听工人的见闻，相关路径已进入记录。",
+          "clue": "cargo-route"
+        },
+        {
+          "at": 15,
+          "text": "船长托人把岸绳与浅滩的接应安排送到集市。救援计划已经公开，乘客仍在河心等待执行。",
+          "clue": "evacuation-plan"
+        },
+        {
+          "at": 22,
+          "text": "河务听证迫使档案库公开临时借用命令；议会批准新泵借用镇灯材料的经过已可核对。",
+          "clue": "diversion-orders"
+        },
+        {
+          "at": 29,
+          "text": "工人把检修示意图送给镇上的调查者。月光旁路的位置已公开，但仍需要有人关闭它。",
+          "clue": "bypass-map"
+        },
+        {
+          "at": 39,
+          "text": "守站人与守龛人交换旧图，把可以执行的封印修复步骤写进公开记录，供调查与今后的维护核对。",
+          "clue": "seal-procedure"
+        },
+        {
+          "at": 50,
+          "text": "议事厅把共同维护、公开问责与重新见证旧约列为待议事项。时间本身不会替你选择最终立场，也不会结束你的调查。"
+        }
+      ]
+    },
+    {
+      "id": "siphon-response",
+      "title": "工人停泵准备",
+      "max": 50,
+      "stoppedBy": [
+        "siphon-stopped"
+      ],
+      "thresholds": [
+        {
+          "at": 34,
+          "text": "听见河底异响后，工头自行关闭了银镜旁路，改用旧炉照顾病房。偷光已实际停止；延误让公会与议会的争执更公开。",
+          "clue": "siphon-idle",
+          "objective": "siphon-stopped"
+        }
+      ]
+    },
+    {
+      "id": "ferry-rescue",
+      "title": "镇民渡船后援",
+      "max": 50,
+      "stoppedBy": [
+        "residents-safe"
+      ],
+      "thresholds": [
+        {
+          "at": 44,
+          "text": "镇民的岸边救援队终于接回河心乘客。船长完成了人数核对，救援真实结束；大家记得漫长的等待。",
+          "clue": "ferry-evacuated",
+          "objective": "residents-safe"
+        }
+      ]
+    },
+    {
+      "id": "seal-response",
+      "title": "三处守望点的联合修复",
+      "max": 50,
+      "stoppedBy": [
+        "seal-repaired"
+      ],
+      "thresholds": [
+        {
+          "at": 48,
+          "text": "工匠与守龛人完成了一次缓慢的联合校准，三处守望点恢复同步，封印实际稳定下来。你仍可以调查证据并决定参与哪种最终安排。",
+          "clue": "stable-light",
+          "objective": "seal-repaired"
+        }
+      ]
+    }
+  ],
+  "endings": {
+    "retreat": {
+      "title": "带着问题离开河谷",
+      "text": "你结束了这段旅程，带着已记录的见闻回到安全处。月桥镇的人仍会按自己的目标行动，尚未完成的救援、修复与调查不会因为离开而被记为成功。"
+    },
+    "shared-repair": {
+      "title": "共同修好一座镇",
+      "text": "河心居民已获救，偷光旁路已关闭，封印也已稳定。议会、公会和渡口接受共同维护与公开记账的安排。月桥镇的暖炉再次点亮时，人们也开始讨论谁来照看河上的灯。你留下的其他线索与身份问题，仍属于下一段旅程。",
+      "requires": [
+        "residents-safe",
+        "siphon-stopped",
+        "seal-repaired"
+      ],
+      "clues": [
+        "ferry-evacuated",
+        "siphon-idle",
+        "stable-light"
+      ]
+    },
+    "public-accountability": {
+      "title": "让原页留在众人面前",
+      "text": "居民平安回岸，封印重新稳定，原始账页与修改稿被公开核对。领事承认批准与改账，独立监督开始介入镇灯维护。工人的取暖需求也留在会议记录中。你没有凭口才取得政权，而是让证据成为此后必须面对的事实。",
+      "requires": [
+        "residents-safe",
+        "proof-secured",
+        "seal-repaired"
+      ],
+      "clues": [
+        "ferry-evacuated",
+        "ledger-proof",
+        "stable-light"
+      ]
+    },
+    "open-vow": {
+      "title": "名字尚缺，守望已续",
+      "text": "居民已获救，偷光已停止，封印已修复。镇民把旧约写进开放的守望记录，愿意见证的人开始轮值。石龛的旧名仍有缺口，你的熟悉感也仍只是值得追查的线索；这没有阻止你先与他们一起守住眼前的河谷。",
+      "requires": [
+        "residents-safe",
+        "siphon-stopped",
+        "seal-repaired",
+        "history-recovered"
+      ],
+      "clues": [
+        "ferry-evacuated",
+        "siphon-idle",
+        "stable-light",
+        "true-name-fragment"
+      ]
+    }
+  },
+  "backstoryHooks": [
+    {
+      "id": "lost-god-name",
+      "location": "shrine",
+      "question": "当你看见缺损的旧名，是记起某个人、某段誓约，还是怀疑它与你宣称的神性有关？你希望继续调查哪一种可能？熟悉感目前不证明身份，也不赋予神力。",
+      "tags": [
+        "失忆",
+        "古神",
+        "神",
+        "lost-god",
+        "amnesia"
+      ],
+      "truthStatus": "unresolved"
+    },
+    {
+      "id": "old-river-debt",
+      "location": "ferry",
+      "question": "渡船上的等待是否让你想起曾经没能赶上的一次救援？如果你愿意，这次经历可以与你已有的债务、承诺或失去的人建立联系。",
+      "tags": [
+        "救援",
+        "亏欠",
+        "家人",
+        "river",
+        "debt"
+      ],
+      "truthStatus": "unresolved"
+    },
+    {
+      "id": "borrowed-name",
+      "location": "archive",
+      "question": "当原页与修改稿出现两个不同的名字，你是否想起自己使用过的名字、师承或身份？哪一部分是你已经认可的背景，哪一部分应留待调查？",
+      "tags": [
+        "假名",
+        "流亡",
+        "学者",
+        "名字",
+        "exile",
+        "scholar"
+      ],
+      "truthStatus": "unresolved"
+    }
+  ]
+}

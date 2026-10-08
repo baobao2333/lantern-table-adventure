@@ -1,12 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHero, skillMod} from '../lib/game/characters.ts';
-import {CAMPAIGNS} from '../lib/game/campaigns.ts';
+import {CAMPAIGNS as ALL_CAMPAIGNS} from '../lib/game/campaigns.ts';
 import {createGame, resolve, availableActions, checkRoll, attackRoll, gameView} from '../lib/game/engine.ts';
 import {semanticErrors} from '../lib/game/content-validation.mjs';
 import Ajv from 'ajv';
 import schema from '../content/campaign.schema.json' with {type:'json'};
 
+const CAMPAIGNS=ALL_CAMPAIGNS.filter(c=>c.schemaVersion===1);
 const valid = new Ajv({allErrors:true,strict:false}).compile(schema);
 function game(classId='fighter', campaignId='silent-bell') {return createGame(crypto.randomUUID(),'owner',createHero(crypto.randomUUID(),classId,'Tester',''),'silent-bell' === campaignId ? 'silent-bell' : campaignId,'solo','ABC234');}
 function act(state,id,die=()=>1) {return resolve(state,'owner',{kind:'action',actionId:id},die).state;}

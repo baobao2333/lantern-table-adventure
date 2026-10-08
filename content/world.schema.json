@@ -1,0 +1,621 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "const": "../world.schema.json"
+    },
+    "format": {
+      "const": "situation-v1"
+    },
+    "schemaVersion": {
+      "const": 2
+    },
+    "rulesVersion": {
+      "const": "srd-5.1-table-2"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "order": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{0,47}$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1600
+    },
+    "subtitle": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1600
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1600
+    },
+    "minutes": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1600
+    },
+    "theme": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1600
+    },
+    "difficulty": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1600
+    },
+    "hook": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1600
+    },
+    "locations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,47}$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1600
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1600
+          },
+          "npcIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{0,47}$"
+            },
+            "uniqueItems": true,
+            "maxItems": 40
+          },
+          "exits": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{0,47}$"
+            },
+            "uniqueItems": true,
+            "maxItems": 40
+          },
+          "safeRest": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "description",
+          "npcIds",
+          "exits",
+          "safeRest"
+        ]
+      },
+      "minItems": 2,
+      "maxItems": 30
+    },
+    "npcs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,47}$"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1600
+          },
+          "role": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1600
+          },
+          "want": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1600
+          },
+          "secret": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1600
+          },
+          "location": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,47}$"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "role",
+          "want",
+          "secret",
+          "location"
+        ]
+      },
+      "minItems": 1,
+      "maxItems": 40
+    },
+    "clues": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9-]{0,47}$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1600
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1600
+          }
+        },
+        "required": [
+          "title",
+          "text"
+        ]
+      },
+      "minProperties": 1,
+      "maxProperties": 80
+    },
+    "objectives": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9-]{0,47}$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1600
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1600
+          }
+        },
+        "required": [
+          "title",
+          "description"
+        ]
+      },
+      "minProperties": 1,
+      "maxProperties": 80
+    },
+    "opportunities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,47}$"
+          },
+          "location": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,47}$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1600
+          },
+          "prompt": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1600
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "athletics",
+                "acrobatics",
+                "sleightOfHand",
+                "stealth",
+                "arcana",
+                "history",
+                "investigation",
+                "nature",
+                "religion",
+                "animalHandling",
+                "insight",
+                "medicine",
+                "perception",
+                "survival",
+                "deception",
+                "intimidation",
+                "performance",
+                "persuasion"
+              ]
+            },
+            "minItems": 1,
+            "maxItems": 18
+          },
+          "dc": {
+            "enum": [
+              10,
+              12,
+              15,
+              18
+            ]
+          },
+          "requires": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{0,47}$"
+            },
+            "uniqueItems": true,
+            "maxItems": 40
+          },
+          "success": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1600
+              },
+              "clues": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9-]{0,47}$"
+                },
+                "uniqueItems": true,
+                "maxItems": 40
+              },
+              "objectives": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9-]{0,47}$"
+                },
+                "uniqueItems": true,
+                "maxItems": 40
+              },
+              "trustNpc": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]{0,47}$"
+              },
+              "ending": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]{0,47}$"
+              }
+            },
+            "required": [
+              "text",
+              "clues",
+              "objectives"
+            ]
+          },
+          "failure": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1600
+              },
+              "clock": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2
+              }
+            },
+            "required": [
+              "text",
+              "clock"
+            ]
+          },
+          "encounter": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1600
+              },
+              "hp": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 80
+              },
+              "maxHp": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 80
+              },
+              "ac": {
+                "type": "integer",
+                "minimum": 8,
+                "maximum": 20
+              },
+              "attackBonus": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 8
+              },
+              "damageDie": {
+                "enum": [
+                  4,
+                  6,
+                  8,
+                  10,
+                  12
+                ]
+              },
+              "damageBonus": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 5
+              },
+              "dex": {
+                "type": "integer",
+                "minimum": -2,
+                "maximum": 5
+              },
+              "sleepImmune": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "name",
+              "hp",
+              "maxHp",
+              "ac",
+              "attackBonus",
+              "damageDie",
+              "damageBonus",
+              "dex"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "location",
+          "title",
+          "prompt",
+          "skills",
+          "dc",
+          "requires",
+          "success",
+          "failure"
+        ]
+      },
+      "minItems": 3,
+      "maxItems": 100
+    },
+    "clocks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,47}$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1600
+          },
+          "max": {
+            "type": "integer",
+            "minimum": 8,
+            "maximum": 100
+          },
+          "stoppedBy": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{0,47}$"
+            },
+            "uniqueItems": true,
+            "maxItems": 40
+          },
+          "thresholds": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "at": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "text": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1600
+                },
+                "clue": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9-]{0,47}$"
+                },
+                "objective": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9-]{0,47}$"
+                }
+              },
+              "required": [
+                "at",
+                "text"
+              ]
+            },
+            "minItems": 1,
+            "maxItems": 12
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "max",
+          "thresholds"
+        ]
+      },
+      "minItems": 1,
+      "maxItems": 6
+    },
+    "endings": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9-]{0,47}$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1600
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1600
+          },
+          "requires": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{0,47}$"
+            },
+            "uniqueItems": true,
+            "maxItems": 40
+          },
+          "clues": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{0,47}$"
+            },
+            "uniqueItems": true,
+            "maxItems": 40
+          }
+        },
+        "required": [
+          "title",
+          "text"
+        ]
+      },
+      "minProperties": 1,
+      "maxProperties": 80
+    },
+    "backstoryHooks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,47}$"
+          },
+          "location": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,47}$"
+          },
+          "question": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1600
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1600
+            },
+            "minItems": 1,
+            "maxItems": 10
+          },
+          "truthStatus": {
+            "const": "unresolved"
+          }
+        },
+        "required": [
+          "id",
+          "location",
+          "question",
+          "tags",
+          "truthStatus"
+        ]
+      },
+      "minItems": 0,
+      "maxItems": 20
+    }
+  },
+  "required": [
+    "$schema",
+    "format",
+    "schemaVersion",
+    "rulesVersion",
+    "revision",
+    "order",
+    "id",
+    "title",
+    "subtitle",
+    "description",
+    "minutes",
+    "theme",
+    "difficulty",
+    "hook",
+    "locations",
+    "npcs",
+    "clues",
+    "objectives",
+    "opportunities",
+    "clocks",
+    "endings",
+    "backstoryHooks"
+  ]
+}

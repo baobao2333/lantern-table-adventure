@@ -1,0 +1,60 @@
+name: Windows portable release
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+permissions:
+  contents: write
+concurrency:
+  group: windows-release-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: "24.21.0"
+          package-manager-cache: false
+      - run: npm ci
+      - run: node scripts/check-release-version.mjs
+      - run: npm run content:check
+      - run: npm test
+      - run: npx tsc --noEmit
+      - run: npm run build:local
+      - run: node scripts/verify-local.mjs
+      - run: node scripts/package-release.mjs
+      - run: node scripts/verify-release.mjs
+      - run: node scripts/release-notes.mjs
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: lantern-table-windows-x64
+          path: |
+            dist/release/*.zip
+            dist/release/*.zip.sha256
+          if-no-files-found: error
+          include-hidden-files: false
+      - name: Publish formal GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $tag = $env:GITHUB_REF.Substring(10)
+          $null = & gh release view $tag --repo $env:GITHUB_REPOSITORY 2>$null
+          if ($LASTEXITCODE -ne 0) {
+            & gh release create $tag --repo $env:GITHUB_REPOSITORY --verify-tag --title "灯火之下 $tag" --notes-file 'dist/release/RELEASE_NOTES.md'
+            if ($LASTEXITCODE -ne 0) { throw 'Release creation failed.' }
+          } else {
+            & gh release edit $tag --repo $env:GITHUB_REPOSITORY --verify-tag --draft=false --prerelease=false --title "灯火之下 $tag" --notes-file 'dist/release/RELEASE_NOTES.md'
+            if ($LASTEXITCODE -ne 0) { throw 'Release update failed.' }
+          }
+          $assets = @(Get-ChildItem -LiteralPath 'dist/release' -File | Where-Object { $_.Name -like '*.zip' -or $_.Name -like '*.zip.sha256' })
+          if ($assets.Count -eq 0) { throw 'No verified release assets were found.' }
+          $uploadArguments = @('release', 'upload', $tag, '--repo', $env:GITHUB_REPOSITORY, '--clobber') + @($assets.FullName)
+          & gh @uploadArguments
+          if ($LASTEXITCODE -ne 0) { throw 'Release upload failed.' }
