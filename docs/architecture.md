@@ -19,6 +19,8 @@ desktop/main.mjs             -> isolated renderer + authenticated Node child
 multiplayer.tsx -> /api/rooms -> RoomGateway -> RoomService -> pure rule engine
                               └-> P2P / pinned WSS -> remote RoomGateway
 /app request journal -> /api/client-journal -> SQLite client_journal
+workshop.tsx -> /api/content -> ContentWorkshop -> completion + canonical validator
+                                     └-> SQLite custom_worlds/content_jobs
 ```
 
 ## 入口与模块
@@ -30,7 +32,7 @@ multiplayer.tsx -> /api/rooms -> RoomGateway -> RoomService -> pure rule engine
 | `app/api/table/route.ts` | 云端身份入口，注入 D1 与云端 AI 连接，再交给共享服务。 |
 | `local/server.ts` | 本机 HTTP 入口；固定绑定 `127.0.0.1`，验证 Host、Origin、Fetch-Site 和请求体大小；服务静态前端与本机设置。 |
 | `lib/server/service.ts` | 请求格式、角色与成员权限、版本检查、行动编排；先提交规则结果，再请求补充叙事。 |
-| `lib/server/runtime.ts` | 当前运行环境的唯一注入点：`DB`、`completion`、`aiReady`、`local`。核心模块不引用 Cloudflare 或 Node HTTP。 |
+| `lib/server/runtime.ts` | 当前运行环境的唯一注入点：`DB`、`completion`、`aiReady`、`local` 与可选内容目录。核心模块不引用 Cloudflare 或 Node HTTP。 |
 | `lib/server/repository.ts` | 数据库保存、行动租约、版本提交、成员关系、请求去重与营地记录。 |
 | `local/sqlite.ts` | 用 Node 内置 SQLite 实现 repository 实际需要的 D1 结构；迁移记账与 batch 原子事务。 |
 | `lib/game/engine.ts`、`dice.ts`、`spells.ts` | 独立规则与骰子结算；不调用 AI 或数据库。 |
@@ -46,10 +48,14 @@ multiplayer.tsx -> /api/rooms -> RoomGateway -> RoomService -> pure rule engine
 | `local/room-gateway.ts` | 本机管理与远端受限 RPC 分界、加密席位凭据、唯一重连控制、快照淘汰和往返心跳。 |
 | `local/network/`、`signal/` | 原生 DataChannel／WSS、身份签名、TLS 固定、有界传输；信令与 STUN 自部署入口，明确无 TURN。 |
 | `local/settings.ts` | 本机设置保存；API 密钥用 DPAPI CurrentUser 加密，公开设置只包含 `hasKey`。 |
+| `app/table/workshop.tsx`、`local/content-workshop.ts` | 剧本生成任务、规范下载、统一校验、修订与本机内容目录。生成不修改游戏；新游戏复制所选修订的快照。参见 [工坊](workshop.md)。 |
+| `desktop/windows-signing.cjs` | 发行证书预检、Forge/Squirrel 签名、可信链与时间戳验签；没有证书时明确标记未签名。参见 [Windows 签名](windows-signing.md)。 |
 
 ## 权威与存档
 
 `content/campaigns/*.json` 和 `content/worlds/*.json` 是故事内容来源，分别受 `campaign.schema.json` 和 `world.schema.json` 约束。`scripts/content-workflow.mjs` 检查结构、引用和语义，并生成 `lib/game/*-content.generated.mjs`。修改 JSON 后运行 `npm run content:sync`；不要直接编辑生成注册表。
+
+本机自定义世界在同一 SQLite 的 `custom_worlds`，通过共享 schema 与语义检查后才保存，不能覆盖内置 ID。同 ID 更新必须增加 revision。`content_jobs` 保存有界的最近生成任务；断线提交沿用原请求 ID，取消和时限隔离迟到结果，重启把未完成任务标为中断。后台记录写入失败只保留当前进程中的可导出草稿，不退出游戏服务。内置目录与本机目录在交付层合并注入，规则核心只接收所选内容，不依赖数据库或 AI。
 
 创建冒险时复制内容快照，使已有存档不会被一次内容更新悄悄改写。数据库保存角色、冒险、成员关系和营地日志。云端使用 D1，旧浏览器启动包使用 `%LOCALAPPDATA%\LanternTable\adventures.sqlite`，桌面使用 `%LOCALAPPDATA%\LanternTable\desktop\adventures-desktop.sqlite`；首次升级复制导入，随后各自独立。浏览器的公开视图与页面状态不承担存档权威。
 
@@ -63,7 +69,9 @@ multiplayer.tsx -> /api/rooms -> RoomGateway -> RoomService -> pure rule engine
 
 兼容 API 地址使用 HTTPS，只有明确的 localhost 服务允许 HTTP，凭据、查询参数和片段不能写进地址。响应体和等待时间都有上限；错误不回传服务商原文或请求内容。
 
-Codex 使用已安装的官方入口与当前用户登录，直接传参数和 stdin，不通过 shell 拼接提示词。每次调用使用临时空工作目录、只读 sandbox、ephemeral 会话和输出 schema；`--ignore-user-config` 保留登录认证并跳过用户连接配置，`--ignore-rules` 跳过个人或项目执行规则，项目说明读取上限设为 0。禁用 shell、浏览器、插件和其他相关工具，不再逐项覆盖 MCP：不完整的 server 配置会丢失 transport，导致 CLI 无法启动。超时或停止本机服务时结束子进程；临时输出随后清理。各账户的访问权限与使用额度仍由服务商决定。旧版曾用 CLI 0.149.1 做真实 JSON 冒烟；桌面安装器固定当前版本在 `desktop/codex-release.json`，本轮不使用个人账户自动调用模型。旧 CLI 不支持这些选项时需要更新。选项含义见[官方 CLI 说明](https://learn.chatgpt.com/docs/developer-commands?surface=cli)。
+Codex 使用已安装的官方入口与当前用户登录，直接传参数和 stdin，不通过 shell 拼接提示词。每次调用使用临时空工作目录、只读 sandbox、ephemeral 会话和输出 schema；`--ignore-user-config` 保留登录认证并跳过用户连接配置，`--ignore-rules` 跳过 execpolicy `.rules`，项目说明读取上限设为 0。禁用 shell、浏览器、插件和其他相关工具，不再逐项覆盖 MCP：不完整的 server 配置会丢失 transport，导致 CLI 无法启动。超时或停止本机服务时结束子进程；临时输出随后清理。各账户的访问权限与使用额度仍由服务商决定。beta.2 使用本机已有 CLI 0.149.1 验证了真实连接、生成和游玩叙事；桌面安装器固定版本在 `desktop/codex-release.json`。旧 CLI 不支持这些选项时需要更新。选项含义见[官方 CLI 说明](https://learn.chatgpt.com/docs/developer-commands?surface=cli)。
+
+现有 CLI 0.149.1 与安装器固定的 0.162.0 仍会读取 Codex 主目录的全局 `AGENTS.md`；上述开关不禁用这一步。应用在任务指令中明确排除无关编程习惯、个人问候与助手人格，仅采用游戏任务所需声音。这是提示词约束，不能声称完全隔离全局指令；应用不读取、复制认证文件，也不改动用户主目录。实现依据：[全局指令加载器](https://github.com/openai/codex/blob/rust-v0.162.0/codex-rs/codex-home/src/instructions/mod.rs)、[会话注入入口](https://github.com/openai/codex/blob/rust-v0.162.0/codex-rs/app-server/src/message_processor.rs)。
 
 ## 构建与验收
 

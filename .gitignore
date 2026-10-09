@@ -21,6 +21,9 @@
 # misc
 .DS_Store
 *.pem
+*.pfx
+*.p12
+electron-windows-sign.log
 
 # debug
 npm-debug.log*

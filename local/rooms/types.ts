@@ -1,5 +1,5 @@
 import type { Command, Die } from "../../lib/game/engine.ts";
-import type { Game, HeroBuildInput, Intent, PartyRestChoice, PartyRestChoices, Roll, View } from "../../lib/game/types.ts";
+import type { Campaign, Game, HeroBuildInput, Intent, PartyRestChoice, PartyRestChoices, Roll, View } from "../../lib/game/types.ts";
 import type { ProposedIdea } from "../../lib/game/world-engine.ts";
 
 export type RoomTimers = { operationMs: number; confirmMs: number; voteMs: number; aiMs: number; narrationMs: number; offlineMs: number };
@@ -44,6 +44,7 @@ export type RoomSnapshot = {
 };
 export type RoomAiIntent = Intent | { kind: "proposal" | "question" | "impossible"; response?: string; idea?: ProposedIdea | null };
 export type RoomServiceOptions = {
+  campaign?: (id: string) => Campaign;
   aiReady?: () => boolean;
   interpret?: (game: Game, actorUserId: string, text: string, signal: AbortSignal) => Promise<RoomAiIntent>;
   narrate?: (game: Game, fact: string, actorUserId: string, signal: AbortSignal) => Promise<string>;

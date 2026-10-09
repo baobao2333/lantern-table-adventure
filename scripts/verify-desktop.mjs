@@ -18,9 +18,11 @@ import { assertReleaseVersion } from "./check-release-version.mjs";
 import { RuntimeController } from "../desktop/runtime-controller.mjs";
 import { run, sha256, runtimeInventory } from "../desktop/distribution.mjs";
 import WebSocket from "ws";
+import windowsSigning from "../desktop/windows-signing.cjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const version = await assertReleaseVersion(root);
+const signingPolicy = windowsSigning.readSigningConfig();
 const buildOnly = process.argv.includes("--build-only");
 const temporary = await mkdtemp(join(tmpdir(), "lantern-desktop-verify-"));
 let runtime, desktopProcess;
@@ -345,6 +347,9 @@ try {
       await readFile(join(releaseDirectory, "desktop-release.json"), "utf8"),
     );
     assert.equal(release.application, version);
+    assert.ok(["signed", "unsigned"].includes(release.signature?.status), "The release must explicitly record its Windows signing status.");
+    if (signingPolicy)
+      assert.equal(release.signature?.certificate?.thumbprint, signingPolicy.thumbprint, "The release publisher must match the configured certificate.");
     assert.ok(release.artifacts.length >= 2);
     for (const artifact of release.artifacts) {
       assert.match(artifact.name, /^[A-Za-z0-9_.-]+$/);
@@ -386,10 +391,24 @@ try {
     for (const name of ["LICENSE", "LICENSES.chromium.html"])
       assert.ok((await stat(join(extracted, name))).isFile());
     runtimeDirectory = join(extracted, "resources", "runtime");
+    if (release.signature.status === "signed") {
+      const expected = release.signature.certificate.thumbprint;
+      assert.match(expected, /^[A-F0-9]{40}$/);
+      const verification = { thumbprint: expected, signToolPath: await windowsSigning.findSignTool(signingPolicy) };
+      assert.deepEqual(await windowsSigning.verifySignedDirectory(extracted, verification), release.signature.binaries);
+      assert.deepEqual(
+        await windowsSigning.verifySignedFile(join(releaseDirectory, setup.name), verification, expected),
+        Object.fromEntries(Object.entries(release.signature.installer).filter(([key]) => key !== "name")),
+      );
+    } else {
+      assert.equal((await windowsSigning.inspectSignature(desktopExecutable)).status, "NotSigned", "Unsigned release metadata does not match the application.");
+      assert.equal((await windowsSigning.inspectSignature(join(releaseDirectory, setup.name))).status, "NotSigned", "Unsigned release metadata does not match the installer.");
+    }
     const { listPackage } = await import("@electron/asar");
     const names = listPackage(join(extracted, "resources", "app.asar"));
     assert.ok(names.some((name) => /[\\/]main\.mjs$/.test(name)));
     assert.ok(!names.some((name) => /[\\/]runtime[\\/]/.test(name)));
+    assert.ok(!names.some((name) => /[\\/](?:forge\.config|windows-signing)\.cjs$/.test(name)));
     assert.ok(
       !names.some((name) =>
         /[\\/](?:auth\.json|settings\.json|\.env[^/\\]*|\.dev\.vars[^/\\]*|[^/\\]*\.sqlite(?:-wal|-shm)?)(?:$|[\\/])/i.test(

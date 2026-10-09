@@ -37,10 +37,8 @@ for (const directory of [app, runtime]) {
 }
 for (const filename of desktopFiles)
   await cp(join(root, "desktop", filename), join(app, filename));
-await cp(
-  join(root, "desktop", "forge.config.cjs"),
-  join(app, "forge.config.cjs"),
-);
+for (const filename of ["forge.config.cjs", "windows-signing.cjs"])
+  await cp(join(root, "desktop", filename), join(app, filename));
 await cp(join(root, "LICENSE"), join(app, "LICENSE"));
 await writeFile(
   join(app, "package.json"),

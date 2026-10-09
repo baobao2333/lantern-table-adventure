@@ -26,8 +26,9 @@ import { ownedHero, ApiError } from "../lib/server/repository";
 import type { HeroBuildInput } from "../lib/game/types";
 import type { RoomRequest } from "./rooms/types";
 import { ClientJournal } from "./client-journal";
+import { ContentWorkshop, MAX_CONTENT_BYTES, authoringContract, checkWorld } from "./content-workshop";
 
-export const VERSION = "0.3.0-beta.1";
+export const VERSION = "0.3.0-beta.2";
 const releaseDirectory = dirname(fileURLToPath(import.meta.url));
 const dataDirectory = process.env.LANTERN_DATA_DIR
   ? resolve(process.env.LANTERN_DATA_DIR)
@@ -57,9 +58,10 @@ const database = new SQLiteD1(
   databasePath,
   join(releaseDirectory, "migrations"),
 );
-const settings = new SettingsStore(dataDirectory),
-  provider = createProvider(settings, undefined, dataDirectory);
 const codex = createCodexAuth(dataDirectory);
+const settings = new SettingsStore(dataDirectory),
+  provider = createProvider(settings, undefined, dataDirectory, codex.authenticated);
+const workshop = new ContentWorkshop(database.sqlite, provider.completion, provider.ready);
 let authError = "";
 function updateRuntime() {
   configureRuntime({
@@ -67,10 +69,13 @@ function updateRuntime() {
     local: true,
     aiReady: provider.ready(),
     completion: provider.completion,
+    campaigns: () => workshop.campaigns(),
   });
 }
 updateRuntime();
+void codex.status().then(updateRuntime).catch(() => {});
 const rooms = new RoomService(database.sqlite, {
+  campaign: id => workshop.campaign(id),
   aiReady: provider.ready,
   interpret: (game, actorId, text, signal) => game.world ? interpretWorld(game, text, { actorId, signal }) : interpret(game, text, { actorId, signal }),
   narrate: (game, fact, actorId, signal) => narrate(game, fact, { actorId, signal }),
@@ -166,7 +171,11 @@ async function dispatch(incoming: IncomingMessage): Promise<Response> {
     return json({ pending: clientJournal.read(kind) });
   }
   if (url.pathname === "/api/codex") {
-    if (incoming.method === "GET") return json({ ...(await codex.status()), error: authError });
+    if (incoming.method === "GET") {
+      const status = await codex.status();
+      updateRuntime();
+      return json({ ...status, error: authError });
+    }
     const input = JSON.parse(await bodyOf(incoming));
     if (input?.op === "cancel") {
       codex.cancel();
@@ -241,6 +250,27 @@ async function dispatch(incoming: IncomingMessage): Promise<Response> {
       }
     }
     throw new LocalError("未知设置操作。");
+  }
+  if (url.pathname === "/api/content") {
+    if (incoming.method === "GET") {
+      if (url.searchParams.has("contract")) return json(authoringContract());
+      if (url.searchParams.has("id")) return json({ text: workshop.read(url.searchParams.get("id")!) });
+      if (url.searchParams.has("job")) return json({ job: workshop.job(url.searchParams.get("job")!) });
+      return json({ worlds: workshop.list(), job: workshop.job() });
+    }
+    const input = JSON.parse(await bodyOf(incoming, MAX_CONTENT_BYTES * 2));
+    if (!input || typeof input !== "object" || Array.isArray(input)) throw new LocalError("剧本操作格式不正确。");
+    if (input.op === "validate" || input.op === "save") {
+      if (typeof input.text !== "string") throw new LocalError("请提供 JSON 剧本文本。");
+      if (input.op === "validate") {
+        const result = checkWorld(input.text);
+        return json({ issues: result.issues, world: result.world ? { id: result.world.id, title: result.world.title, revision: result.world.revision, locations: result.world.locations.length, opportunities: result.world.opportunities.length } : null });
+      }
+      return json({ saved: workshop.save(input.text) });
+    }
+    if (input.op === "generate") return json({ job: workshop.generate(input.id, input.brief, input.size) }, 202);
+    if (input.op === "cancel") return json({ job: workshop.cancel(String(input.id || "")) });
+    throw new LocalError("未知剧本操作。");
   }
   if (url.pathname === "/api/table") {
     const body =
@@ -362,6 +392,7 @@ let stopping = false;
 function stop(requestId?: string) {
   if (stopping) return;
   stopping = true;
+  workshop.close();
   stopProvider();
   codex.cancel();
   clearInterval(roomTimer);

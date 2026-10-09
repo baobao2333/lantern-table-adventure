@@ -11,7 +11,7 @@ import {
   rm,
   writeFile,
 } from "node:fs/promises";
-import { join, resolve, sep, dirname } from "node:path";
+import { join, resolve, sep, dirname, delimiter } from "node:path";
 import { fileURLToPath } from "node:url";
 import release from "../desktop/codex-release.json";
 import { LocalError } from "./settings";
@@ -25,6 +25,27 @@ const verified = new Map<
   string,
   { size: number; mtime: number; ctime: number; receipt: string }
 >();
+export type CLI = { command: string; prefix: string[] };
+type ResolvedCLI = CLI & { source: "managed" | "existing" };
+
+export function findCodex(): CLI | undefined {
+  for (const directory of (process.env.PATH || "").split(delimiter)) {
+    if (!directory) continue;
+    const executable = join(directory, process.platform === "win32" ? "codex.exe" : "codex");
+    if (existsSync(executable)) return { command: executable, prefix: [] };
+    // Run the official npm entry directly without cmd.exe prompt interpolation.
+    const entry = join(directory, "node_modules", "@openai", "codex", "bin", "codex.js");
+    if (process.platform === "win32" && existsSync(join(directory, "codex.cmd")) && existsSync(entry))
+      return { command: process.execPath, prefix: [entry] };
+  }
+}
+
+export function resolveCodex(directory?: string, existing?: CLI | null): ResolvedCLI | undefined {
+  const installed = directory && codexExecutable(directory);
+  if (installed) return { command: installed, prefix: [], source: "managed" };
+  const fallback = existing === null ? undefined : existing ?? findCodex();
+  return fallback ? { ...fallback, source: "existing" } : undefined;
+}
 
 export function codexExecutable(directory: string): string | undefined {
   const root = installDirectory(directory);
@@ -113,21 +134,23 @@ export function unpackCodexArchive(archive: Uint8Array) {
   return files;
 }
 
-function cleanEnvironment() {
+export function codexEnvironment() {
   const environment = { ...process.env };
-  for (const key of [
+  const excluded = new Set([
     "OPENAI_API_KEY",
     "CODEX_API_KEY",
     "CODEX_ACCESS_TOKEN",
     "OPENAI_BASE_URL",
     "CODEX_REMOTE",
     "CODEX_CLI_PATH",
-  ])
-    delete environment[key];
+  ]);
+  for (const key of Object.keys(environment))
+    if (excluded.has(key.toUpperCase())) delete environment[key];
   return environment;
 }
 
-export function createCodexAuth(directory: string) {
+export function createCodexAuth(directory: string, existing?: CLI | null) {
+  let authenticated = false;
   let active: ChildProcess | undefined;
   let busy: "install" | "login" | undefined;
   let installing: AbortController | undefined;
@@ -151,14 +174,14 @@ export function createCodexAuth(directory: string) {
     }
   }
   function run(
-    executable: string,
+    cli: CLI,
     args: string[],
     timeout: number,
     track = false,
   ): Promise<{ code: number; output: string }> {
     return new Promise((resolveRun, reject) => {
-      const child = spawn(executable, args, {
-        env: cleanEnvironment(),
+      const child = spawn(cli.command, [...cli.prefix, ...args], {
+        env: codexEnvironment(),
         windowsHide: true,
         stdio: ["ignore", "pipe", "pipe"],
         cwd: directory,
@@ -195,10 +218,12 @@ export function createCodexAuth(directory: string) {
     });
   }
   async function status() {
-    const executable = codexExecutable(directory);
-    if (!executable)
+    const cli = resolveCodex(directory, existing);
+    if (!cli) {
+      authenticated = false;
       return {
         installed: false,
+        source: "none" as const,
         version: release.version,
         authenticated: false,
         loginRunning: busy === "login",
@@ -206,11 +231,28 @@ export function createCodexAuth(directory: string) {
         downloadedBytes,
         totalBytes,
       };
-    const result = await run(executable, ["login", "status"], 10_000);
+    }
+    let result;
+    let version: string = release.version;
+    try {
+      if (cli.source === "existing") {
+        const checked = await run(cli, ["--version"], 10_000);
+        const match = checked.output.trim().match(/^codex-cli (\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?)$/);
+        if (checked.code !== 0 || !match)
+          throw new LocalError("既有 Codex CLI 未返回可识别的版本，请检查安装或在应用内安装官方 CLI。", 503);
+        version = match[1];
+      }
+      result = await run(cli, ["login", "status"], 10_000);
+      authenticated = result.code === 0;
+    } catch (error) {
+      authenticated = false;
+      throw error;
+    }
     return {
       installed: true,
-      version: release.version,
-      authenticated: result.code === 0,
+      source: cli.source,
+      version,
+      authenticated,
       loginRunning: busy === "login",
       installing: busy === "install",
       downloadedBytes,
@@ -273,7 +315,7 @@ export function createCodexAuth(directory: string) {
         await writeFile(filename, bytes);
       }
       const executable = join(staging, relativeExecutable);
-      const checked = await run(executable, ["--version"], 10_000);
+      const checked = await run({ command: executable, prefix: [] }, ["--version"], 10_000);
       if (
         checked.code !== 0 ||
         checked.output.trim() !== `codex-cli ${release.version}`
@@ -321,12 +363,12 @@ export function createCodexAuth(directory: string) {
   }
   async function login() {
     if (busy) throw new LocalError("Codex 安装或登录正在进行。");
-    const executable = codexExecutable(directory);
-    if (!executable)
+    const cli = resolveCodex(directory, existing);
+    if (!cli)
       throw new LocalError("请先在应用内安装并验证官方 Codex CLI。", 503);
     busy = "login";
     try {
-      const result = await run(executable, ["login"], 5 * 60_000, true);
+      const result = await run(cli, ["login"], 5 * 60_000, true);
       if (result.code !== 0)
         throw new LocalError(
           "官方 Codex 登录未完成。请在系统浏览器中完成登录后重试。",
@@ -338,6 +380,7 @@ export function createCodexAuth(directory: string) {
     return status();
   }
   return {
+    authenticated: () => authenticated,
     status,
     install,
     login,

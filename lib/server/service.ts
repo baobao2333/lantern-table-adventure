@@ -110,9 +110,9 @@ export async function handleGET(request: Request, userId: string) {
       userId,
       aiReady: runtime().aiReady,
       local: !!runtime().local,
-      version: "0.3.0-beta.1",
+      version: "0.3.0-beta.2",
       heroes,
-      campaigns: CAMPAIGNS.map(
+      campaigns: (runtime().campaigns?.() ?? CAMPAIGNS).map(
         ({
           id,
           title,
@@ -195,6 +195,7 @@ export async function handlePOST(request: Request, userId: string) {
         body.campaignId,
         body.mode,
         Array.from(bytes, (b) => alphabet[b % alphabet.length]).join(""),
+        (runtime().campaigns?.() ?? CAMPAIGNS).find(campaign => campaign.id === body.campaignId),
       );
       await repository.insertGame(game);
       return json({ view: gameView(game, 0) });

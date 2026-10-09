@@ -1,6 +1,6 @@
 {
   "name": "lantern-table-adventure",
-  "version": "0.3.0-beta.1",
+  "version": "0.3.0-beta.2",
   "private": true,
   "engines": {
     "node": ">=22.15.0"
@@ -21,7 +21,8 @@
     "build:desktop": "node scripts/build-desktop.mjs",
     "release:desktop": "node scripts/package-desktop.mjs",
     "verify:desktop": "node scripts/verify-desktop.mjs",
-    "release:signal": "node signal/package.mjs"
+    "release:signal": "node signal/package.mjs",
+    "verify:content:live": "node scripts/verify-content-live.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

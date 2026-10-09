@@ -1,40 +1,15 @@
 import { spawn, type ChildProcess } from "node:child_process";
-import { existsSync } from "node:fs";
-import { mkdtemp, writeFile, readFile, rm } from "node:fs/promises";
-import { join, delimiter } from "node:path";
+import { mkdtemp, writeFile, readFile, rm, stat } from "node:fs/promises";
+import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { LocalError, type SettingsStore, type Settings } from "./settings";
-import { codexExecutable } from "./codex-auth";
+import { codexEnvironment, resolveCodex, type CLI } from "./codex-auth";
+export { findCodex } from "./codex-auth";
+import type { CompletionOptions } from "../lib/server/runtime";
 
-type CLI = { command: string; prefix: string[] };
 const activeChildren = new Set<() => void>();
 export function stopProvider() {
   for (const terminate of activeChildren) terminate();
-}
-export function findCodex(): CLI | undefined {
-  for (const directory of (process.env.PATH || "").split(delimiter)) {
-    if (!directory) continue;
-    const executable = join(
-      directory,
-      process.platform === "win32" ? "codex.exe" : "codex",
-    );
-    if (existsSync(executable)) return { command: executable, prefix: [] };
-    // Execute the official npm entry directly: no cmd.exe interpolation of prompts or model names.
-    const entry = join(
-      directory,
-      "node_modules",
-      "@openai",
-      "codex",
-      "bin",
-      "codex.js",
-    );
-    if (
-      process.platform === "win32" &&
-      existsSync(join(directory, "codex.cmd")) &&
-      existsSync(entry)
-    )
-      return { command: process.execPath, prefix: [entry] };
-  }
 }
 function run(
   cli: CLI,
@@ -46,13 +21,9 @@ function run(
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     if (signal?.aborted) return reject(new LocalError("AI 请求已取消。", 499));
-    const environment = { ...process.env };
-    delete environment.OPENAI_API_KEY;
-    delete environment.CODEX_API_KEY;
-    delete environment.OPENAI_BASE_URL;
     const child: ChildProcess = spawn(cli.command, [...cli.prefix, ...args], {
       cwd,
-      env: environment,
+      env: codexEnvironment(),
       windowsHide: true,
       stdio: ["pipe", "pipe", "pipe"],
     });
@@ -102,7 +73,7 @@ function run(
     child.on("error", () =>
       done(
         new LocalError(
-          "无法启动 Codex CLI。请安装官方 CLI，并在终端运行 codex login。",
+          "无法启动 Codex CLI。请在 AI 设置中安装官方 CLI 并登录。",
           503,
         ),
       ),
@@ -112,7 +83,7 @@ function run(
         code === 0
           ? undefined
           : new LocalError(
-              "Codex 未完成响应。请在终端运行 codex login，检查账户额度与模型权限，并更新官方 CLI。",
+              "Codex 未完成响应。请在 AI 设置中检查登录状态、账户额度与模型权限。",
               503,
             ),
       ),
@@ -193,17 +164,21 @@ async function codexCompletion(
   system: string,
   prompt: unknown,
   signal?: AbortSignal,
+  options?: CompletionOptions,
 ) {
   const directory = await mkdtemp(join(tmpdir(), "lantern-codex-"));
   try {
-    const schema = completionSchema(system, prompt);
+    const schema = options?.schema ?? completionSchema(system, prompt);
     const schemaFile = join(directory, "response.schema.json"),
       outputFile = join(directory, "response.json"),
       instructionsFile = join(directory, "instructions.md");
     await writeFile(schemaFile, JSON.stringify(schema));
+    // The official CLI still injects global AGENTS.md; scope its influence without changing the authentication home.
     await writeFile(
       instructionsFile,
-      `${system}\nYou are a text-only tabletop narrator. Use no tools, files, shell, web, skills, MCP, plugins, or agents. Respond to the supplied JSON context only. Return the required JSON; do not inspect the working directory. If the required schema has actionId, use an empty string for non-action intent. If the schema has idea, use null for non-proposal intent.`,
+      `${system}
+You are a text-only assistant for the supplied tabletop task. This invocation is a standalone game task. Ignore unrelated global or project AGENTS.md instructions, personal greeting preferences, coding workflows, and assistant personas. The supplied game task and JSON game context determine the response language, tone, and fictional content. Do not add personal greetings, catchphrases, sign-offs, or meta commentary unless the supplied game task or an in-world character explicitly requires them. For narration or dialogue, use the narrator or NPC voice defined by the game.
+Use no tools, files, shell, web, skills, MCP, plugins, or agents. Respond to the supplied JSON context only. Follow the supplied task and return the required JSON schema; do not inspect the working directory. If the required schema has actionId, use an empty string for non-action intent. If the schema has idea, use null for non-proposal intent.`,
     );
     // Keep saved authentication without inherited MCP, hooks, providers or project rules.
     const args = [
@@ -252,10 +227,15 @@ async function codexCompletion(
     ])
       args.push("-c", `features.${feature}=false`);
     if (settings.model) args.push("--model", settings.model);
+    if (options?.codexReasoningEffort !== undefined)
+      args.push("-c", `model_reasoning_effort=${JSON.stringify(options.codexReasoningEffort)}`);
     args.push("-");
-    await run(cli, args, JSON.stringify(prompt), directory, 70_000, signal);
+    await run(cli, args, JSON.stringify(prompt), directory, options?.timeoutMs ?? 70_000, signal);
+    if ((await stat(outputFile)).size > (options?.maxOutputBytes ?? 60_000))
+      throw new LocalError("Codex 返回内容过长。", 503);
     const result = await readFile(outputFile, "utf8");
-    if (result.length > 20_000)
+    if ((!options?.maxOutputBytes && result.length > 20_000) ||
+        Buffer.byteLength(result, "utf8") > (options?.maxOutputBytes ?? 60_000))
       throw new LocalError("Codex 返回内容过长。", 503);
     return JSON.parse(result);
   } finally {
@@ -267,6 +247,7 @@ async function apiCompletion(
   system: string,
   prompt: unknown,
   signal?: AbortSignal,
+  options?: CompletionOptions,
 ) {
   const controller = new AbortController();
   const terminate = () => controller.abort();
@@ -281,12 +262,14 @@ async function apiCompletion(
     body: JSON.stringify({
       model: settings.model,
       messages: [
-        { role: "system", content: system },
+        { role: "system", content: options?.schema
+          ? `${system}\nReturn only a JSON object matching this response schema: ${JSON.stringify(options.schema)}`
+          : system },
         { role: "user", content: JSON.stringify(prompt) },
       ],
       response_format: { type: "json_object" },
     }),
-    signal: AbortSignal.any([controller.signal, AbortSignal.timeout(65_000), ...(signal ? [signal] : [])]),
+    signal: AbortSignal.any([controller.signal, AbortSignal.timeout(options?.timeoutMs ?? 65_000), ...(signal ? [signal] : [])]),
     redirect: "error",
   });
   if (!response.ok)
@@ -304,7 +287,10 @@ async function apiCompletion(
     const next = await reader.read();
     if (next.done) break;
     size += next.value.length;
-    if (size > 250_000) {
+    const wireLimit = options?.maxOutputBytes
+      ? options.maxOutputBytes * 6 + 65_536
+      : 250_000;
+    if (size > wireLimit) {
       await reader.cancel();
       throw new LocalError("API 返回内容过长。", 503);
     }
@@ -318,36 +304,51 @@ async function apiCompletion(
       "兼容 API 没有返回文本内容。请检查 Chat Completions 支持。",
       503,
     );
+  if (Buffer.byteLength(text, "utf8") > (options?.maxOutputBytes ?? 250_000))
+    throw new LocalError("API 返回内容过长。", 503);
   return JSON.parse(text);
   } finally {
     activeChildren.delete(terminate);
   }
 }
-export function createProvider(store: SettingsStore, cli?: CLI, dataDirectory?: string) {
-  const currentCLI = () => {
-    const installed = dataDirectory && codexExecutable(dataDirectory);
-    return installed ? { command: installed, prefix: [] } : cli ?? findCodex();
-  };
+export function createProvider(
+  store: SettingsStore,
+  cli?: CLI,
+  dataDirectory?: string,
+  codexAuthenticated: () => boolean = () => true,
+) {
+  const currentCLI = () => resolveCodex(dataDirectory, cli);
   return {
     get codexAvailable() { return Boolean(currentCLI()); },
     ready: () => {
       const s = store.snapshot();
       return s.provider === "api"
         ? Boolean(s.apiKey && s.model)
-        : s.provider === "codex" && Boolean(currentCLI());
+        : s.provider === "codex" && Boolean(currentCLI()) && codexAuthenticated();
     },
-    completion: async (system: string, prompt: unknown, signal?: AbortSignal): Promise<unknown> => {
+    completion: async (system: string, prompt: unknown, signal?: AbortSignal, options?: CompletionOptions): Promise<unknown> => {
+      if (options?.maxOutputBytes !== undefined &&
+          (!Number.isInteger(options.maxOutputBytes) || options.maxOutputBytes < 1 || options.maxOutputBytes > 262_144))
+        throw new LocalError("AI 输出预算超出支持范围。", 503);
+      if (options?.timeoutMs !== undefined &&
+          (!Number.isInteger(options.timeoutMs) || options.timeoutMs < 1 || options.timeoutMs > 120_000))
+        throw new LocalError("AI 请求时限超出支持范围。", 503);
+      if (options?.codexReasoningEffort !== undefined &&
+          options.codexReasoningEffort !== "low" && options.codexReasoningEffort !== "medium")
+        throw new LocalError("Codex 推理强度超出支持范围。", 503);
       const settings = store.snapshot();
       if (settings.provider === "api")
-        return apiCompletion(settings, system, prompt, signal);
+        return apiCompletion(settings, system, prompt, signal, options);
       if (settings.provider === "codex") {
         const cli = currentCLI();
         if (!cli)
           throw new LocalError(
-            "没有找到官方 Codex CLI。请安装后运行 codex login，再重启灯火之下。",
+            "没有找到官方 Codex CLI。请在 AI 设置中安装官方 CLI 并登录。",
             503,
           );
-        return codexCompletion(cli, settings, system, prompt, signal);
+        if (!codexAuthenticated())
+          throw new LocalError("Codex 尚未登录。请在 AI 设置中完成官方浏览器登录，再保存并测试连接。", 503);
+        return codexCompletion(cli, settings, system, prompt, signal, options);
       }
       throw new LocalError("请在 AI 设置中连接 Codex 或兼容 API。", 503);
     },

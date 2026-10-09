@@ -43,7 +43,41 @@ jobs:
       - run: npm run build:local
       - run: node scripts/verify-local.mjs
       - run: node scripts/build-desktop.mjs --skip-local
-      - run: npm run release:desktop
+      - name: Package with optional trusted Windows certificate
+        shell: pwsh
+        env:
+          LANTERN_SIGN_REQUIRED: ${{ vars.LANTERN_SIGN_REQUIRED || '0' }}
+          LANTERN_WINDOWS_PFX_BASE64: ${{ secrets.LANTERN_WINDOWS_PFX_BASE64 }}
+          LANTERN_WINDOWS_PFX_PASSWORD: ${{ secrets.LANTERN_WINDOWS_PFX_PASSWORD }}
+          LANTERN_SIGN_TIMESTAMP_URL: ${{ vars.LANTERN_SIGN_TIMESTAMP_URL }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $certificateFile = Join-Path $env:RUNNER_TEMP 'lantern-code-signing.pfx'
+          $importedCertificates = @()
+          try {
+            if ($env:LANTERN_WINDOWS_PFX_BASE64) {
+              if (-not $env:LANTERN_WINDOWS_PFX_PASSWORD) { throw 'The signing PFX password Secret is missing.' }
+              [IO.File]::WriteAllBytes($certificateFile, [Convert]::FromBase64String($env:LANTERN_WINDOWS_PFX_BASE64))
+              $password = ConvertTo-SecureString -String $env:LANTERN_WINDOWS_PFX_PASSWORD -AsPlainText -Force
+              $importedCertificates = @(Import-PfxCertificate -FilePath $certificateFile -CertStoreLocation 'Cert:\CurrentUser\My' -Password $password)
+              $publisher = @($importedCertificates | Where-Object { $_.HasPrivateKey -and '1.3.6.1.5.5.7.3.3' -in $_.EnhancedKeyUsageList.ObjectId })
+              if ($publisher.Count -ne 1) { throw 'The PFX must contain exactly one code-signing private key.' }
+              $env:LANTERN_SIGN_CERTIFICATE_THUMBPRINT = $publisher[0].Thumbprint
+              $env:LANTERN_SIGN_REQUIRED = '1'
+            } elseif ($env:LANTERN_WINDOWS_PFX_PASSWORD) {
+              throw 'The signing PFX Secret is missing.'
+            }
+            Remove-Item Env:\LANTERN_WINDOWS_PFX_BASE64 -ErrorAction SilentlyContinue
+            Remove-Item Env:\LANTERN_WINDOWS_PFX_PASSWORD -ErrorAction SilentlyContinue
+            if (Test-Path -LiteralPath $certificateFile) { Remove-Item -LiteralPath $certificateFile -Force }
+            & npm run release:desktop
+            if ($LASTEXITCODE -ne 0) { throw 'Desktop packaging or trusted-signature verification failed.' }
+          } finally {
+            if (Test-Path -LiteralPath $certificateFile) { Remove-Item -LiteralPath $certificateFile -Force }
+            foreach ($certificate in $importedCertificates) {
+              Remove-Item -LiteralPath "Cert:\CurrentUser\My\$($certificate.Thumbprint)" -DeleteKey -ErrorAction SilentlyContinue
+            }
+          }
       - run: npm run verify:desktop
       - run: npm run release:signal
       - run: node scripts/release-notes.mjs

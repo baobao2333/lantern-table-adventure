@@ -18,7 +18,7 @@ export function WorldPanel({
       <section className="side-card world-map">
         <h3>
           <Compass size={16} />
-          河谷行路
+          旅途地图
         </h3>
         <p className="subtle-note">
           亮起的地点可以直接前往；其他地点需要沿道路走。

@@ -62,6 +62,11 @@ for (const name of [
   "lucide-react",
   "zod",
   "tw-animate-css",
+  "ajv",
+  "fast-deep-equal",
+  "fast-uri",
+  "json-schema-traverse",
+  "require-from-string",
 ]) {
   const directory = resolve(sourceRoot, "node_modules", name);
   const filename = (await readdir(directory)).find((filename) =>

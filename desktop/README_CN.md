@@ -2,7 +2,7 @@
 
 下载安装包 `LanternTable-版本号-Setup.exe` 后启动，或解压便携 ZIP 后运行 `LanternTable.exe`。两种方式使用同一套程序与存档，不需要安装 Node 或 npm。
 
-当前测试版尚未进行 Windows 代码签名。发行页提供 SHA-256 校验清单，供运行前核对下载文件。
+代码签名状态以发行页和 `desktop-release.json` 的 `signature.status` 为准。发行页提供 SHA-256 校验清单，供运行前核对下载文件；哈希不能代替发行者签名。维护者接入受信任证书后可通过严格签名构建链发布，配置方法见仓库 `docs/windows-signing.md`。首次发布的已签名程序也可能出现 Windows 信誉提示。
 
 首页选择单人冒险，或多人中的创建房间／加入房间。AI 设置只由单人玩家或房主填写；加入朋友房间不需要密钥或 Codex 登录。API 连接测试可能产生服务商费用，由你主动点击后执行。
 

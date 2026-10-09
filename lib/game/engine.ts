@@ -80,8 +80,9 @@ export function createGame(
   campaignId: string,
   mode: "solo" | "party",
   roomCode: string,
+  campaign = campaignById(campaignId),
 ): Game {
-  const campaign = campaignById(campaignId);
+  if (campaign.id !== campaignId) throw new Error("冒险模组与所选 ID 不一致。");
   const state: Game = {
     id,
     owner,

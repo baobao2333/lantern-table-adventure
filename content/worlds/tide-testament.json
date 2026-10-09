@@ -1,0 +1,3587 @@
+{
+  "$schema": "../world.schema.json",
+  "format": "situation-v1",
+  "schemaVersion": 2,
+  "rulesVersion": "srd-5.1-table-2",
+  "revision": 1,
+  "order": 3,
+  "id": "tide-testament",
+  "title": "潮汐遗嘱：给尚未出生的人",
+  "subtitle": "五篇开放战役 · 二十五处地点 · 一座城市的三种未来",
+  "description": "暮汐城的潮水开始逆流，一名送信人失踪，一封三十年前的遗嘱却寄给了尚未出生的孩子。先救居民，还是先找真相？港商、盐田人、守闸军和记忆院都需要你的帮助，也各自隐瞒着一部分理由。五片街区可以自由往返；证据、救援、修复和承诺会永久保存。你能够不杀任何人完成主线，也能够在多方方案之间准备充分后再作决定。",
+  "minutes": "长篇 · 预估 8–15 小时，可分多晚继续；实际时长随阅读、讨论与路线变化",
+  "theme": "潮城悬疑 · 救援与工程 · 记忆、同意和公共责任",
+  "difficulty": "适配当前一级规则子集；多方法检定、可选低强度战斗与失败继续",
+  "hook": "海鸥逆风飞进暮汐城时，河也正向山上流。你在泊灯客栈接到一只浸透的邮袋，里面有半张递送回执：收件人是“三十年后的孩子们”。送信人没有回来，低街的撤离铃已经响了两遍。客栈掌柜指向窗外：邮舍、盐市、潮闸与安置所都能走到。她说：“别急着答应谁拯救整座城。先告诉我，你愿意把第一盏灯带到哪里？”",
+  "locations": [
+    {
+      "id": "lantern-inn",
+      "title": "第一篇·逆流来信｜泊灯客栈",
+      "description": "窗外的潮水逆着河床爬升，屋内摊着城市便道图。湿邮袋、救济清单和没喝完的茶都在桌上。掌柜愿意借出地方整顿消息，却不愿替任何一派说“所有人都会平安”。这里可以安全休整。",
+      "npcIds": [
+        "innkeeper"
+      ],
+      "exits": [
+        "courier-house",
+        "salt-market",
+        "lower-sluice",
+        "refuge"
+      ],
+      "safeRest": true
+    },
+    {
+      "id": "courier-house",
+      "title": "第一篇·逆流来信｜空邮舍",
+      "description": "柜台后有拖拽过湿布的痕迹，一扇半开的检修门通向矮台。失踪送信人的自行车还在，远处有人敲三下停一下。送达簿记录收件人与路线，不直接证明信里的内容是真的。",
+      "npcIds": [
+        "courier"
+      ],
+      "exits": [
+        "lantern-inn",
+        "salt-market",
+        "reed-camp"
+      ],
+      "safeRest": false
+    },
+    {
+      "id": "salt-market",
+      "title": "第一篇·逆流来信｜盐袋市场",
+      "description": "商铺把盐袋叠成临时高台。船主愿意出船，搬运工要求先说明谁负责安置，港务代理人则希望保住仓区。每个承诺都可以谈成具体分工，不能用一句豪言代替实际救援。",
+      "npcIds": [
+        "harbor-agent"
+      ],
+      "exits": [
+        "lantern-inn",
+        "courier-house",
+        "refuge",
+        "ferry",
+        "quay-assembly"
+      ],
+      "safeRest": false
+    },
+    {
+      "id": "lower-sluice",
+      "title": "第一篇·逆流来信｜逆流下闸",
+      "description": "闸尺的水线每天都有人核对，今天的刻度却违背潮汐。松动石缝旁有支撑木和空绳槽。低街工头正在排查薄弱处；检修标牌指向北面的旧闸，而非一条自动打开的捷径。",
+      "npcIds": [
+        "sluice-worker"
+      ],
+      "exits": [
+        "lantern-inn",
+        "refuge",
+        "stone-quarry",
+        "tidal-fields"
+      ],
+      "safeRest": false
+    },
+    {
+      "id": "refuge",
+      "title": "第一篇·逆流来信｜织席安置所",
+      "description": "织席厂的高层成了临时安置所。有人报失，有人重复登记同一条船，还有孩子哼着记忆院门前的旧歌。这里可以整理名单和安全休整，但休整期间城里的工作仍会继续。",
+      "npcIds": [
+        "refuge-doctor"
+      ],
+      "exits": [
+        "lantern-inn",
+        "salt-market",
+        "lower-sluice",
+        "reed-camp"
+      ],
+      "safeRest": true
+    },
+    {
+      "id": "reed-camp",
+      "title": "第二篇·盐沼证人｜芦苇营地",
+      "description": "盐田人把小艇倒扣成棚，走私者与摆渡人暂时共享一锅汤。向导熟悉干地，不愿让旅行者把当地人当作随用随弃的工具。沿路能见到被潮水冲歪的旧界桩。",
+      "npcIds": [
+        "pilot"
+      ],
+      "exits": [
+        "courier-house",
+        "refuge",
+        "ferry",
+        "memorial",
+        "tidal-fields"
+      ],
+      "safeRest": true
+    },
+    {
+      "id": "ferry",
+      "title": "第二篇·盐沼证人｜双索渡口",
+      "description": "一辆运信车倾在浅滩上，护货人守着湿木箱。两条绞索可供接应，水却按不寻常的节奏回摆。船票、货票与闸门公文使用不同印章，需要认真比对。",
+      "npcIds": [
+        "ferry-keeper"
+      ],
+      "exits": [
+        "salt-market",
+        "reed-camp",
+        "tidal-fields",
+        "beacon"
+      ],
+      "safeRest": false
+    },
+    {
+      "id": "memorial",
+      "title": "第二篇·盐沼证人｜无名潮碑",
+      "description": "碑上没有英雄塑像，只有逐年补刻的名字。看碑人说，最难的工作是记录同一个人的两个称呼。破礼拜堂的地砖拼着一幅旧水道图，尚有几块埋在淤泥里。",
+      "npcIds": [
+        "name-keeper"
+      ],
+      "exits": [
+        "reed-camp",
+        "beacon",
+        "archive-court"
+      ],
+      "safeRest": false
+    },
+    {
+      "id": "tidal-fields",
+      "title": "第二篇·盐沼证人｜阶梯盐田",
+      "description": "盐田不是平地：细闸、导槽与高低不一的蒸发池环环相扣。田主联盟担心港区会把洪水留在他们这里。废棚里的工程日记包着油布，主人是否回来取过，尚没人确认。",
+      "npcIds": [
+        "grower"
+      ],
+      "exits": [
+        "lower-sluice",
+        "reed-camp",
+        "ferry",
+        "cistern"
+      ],
+      "safeRest": false
+    },
+    {
+      "id": "beacon",
+      "title": "第二篇·盐沼证人｜三灯望标",
+      "description": "三座小灯塔只剩一座按时闪光，信号员仍逐次记录。长镜能同时看到盐田、旧闸和海角灯塔。这里有避雨值班室，适合比对记录或休整，不能靠观望直接操作远处的机械。",
+      "npcIds": [
+        "signal-keeper"
+      ],
+      "exits": [
+        "ferry",
+        "memorial",
+        "stone-quarry",
+        "observatory"
+      ],
+      "safeRest": true
+    },
+    {
+      "id": "stone-quarry",
+      "title": "第三篇·旧闸账目｜潮石采场",
+      "description": "采场正在为港区备料，石缝的浸水线却说明地下承压。矿工知道哪里能站，未必知道谁签了调令。旧吊机仍能搬运石块，具体用途要和工匠核对。",
+      "npcIds": [
+        "quarry-lead"
+      ],
+      "exits": [
+        "lower-sluice",
+        "beacon",
+        "lock-workshop",
+        "gatehouse"
+      ],
+      "safeRest": false
+    },
+    {
+      "id": "lock-workshop",
+      "title": "第三篇·旧闸账目｜轮闸工坊",
+      "description": "拆开的齿轮按尺寸放在白布上，墙上挂着几代人的维修注释。工匠不接受“砸了就好”的保证：闸门同时维持城区水压与记忆院的冷却槽。工棚能供人安全休整。",
+      "npcIds": [
+        "engineer"
+      ],
+      "exits": [
+        "stone-quarry",
+        "gatehouse",
+        "cistern",
+        "archive-court"
+      ],
+      "safeRest": true
+    },
+    {
+      "id": "gatehouse",
+      "title": "第三篇·旧闸账目｜守闸营房",
+      "description": "营房里同时贴着封锁令与居民求助单。守闸长坚持核实来源，不承认一张自称王室的名片就能越过公文程序。她愿意谈职责，也害怕部下被推去替从未参与的决定担责。",
+      "npcIds": [
+        "gate-commander"
+      ],
+      "exits": [
+        "stone-quarry",
+        "lock-workshop",
+        "old-gates",
+        "quay-assembly"
+      ],
+      "safeRest": false
+    },
+    {
+      "id": "old-gates",
+      "title": "第三篇·旧闸账目｜双层旧闸",
+      "description": "下层泄压闸与上层主闸分属两套传动。检修栈桥有巡守木偶，它按旧指令阻拦靠近者，但不主动追击离开的人。可以核对授权、诱导路线或动手迎战；主线不要求杀死守卫。",
+      "npcIds": [
+        "inspector"
+      ],
+      "exits": [
+        "gatehouse",
+        "cistern",
+        "lighthouse-landing"
+      ],
+      "safeRest": false
+    },
+    {
+      "id": "cistern",
+      "title": "第三篇·旧闸账目｜沉沙蓄池",
+      "description": "池壁淤痕像一层层树年轮，旧铁箱卡在退水槽边。通往记忆院的排水管表面带着微弱回声。管路可以排压，人物不能因为看到管道就直接出现在另一个房间。",
+      "npcIds": [
+        "silt-reader"
+      ],
+      "exits": [
+        "tidal-fields",
+        "lock-workshop",
+        "old-gates",
+        "archive-court"
+      ],
+      "safeRest": false
+    },
+    {
+      "id": "archive-court",
+      "title": "第四篇·回声庭审｜记忆院前庭",
+      "description": "院门外支着抄写棚，工作人员向等待者解释设备异常。副院长不反对外人调查，要求先确定管线安全。港务和盐田都送来了信使；他们的主张需要由具体文件与行动支撑。",
+      "npcIds": [
+        "deputy"
+      ],
+      "exits": [
+        "memorial",
+        "lock-workshop",
+        "cistern",
+        "catalogue",
+        "healing-ward"
+      ],
+      "safeRest": true
+    },
+    {
+      "id": "catalogue",
+      "title": "第四篇·回声庭审｜潮册目录室",
+      "description": "每份记忆的索引都带着日期、见证人和允许读取的范围。三十年前的薄卷与新换封皮不一致。目录员坚持区别原件、抄本和传闻：找到一张纸不等于获得上面的所有权。",
+      "npcIds": [
+        "cataloguer"
+      ],
+      "exits": [
+        "archive-court",
+        "healing-ward",
+        "echo-hall"
+      ],
+      "safeRest": false
+    },
+    {
+      "id": "healing-ward",
+      "title": "第四篇·回声庭审｜回声疗养廊",
+      "description": "静水槽把断续的声音带到听管里。护理师照顾的是活着的人，也照看愿意被保存的记忆。走廊有安稳床位；陌生来客不能凭姓名相似认领别人的过去。",
+      "npcIds": [
+        "caregiver"
+      ],
+      "exits": [
+        "archive-court",
+        "catalogue",
+        "echo-hall"
+      ],
+      "safeRest": true
+    },
+    {
+      "id": "echo-hall",
+      "title": "第四篇·回声庭审｜三十年回声厅",
+      "description": "半圆听室能播放经过核实的旧记录，装置旁并列着“保存”与“终止保存”的申请簿。声音不是随问随答的全知神谕；要复原事件，需要可核对的条款、日期和见证话语。",
+      "npcIds": [
+        "recordist"
+      ],
+      "exits": [
+        "catalogue",
+        "healing-ward",
+        "observatory",
+        "oath-bridge"
+      ],
+      "safeRest": false
+    },
+    {
+      "id": "observatory",
+      "title": "第四篇·回声庭审｜院顶潮仪台",
+      "description": "潮仪连接三根指针：城区水压、记忆槽温度、外海回流。维修者在纸上推演不同操作次序。这里能提出可检验的方案，真正执行仍须去灯塔。值班屋允许安全休整。",
+      "npcIds": [
+        "tide-scholar"
+      ],
+      "exits": [
+        "beacon",
+        "echo-hall",
+        "gear-room",
+        "quay-assembly"
+      ],
+      "safeRest": true
+    },
+    {
+      "id": "quay-assembly",
+      "title": "第五篇·给后来者｜港堤议场",
+      "description": "临时议场给港商、盐田人、安置所和守闸军各留了座位。别人会听英雄发言，却更在意证据、接应人员与责任怎么落到实处。这里可以组织协作；最终决定要在灯塔的誓桥上明确作出。",
+      "npcIds": [
+        "assembly-clerk"
+      ],
+      "exits": [
+        "salt-market",
+        "gatehouse",
+        "observatory",
+        "lighthouse-landing",
+        "oath-bridge"
+      ],
+      "safeRest": false
+    },
+    {
+      "id": "lighthouse-landing",
+      "title": "第五篇·给后来者｜海角灯塔栈台",
+      "description": "海潮隔着栈柱互相碰撞，岗哨核对的是当前检修授权。备用步道通往议场，上层门把手布满盐霜。你可以争取通行与安排撤离，不必把一场复杂危机变成与守卫的死斗。",
+      "npcIds": [
+        "lighthouse-guard"
+      ],
+      "exits": [
+        "old-gates",
+        "quay-assembly",
+        "gear-room",
+        "oath-bridge"
+      ],
+      "safeRest": false
+    },
+    {
+      "id": "gear-room",
+      "title": "第五篇·给后来者｜三重齿轮室",
+      "description": "三套离合器共享同一根粗轴：抽潮、冷却、记忆归档。操作铭牌写着先后次序，不能用大胆想象跳过安全隔离。采石场的材料和工坊的人手，在这里才变成能够执行的工作。",
+      "npcIds": [
+        "gear-keeper"
+      ],
+      "exits": [
+        "observatory",
+        "lighthouse-landing",
+        "tide-heart"
+      ],
+      "safeRest": false
+    },
+    {
+      "id": "tide-heart",
+      "title": "第五篇·给后来者｜潮心静井",
+      "description": "井底不是怪兽的王座，而是沿用三十年的契约装置。断续回声绕着冷却环流动，外海阀门在远处震颤。你可以稳住当下，再为不同未来准备条件；准备几种方案不会自动替大家作出最后决定。",
+      "npcIds": [
+        "well-tender"
+      ],
+      "exits": [
+        "gear-room",
+        "oath-bridge"
+      ],
+      "safeRest": false
+    },
+    {
+      "id": "oath-bridge",
+      "title": "第五篇·给后来者｜未寄出的誓桥",
+      "description": "一座架在静井之上的短桥，桥栏挂满尚未送出的信。旁边有终止、续存和临时托管三种可核对的操作书。准备完毕后，你必须明确选择一个未来；离开或修好机器本身都不等于替全城签字。",
+      "npcIds": [
+        "letter-keeper"
+      ],
+      "exits": [
+        "echo-hall",
+        "quay-assembly",
+        "lighthouse-landing",
+        "tide-heart"
+      ],
+      "safeRest": true
+    }
+  ],
+  "npcs": [
+    {
+      "id": "innkeeper",
+      "name": "掌柜闻苇",
+      "role": "泊灯客栈主人与临时救济协调人",
+      "want": "先把可核对的消息和救济分工交给居民，不让一派垄断救援名声。",
+      "secret": "邮袋是她从街角捡回来的，她没有拆开封存信，只看过破损回执。她的父亲也在三十年前的失踪名单中。",
+      "location": "lantern-inn"
+    },
+    {
+      "id": "courier",
+      "name": "送信人阿循",
+      "role": "困在邮舍检修台后的年轻信差",
+      "want": "安全回到街面，把收到与没收到的东西都说清，不被要求替信件真实性背书。",
+      "secret": "他发现一封新封皮里的旧公文，去退水槽核对时受困；并非遭人绑架。他只见过命令，未见契约原件。",
+      "location": "courier-house"
+    },
+    {
+      "id": "harbor-agent",
+      "name": "港务代理柳晏",
+      "role": "港商联席派出的船务谈判者",
+      "want": "保住港区就业与船坞，并让船主的出船责任有书面分担；不愿城市断航。",
+      "secret": "他接受过“先保仓区”的指示，但不知这会让盐田承担多少水压。只要可核对方案存在，他愿意签不同安排。",
+      "location": "salt-market"
+    },
+    {
+      "id": "sluice-worker",
+      "name": "低街工头陶壁",
+      "role": "熟悉堤身与居民院墙的石工",
+      "want": "让眼前的房屋不继续进水，防止不懂机械的人擅开主闸。",
+      "secret": "三十年前的加固记录标出一条被遗忘的检修线路，他以为那只是一张旧工地图。",
+      "location": "lower-sluice"
+    },
+    {
+      "id": "refuge-doctor",
+      "name": "医师善黎",
+      "role": "安置所的登记与医疗负责人",
+      "want": "核对每个人去了哪里，让家属得到准确消息，不用“都撤了”敷衍问题。",
+      "secret": "几个孩子反复听到的歌来自记忆院登记仪式；她不清楚那首歌的完整见证词。",
+      "location": "refuge"
+    },
+    {
+      "id": "pilot",
+      "name": "领航员乌芦",
+      "role": "盐沼向导，盐田联盟的议事人",
+      "want": "让盐田人的水路知识与生计得到同等尊重；愿意提供路径，拒绝替别人作无偿牺牲。",
+      "secret": "她的祖母参加过旧工程，留下一幅渠道草图；她只知道草图对应的观测点。",
+      "location": "reed-camp"
+    },
+    {
+      "id": "ferry-keeper",
+      "name": "护货人澄野",
+      "role": "双索渡口的货运记录保管员",
+      "want": "救出车上的人和档案，证明货票并不是港商想写什么就写什么。",
+      "secret": "他保留了新公文的第二联，与邮舍原件能核对同一命令。",
+      "location": "ferry"
+    },
+    {
+      "id": "name-keeper",
+      "name": "看碑人安末",
+      "role": "负责失踪者与遇难者名册的老人",
+      "want": "把人以他们认可的称呼留下，不让记念变成强迫后人履约的理由。",
+      "secret": "碑上的见证句与记忆院登记词不同，区别就在是否允许后来退出。",
+      "location": "memorial"
+    },
+    {
+      "id": "grower",
+      "name": "田主程汀",
+      "role": "阶梯盐田共同体的轮值代表",
+      "want": "保住田地、谈清导流补偿，也承认城区居民不能因为离海较远就独自受淹。",
+      "secret": "祖父的工程日记记下过一次不完全撤离，她一直不确定应该公开还是保护家人声誉。",
+      "location": "tidal-fields"
+    },
+    {
+      "id": "signal-keeper",
+      "name": "信号员罗澈",
+      "role": "三灯望标值班人",
+      "want": "恢复能供任何船只核对的公开信号，而非只让一家公司知道潮窗。",
+      "secret": "望标失步源自旧闸配重改变；他已经记录异常，但缺乏机械原图。",
+      "location": "beacon"
+    },
+    {
+      "id": "quarry-lead",
+      "name": "采场领班石穗",
+      "role": "调度石料与矿工撤离的领班",
+      "want": "让工人平安，材料用到说好的地方，不替一纸模糊调令背锅。",
+      "secret": "近期调令让配重石改送仓堤，承压结构因此失衡。她有装载记录，但无法独自证明谁知道后果。",
+      "location": "stone-quarry"
+    },
+    {
+      "id": "engineer",
+      "name": "轮闸师景轮",
+      "role": "维护旧闸和灯塔传动的工匠",
+      "want": "按可验证步骤修复装置，让城里人理解维护需要长期投入，不需要新英雄献命。",
+      "secret": "他师父曾留下可以把冷却和记忆归档分离的程序，却被误抄为必须保留整套契约。",
+      "location": "lock-workshop"
+    },
+    {
+      "id": "gate-commander",
+      "name": "守闸长霍青",
+      "role": "负责封锁与抢险的军官",
+      "want": "核实授权、保护居民和部下，不因威胁或假身份交出全城闸权。",
+      "secret": "她手中的完整命令保留了港务附注。她愿意提供核对，但要求公布时保留普通执行者的职责范围。",
+      "location": "gatehouse"
+    },
+    {
+      "id": "inspector",
+      "name": "检修员陆节",
+      "role": "守在旧闸的机械巡检人",
+      "want": "让检修者走正确的安全程序，阻止陌生人直接跃进传动区。",
+      "secret": "巡守木偶的旧指令允许有核验公文的人进入，旁路鸣哨也能把它引向空检修台。",
+      "location": "old-gates"
+    },
+    {
+      "id": "silt-reader",
+      "name": "沉沙员南泥",
+      "role": "阅读淤层与退水记录的老工人",
+      "want": "把机器故障与人的责任分开，不让“潮神发怒”掩盖能查清的原因。",
+      "secret": "淤层带有记忆槽沉积物，证明院内的保存装置和城区水路一直互相影响。",
+      "location": "cistern"
+    },
+    {
+      "id": "deputy",
+      "name": "副院长容笺",
+      "role": "记忆院日常维护与对外说明负责人",
+      "want": "保护活人和已获同意的记忆，同时让可核对记录接受检查。",
+      "secret": "她收到过更换封皮的通知，误以为原契约仍完整有效；目录可证明当年的退出条款被省略。",
+      "location": "archive-court"
+    },
+    {
+      "id": "cataloguer",
+      "name": "目录员匡页",
+      "role": "为原件、抄件与授权范围编目的学者",
+      "want": "不让一份悲伤的故事压过证据，也不让官印替代真正同意。",
+      "secret": "旧契约本是三十年期限的应急维护约定，当前保存名单却把后人的默认沉默算成了继续许可。",
+      "location": "catalogue"
+    },
+    {
+      "id": "caregiver",
+      "name": "护理师闻潮",
+      "role": "照护回声廊病人与登记者的医护",
+      "want": "允许每个人理解自己在答应什么，容许不愿承担的居民退出。",
+      "secret": "部分回声仍能回答固定见证句，能证明他们没有同意无限延长；不能把这种回应当成全知意识。",
+      "location": "healing-ward"
+    },
+    {
+      "id": "recordist",
+      "name": "录声员端弦",
+      "role": "按许可播放旧记录的操作员",
+      "want": "保存有出处的原话，让人听完再判断，而非替任何一派剪辑证据。",
+      "secret": "一段未删的记录明确说过记忆可停止保存，且水利系统应有机械退出方案。",
+      "location": "echo-hall"
+    },
+    {
+      "id": "tide-scholar",
+      "name": "潮仪师孟衡",
+      "role": "负责计算冷却、压力与海潮时间窗的技师",
+      "want": "让各方案的前提、风险和代价都可检查，反对把神秘仪式当作工程替代。",
+      "secret": "三种未来都可在先稳定压力后实施；区别是继续保存回声、允许释放，或先设有限期公共托管。",
+      "location": "observatory"
+    },
+    {
+      "id": "assembly-clerk",
+      "name": "议场书记怀铎",
+      "role": "记录各方授权与异议的中立文书",
+      "want": "让缺席者和未来居民也有被重新问询的机会，不把一次表决写成永远的同意。",
+      "secret": "他没有权力替全城签字，只能把各方具体授权组合成有期限、有复核的委托。",
+      "location": "quay-assembly"
+    },
+    {
+      "id": "lighthouse-guard",
+      "name": "栈台守卫于栈",
+      "role": "负责海角灯塔通行与撤离路线的警卫",
+      "want": "让检修队平安进出，并确保居民能走备用步道，不因自称神明的人一句话放弃职责。",
+      "secret": "完整公文与鸣哨旁路都能支持安全通行；他并不效忠某个秘密反派。",
+      "location": "lighthouse-landing"
+    },
+    {
+      "id": "gear-keeper",
+      "name": "轴房工宋离",
+      "role": "熟悉离合器、能执行隔离步骤的机械工",
+      "want": "按次序分离归档和冷却，不把听见回声当作必须继续供能的证明。",
+      "secret": "此前隔离失败是操作先后错了，并非装置需要献祭。正确程序可以保留冷却同时断开强制归档。",
+      "location": "gear-room"
+    },
+    {
+      "id": "well-tender",
+      "name": "静井守人素井",
+      "role": "看护潮心装置与终止申请的老人",
+      "want": "让想留下与想离开的声音都有可执行的出口，不让任何一边替所有人决定。",
+      "secret": "所谓“替潮”原指临时泵站和轮值维护，并非拿儿童或后人生命换水退；后来誊本把比喻写成了宿命。",
+      "location": "tide-heart"
+    },
+    {
+      "id": "letter-keeper",
+      "name": "守信人晓邮",
+      "role": "保存未来来信、见证最后操作的邮舍前辈",
+      "want": "让今夜的决定写明边界，并在孩子长大后仍允许他们另作选择。",
+      "secret": "她知道原信收件人不是某个预言中的英雄，而是所有受决定影响的未来居民。",
+      "location": "oath-bridge"
+    }
+  ],
+  "clues": {
+    "broken-dispatch": {
+      "title": "半张送达回执",
+      "text": "送信人阿循接过一封新封皮旧文书；回执写明退水槽核对与北堤旧闸。尚未找到信中声称的完整遗嘱。"
+    },
+    "route-map": {
+      "title": "可回访的五片水路",
+      "text": "邮舍、盐沼、旧闸、记忆院与海角灯塔由步道相连。各处可以先抵达和询问，但专门工作仍需要相应证据或准备。"
+    },
+    "supply-plan": {
+      "title": "救济分工清单",
+      "text": "闻苇按居民登记安排绳索、支撑木、饮水和送信人。清单是可执行的准备，尚不意味着任何撤离已完成。"
+    },
+    "witness-safe": {
+      "title": "信差的完整见闻",
+      "text": "阿循已从邮舍低台回到安全街面。他看到封锁命令的新封皮，去退水槽核对时受困，没有见到所谓遗嘱原件，也不是绑架案证人。"
+    },
+    "first-order": {
+      "title": "先保仓区的调令",
+      "text": "邮舍原件或渡口第二联证实：港务要求把配重石移去仓堤，同时限制城区主闸。文本未计算盐田与低街承担的额外水压。"
+    },
+    "marsh-route": {
+      "title": "指向盐沼的送信路线",
+      "text": "送达簿与阿循的路线都指向芦苇营地和三灯望标。旧公文在盐沼还留有另一份货运联。"
+    },
+    "relief-boats": {
+      "title": "可调用的救援船队",
+      "text": "船主和搬运工确认出船、接应与安置职责，救援船队可供执行低街转移。承诺有明确分工，尚未等于居民已撤完。"
+    },
+    "cargo-switch": {
+      "title": "被改写的装载用途",
+      "text": "配重石被新货票写成仓堤普通建材。两种票上的吨数、日期与承运印记相同，可以继续核对公文。"
+    },
+    "merchant-offer": {
+      "title": "港商愿意承担的条件",
+      "text": "港务代理愿为维修和停航承担具体人手，但要求恢复可预测航期。他不愿把“城市获救”写成免除调令责任的交换。"
+    },
+    "reversed-tide": {
+      "title": "逆流来自闸系失衡",
+      "text": "闸尺与水纹证明逆流持续超过外海正常涨潮。城区水压与旧闸配重失衡有关，不足以证明神明索命。"
+    },
+    "lowerwall-stable": {
+      "title": "低街堤身已支稳",
+      "text": "松动石缝已经支稳，低街的持续进水压力得到局部缓解。旧闸与记忆院的系统性问题仍存在。"
+    },
+    "lock-route": {
+      "title": "旧闸检修线索",
+      "text": "检修标牌与旧工图对应北面的采场、工坊和双层旧闸。图上区分泄压闸与主闸，不能把它们当成同一个开关。"
+    },
+    "missing-register": {
+      "title": "核对后的居民名单",
+      "text": "安置所把重复报失、已经上岸与尚需寻找的人分开，登记保留可核对的去向。名单不保证所有失踪者已经获救。"
+    },
+    "evacuation-ready": {
+      "title": "低街居民已到高处",
+      "text": "救援人员完成分批转移与人数核对，低街居民进入高处安置点。有人参与组织，有人参与最后接应，实际结果已被记录。"
+    },
+    "song-fragment": {
+      "title": "孩子记得的登记歌",
+      "text": "旧歌有“可留其声，可返其名”的句子。孩子不理解含义；可与潮碑和记忆院登记词相互核对。"
+    },
+    "canal-pattern": {
+      "title": "盐沼渠道观测图",
+      "text": "乌芦确认盐田、望标和旧闸组成同一套缓冲系统。图中三处观测点能推算配重应怎样分担水压。"
+    },
+    "dry-route": {
+      "title": "有接应点的高地便道",
+      "text": "向导和当地人核对了能供矿工与居民行走的高地便道、停靠点和接应位置。它不让人瞬间移动，但可支持后续撤离安排。"
+    },
+    "marsh-supplied": {
+      "title": "盐沼补给已落实",
+      "text": "芦苇营地收到并分配饮水、绳索与邮递接应。盐田人开始相信城市的合作不会只有要求他们放水。"
+    },
+    "ferry-manifest": {
+      "title": "渡口档案与人员平安",
+      "text": "倾斜运信车的人员和档案箱已被接回码头。护货人核对了封箱联，普通货运记录得以保留。"
+    },
+    "tidal-delay": {
+      "title": "回摆的潮汐时间差",
+      "text": "渡口水纹与望标记录相差固定节拍，说明回流由闸系延迟叠加，外海低潮仍有可预测窗口。"
+    },
+    "names-list": {
+      "title": "不替人决定的名字簿",
+      "text": "潮碑名册同时保留本人认可的名字与后来使用的称呼，登记从不要求后代替前人继续承诺。"
+    },
+    "witness-phrase": {
+      "title": "允许退出的见证句",
+      "text": "潮碑与旧歌核对出完整句子：“愿留其声者留，愿返其名者返，后来者须再问。”这是记录的见证条款，不是赋予神力的咒语。"
+    },
+    "memorial-map": {
+      "title": "礼拜堂的旧水道图",
+      "text": "旧水道图把记忆院冷却槽标为临时设施，并给出目录原卷的编号。它能引向契约原件，却不是机器操作书。"
+    },
+    "terrace-mechanism": {
+      "title": "阶梯盐田的缓冲机制",
+      "text": "盐田小闸与城区泄压相互缓冲，淤层能反映上游设施改变。把海门直接全开会冲毁缓冲池，必须依次泄压。"
+    },
+    "growers-support": {
+      "title": "盐田的合作授权",
+      "text": "田主共同体同意在核对补偿与限度后参与导流、接应和公开议事。授权不等于放弃田地，也不是永远许可城市转嫁风险。"
+    },
+    "engineer-diary": {
+      "title": "旧工程师的未删日记",
+      "text": "日记承认三十年前撤离不完全，也记录“替潮”为临时泵站轮值。工程师要求留下退出程序，而非让子孙代替死者继续承担。"
+    },
+    "counterweight-design": {
+      "title": "三点配重的原理",
+      "text": "望标观测图显示三组配重应共同平衡城区和盐田水压。移走一组会使旧闸持续偏向仓区，工坊可按原理核对维修图。"
+    },
+    "broken-beacon": {
+      "title": "失步灯标的故障记录",
+      "text": "灯标的遮光板卡在错位齿槽，故障由机械失步造成。修复信号有助于校准，但不直接操作旧闸。"
+    },
+    "beacon-online": {
+      "title": "公共灯标恢复同步",
+      "text": "三灯按共同节拍闪光，船只与潮仪师都能读取同一份公开时间信号，不再依赖港务私报。"
+    },
+    "foundation-fracture": {
+      "title": "配重井的承压裂缝",
+      "text": "采场淤线与旧吊机偏移证明配重移走后，旧闸承压集中在一侧。可以用支撑先稳住局部，再由泄压闸处理系统压力。"
+    },
+    "miners-safe": {
+      "title": "采场人员已回到接应处",
+      "text": "矿工沿核对过的高地路线撤到接应处，领班确认人数与装载簿。采场机器本身尚需维修。"
+    },
+    "stone-loads": {
+      "title": "维修石料已留用",
+      "text": "领班把对应重量的石料明确留给旧闸与灯塔检修，装载簿写清用途。材料准备不会自动修好机器。"
+    },
+    "maintenance-procedure": {
+      "title": "分离与泄压维修程序",
+      "text": "原图区分下层泄压、记忆冷却和归档传动：先稳定承压，再排压、隔离归档、校准冷却。它提供可执行方法，不要求献祭。"
+    },
+    "emergency-brace": {
+      "title": "旧闸临时支撑已就位",
+      "text": "工匠将临时支撑装在承压裂缝处，旧闸局部结构已经稳住。支撑不能代替泄压，也不能永久维持整座城市。"
+    },
+    "repair-team": {
+      "title": "工坊检修队已组织",
+      "text": "轮闸工匠按已落实石料分配工具、轮值和灯塔工作。队伍会依照确认过的安全程序协助，不替来访者决定契约未来。"
+    },
+    "command-chain": {
+      "title": "能区分职责的命令链",
+      "text": "完整登记区分港务提案、议场批准、守闸执行和工人装载。普通执行者并未参与隐瞒退出条款的决定。"
+    },
+    "sealed-order": {
+      "title": "保留附注的完整命令",
+      "text": "公文原联与副联核对无误，附注明确要求优先仓区，并保留知会范围。这是可以公开核查的责任证据，不是任意逮捕权。"
+    },
+    "lower-gates-open": {
+      "title": "下层泄压已经执行",
+      "text": "下层泄压闸按程序开启，旧闸系统压力得到缓解。主闸与外海阀门保持受控，记忆院冷却没有被切断。"
+    },
+    "inspection-pass": {
+      "title": "旧闸检修授权已核实",
+      "text": "检修流程已获确认，巡守木偶不再挡住核准的工作路线。这个结果只解决通行，不授予角色指挥守闸军的权力。"
+    },
+    "bypass-sequence": {
+      "title": "不伤人的巡检旁路",
+      "text": "旧指令允许按顺序鸣哨，将巡守木偶引向空检修台再交接岗哨；全过程保留撤离道，不必把守卫当成敌人。"
+    },
+    "memory-silt": {
+      "title": "来自记忆槽的沉积物",
+      "text": "蓄池中的银灰沉积物与记忆院冷却槽相符，证明保存装置与城区水路相连；水声本身不证明死者要求牺牲。"
+    },
+    "old-accident": {
+      "title": "三十年前撤离的缺口",
+      "text": "旧铁箱记录与工程日记互证：当年临时泵站保住多数居民，却没能救回所有人。后续誊本删去了限期与退出安排。"
+    },
+    "archive-drained": {
+      "title": "记忆院排水恢复安全",
+      "text": "蓄池退水槽已按泄压程序疏通，记忆院冷却走廊不再积压。进入档案区后的查阅仍须获得工作人员许可。"
+    },
+    "archivist-access": {
+      "title": "原件查阅安排",
+      "text": "副院长核对排水与检修记录，安排目录员陪同查阅原件。许可有范围，不包含任意读取居民私人记忆。"
+    },
+    "staff-testimony": {
+      "title": "工作人员的具体证词",
+      "text": "工作人员说明了改封皮、照常登记与异常上报的日期，并区分亲见和传闻。有人承认疏忽，没有人凭此替所有居民同意续存。"
+    },
+    "copies-plan": {
+      "title": "分散保全记录的抄写计划",
+      "text": "抄写人员、纸张、索引与高地存放点已经安排，能保全获准公开的文字与录声抄件，不会把活人和私人记忆变成公共财产。"
+    },
+    "founding-contract": {
+      "title": "有期限的替潮原约",
+      "text": "契约原件规定三十年应急维护，允许本人终止保存，并要求期满重新征询。冷却与水利有机械退出程序，原文没有献出孩子或后人生命的条款。"
+    },
+    "consent-gap": {
+      "title": "被默认延长的许可",
+      "text": "登记与命令链显示，期满通知没有逐人重问，而把后代沉默当成继续许可。既有悲伤不能代替新的同意。"
+    },
+    "names-answered": {
+      "title": "被正确问询的回声",
+      "text": "固定见证句得到已授权回声的有限回应，能核对终止保存的原始意愿。回声只能回答保存过的内容，不是全知人格或新的战斗能力。"
+    },
+    "ward-safety": {
+      "title": "疗养廊的照护安排",
+      "text": "护理师为活着的病人和等待重新登记者确认床位、接应与询问顺序。调查不再挤占眼前照护。"
+    },
+    "unbound-name": {
+      "title": "名字不等于宿命",
+      "text": "目录员记录来访者自述与旧名的相似处，但没有证明其血统、神格或继承权。名字的联系可以留作后续个人故事，当前能力仍以角色卡为准。"
+    },
+    "core-terms": {
+      "title": "可执行的三种未来",
+      "text": "原声和条款一致：稳定水压后，可以让自愿记忆限期续存；也可以保全获准抄件后允许退出；或先由公共机构限期托管、逐人重问。三者都不需要献命。"
+    },
+    "public-record": {
+      "title": "能追溯出处的公开记录",
+      "text": "原文、命令、日期和获准录声按来源整理成公开记录，私人段落未被擅自传播。各方可以核对讨论，而不必只相信英雄的转述。"
+    },
+    "voluntary-witnesses": {
+      "title": "重新询问后的自愿见证",
+      "text": "护理师按可理解的条款征询有能力表达意愿的登记者，保留退出入口。愿意参与者提供有期限的见证，不替未出生的人承诺。"
+    },
+    "three-controls": {
+      "title": "三套控制的安全次序",
+      "text": "潮仪推演确认：先维持冷却并隔离强制归档，再依照外海时间窗受控排水，最后调整稳压。任一方案都要经过现场操作，不能仅念誓词。"
+    },
+    "calibration-ready": {
+      "title": "可共享的校准信号",
+      "text": "同步灯标与院顶潮仪互相核对，齿轮室现在能按同一份基准校准冷却和稳压。"
+    },
+    "drainage-window": {
+      "title": "外海受控排水窗口",
+      "text": "渡口节拍与潮仪一致，确认一段可受控排水的低潮窗口。它需要先开下层泄压闸，不能直接全开海门。"
+    },
+    "harbor-support": {
+      "title": "港区的有责协作",
+      "text": "港商签下检修人手、短暂停航与公开核对职责，不以援助换取免查命令。海港能继续讨论生计，但不独占后续决策。"
+    },
+    "civic-charter": {
+      "title": "有期限的城市协作章程",
+      "text": "盐田、安置所与城区代表约定水利轮值、补偿核对与复议日期。新章程不把今天到场者当成永远的所有居民。"
+    },
+    "hearing-ready": {
+      "title": "可以公开问责的听证材料",
+      "text": "完整命令与获准公开记录进入独立核对程序，港务、议场与守闸军的职责分别列明。听证准备不是自动判决或角色夺权。"
+    },
+    "lighthouse-access": {
+      "title": "灯塔检修通行落实",
+      "text": "栈台完成安全交接，检修队可沿标明线路进入齿轮室。通行不允许篡改未检查的机械，也不迫使守卫效忠来访者。"
+    },
+    "exit-route": {
+      "title": "灯塔和低街的接应退路",
+      "text": "救援船、高地便道与栈台人员核对撤离位置，检修时仍保留能带走病人与工作人员的退路。"
+    },
+    "archive-isolated": {
+      "title": "强制归档已经隔离",
+      "text": "离合器按安全次序分开，记忆冷却继续，旧契约不再自动把新登记和后人接入归档。旧记录的去留仍待明确决定。"
+    },
+    "sea-channel-open": {
+      "title": "受控外海通道已打开",
+      "text": "外海阀门依低潮窗口渐次开启，水流经缓冲池排出。盐田与城区的压力读数保持可核对，没有把洪水直接甩给下游。"
+    },
+    "tide-stable": {
+      "title": "城区潮压已经稳定",
+      "text": "隔离、冷却与信号校准完成，逆流停止继续扩大。灯塔能维持当前安全；长期维护与记忆去留仍未由机器替人决定。"
+    },
+    "renewal-ready": {
+      "title": "限期续存方案已可执行",
+      "text": "自愿见证与原约核对后，续存申请只覆盖明确同意者，并列明退出和复问日期。准备方案尚未触发最终续存。"
+    },
+    "release-ready": {
+      "title": "退出与释放方案已可执行",
+      "text": "隔离、受控排水和终止意愿已核对，旧回声可在保全获准抄件后逐项停止保存。准备不会提前抹去任何记录。"
+    },
+    "memory-copies": {
+      "title": "获准记录已分散保全",
+      "text": "抄写组完成公开文字与获准录声的双份索引，分别存放高地与邮舍。抄件保留历史证据，不声称等同原来的回声体验。"
+    },
+    "return-pact": {
+      "title": "居民返家与复查约定",
+      "text": "接应人员和安置所确认返回顺序、水位复查与不能立即返家的替代住处。约定不承诺所有财物已经恢复。"
+    },
+    "council-mandate": {
+      "title": "可撤回的公共委托",
+      "text": "各方授权组合成有期限的维护委托，听证、重问与撤回办法都在其中。来访者是促成者，不因此成为城市统治者。"
+    }
+  },
+  "objectives": {
+    "supplies-prepared": {
+      "title": "救济准备落实",
+      "description": "人员、器材和接应职责已写清，实际救援仍须执行。"
+    },
+    "courier-rescued": {
+      "title": "送信人安全",
+      "description": "阿循已回到安全街面，证言没有被夸写。"
+    },
+    "orders-secured": {
+      "title": "调令来源可核对",
+      "description": "先保仓区的调令已有可靠文本。"
+    },
+    "boats-committed": {
+      "title": "船队承担救援",
+      "description": "船主、搬运与安置分工已落实。"
+    },
+    "cargo-traced": {
+      "title": "查清配重石用途",
+      "description": "装载吨数与改写货票对应起来。"
+    },
+    "merchant-heard": {
+      "title": "港区诉求记录",
+      "description": "航期、就业与责任分担已经具体记录。"
+    },
+    "reverse-mapped": {
+      "title": "逆流原因初明",
+      "description": "观测支持闸系失衡，神怒尚无证据。"
+    },
+    "lowerwall-stable": {
+      "title": "支稳低街堤身",
+      "description": "局部堤身已支稳，低街抢险时钟停止推进。"
+    },
+    "missing-recorded": {
+      "title": "核对居民去向",
+      "description": "已上岸与尚未找到的人分开登记。"
+    },
+    "residents-protected": {
+      "title": "低街居民到高处",
+      "description": "转移与人数核对真实完成，低街抢险时钟停止。"
+    },
+    "marsh-supplied": {
+      "title": "把补给送到盐沼",
+      "description": "盐沼收到实际物资与接应。"
+    },
+    "ferry-rescued": {
+      "title": "保住渡口人员和档案",
+      "description": "运信车人员与档案箱已回到码头。"
+    },
+    "names-preserved": {
+      "title": "尊重原本的名字",
+      "description": "潮碑名字及本人认可的称呼被核对保存。"
+    },
+    "growers-committed": {
+      "title": "盐田合作有边界",
+      "description": "共同体授权限定用途的导流与接应协作。"
+    },
+    "diary-secured": {
+      "title": "留下未删的旧日记",
+      "description": "工程师日记已获核对保存。"
+    },
+    "signal-mapped": {
+      "title": "灯标故障可解释",
+      "description": "机械失步已查明，尚未修复。"
+    },
+    "beacon-stable": {
+      "title": "公开灯标重新同步",
+      "description": "任何观察者都可读取同一时间信号。"
+    },
+    "miners-protected": {
+      "title": "采场人员平安",
+      "description": "矿工到达核对过的接应处。"
+    },
+    "stone-committed": {
+      "title": "石料用于实际维修",
+      "description": "装载簿明确保留对应重量的修复材料。"
+    },
+    "oldlock-stable": {
+      "title": "旧闸临时支撑到位",
+      "description": "局部承压结构得到稳定，旧闸险情时钟停止。"
+    },
+    "repair-team": {
+      "title": "检修队分工落实",
+      "description": "工坊人员与器材已为现场工作组织好。"
+    },
+    "command-verified": {
+      "title": "命令链区分职责",
+      "description": "提案、批准、执行与装载责任分别核对。"
+    },
+    "official-proof": {
+      "title": "完整命令保全",
+      "description": "带附注的原联与副联可供公开核对。"
+    },
+    "pressure-relieved": {
+      "title": "下层泄压完成",
+      "description": "旧闸系统压力缓解，冷却仍受控。"
+    },
+    "guard-bypassed": {
+      "title": "旧闸检修路线可用",
+      "description": "巡守木偶不再阻挡核准工作，非强制杀戮。"
+    },
+    "old-accident-mapped": {
+      "title": "查清旧撤离缺口",
+      "description": "事故事实与后来删改的条款分别记录。"
+    },
+    "archive-accessible": {
+      "title": "记忆院排水安全",
+      "description": "退水槽恢复工作，档案调查可以继续。"
+    },
+    "staff-heard": {
+      "title": "工作人员证言有出处",
+      "description": "亲见、传闻和责任范围已经分别记录。"
+    },
+    "copies-backed": {
+      "title": "抄写保全有人员器材",
+      "description": "获准记录的保全计划已有落实条件。"
+    },
+    "truth-secured": {
+      "title": "原契约得到核对",
+      "description": "限期、退出与机械程序保留原文证据。"
+    },
+    "consent-gap": {
+      "title": "查明许可缺口",
+      "description": "默认续存与未逐人征询的事实得到证明。"
+    },
+    "witnesses-answered": {
+      "title": "按原意询问回声",
+      "description": "有限回应核对了本人原始选择。"
+    },
+    "ward-secured": {
+      "title": "眼前照护没有被挤占",
+      "description": "疗养廊接应、床位和问询顺序落实。"
+    },
+    "identity-recorded": {
+      "title": "身份疑问保留边界",
+      "description": "背景与旧名联系被记录，未授予能力或权位。"
+    },
+    "contract-understood": {
+      "title": "知道三种真实方案",
+      "description": "续存、退出和限期托管各有可执行程序。"
+    },
+    "record-safe": {
+      "title": "公开证据可追溯",
+      "description": "公开材料保留出处，私人记忆没有被擅用。"
+    },
+    "voluntary-witnesses": {
+      "title": "重新征询自愿见证",
+      "description": "明确同意者有退出权，后人不被代签。"
+    },
+    "safe-procedure": {
+      "title": "灯塔操作次序核实",
+      "description": "机械程序在潮仪上得到检验。"
+    },
+    "calibration-ready": {
+      "title": "稳压校准条件齐备",
+      "description": "公共灯标与潮仪基准一致。"
+    },
+    "window-mapped": {
+      "title": "排水时间窗明确",
+      "description": "外海受控排水有可核对的窗口。"
+    },
+    "harbor-committed": {
+      "title": "港区接受有责合作",
+      "description": "检修与停航分工不免除公开核查责任。"
+    },
+    "charter-ready": {
+      "title": "共同维护章程形成",
+      "description": "轮值、补偿与复议边界已获授权。"
+    },
+    "hearing-ready": {
+      "title": "公开听证准备完成",
+      "description": "责任材料进入独立核查，不预先宣判。"
+    },
+    "lighthouse-accessible": {
+      "title": "灯塔安全交接完成",
+      "description": "栈台批准具体检修线路。"
+    },
+    "exits-secured": {
+      "title": "保留检修撤离路线",
+      "description": "船队与高地接应能支持撤离。"
+    },
+    "archive-isolated": {
+      "title": "停止强制接入",
+      "description": "归档与冷却已分离，不自动续入后人。"
+    },
+    "sea-gate-open": {
+      "title": "外海排水受控执行",
+      "description": "阀门按低潮窗口与泄压程序打开。"
+    },
+    "tide-stable": {
+      "title": "稳住眼前潮压",
+      "description": "逆流不再扩大，仍需选择长期安排。"
+    },
+    "renewal-ready": {
+      "title": "限期续存可执行",
+      "description": "自愿范围、退出与复问日期均已核对。"
+    },
+    "release-ready": {
+      "title": "释放退出可执行",
+      "description": "终止意愿与机械退出条件均已核对。"
+    },
+    "copies-preserved": {
+      "title": "公开历史保全完成",
+      "description": "两处抄件与索引真实保存，未冒称回声本体。"
+    },
+    "return-pact": {
+      "title": "返家有复查安排",
+      "description": "返回顺序和替代住处已确认。"
+    },
+    "council-mandate": {
+      "title": "形成可撤回公共委托",
+      "description": "各方授权有期限，不把英雄变成统治者。"
+    }
+  },
+  "opportunities": [
+    {
+      "id": "hear-courier",
+      "location": "lantern-inn",
+      "title": "先核对这封不合时宜的来信",
+      "prompt": "询问邮袋来处、逐项检查回执，或观察浸水顺序，区分亲见事实与客人的猜测。",
+      "skills": [
+        "investigation",
+        "insight",
+        "perception"
+      ],
+      "dc": 10,
+      "requires": [],
+      "success": {
+        "text": "你从闻苇和半张回执中核对出送信人的名字、旧闸标记和最后一次退水槽核对。信件的真假仍需另查。",
+        "clues": [
+          "broken-dispatch"
+        ],
+        "objectives": [],
+        "trustNpc": "innkeeper"
+      },
+      "failure": {
+        "text": "邮袋的浸水和客人的转述混在一起，你尚未核对出可靠送达线索。可以直接去邮舍看记录，或询问另一位见证者。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "read-city-routes",
+      "location": "lantern-inn",
+      "title": "把五片水路记成自己的地图",
+      "prompt": "向掌柜逐条核实便道与安全落脚点，研究地图，或凭沿途观察给路线作注。",
+      "skills": [
+        "survival",
+        "investigation",
+        "persuasion"
+      ],
+      "dc": 10,
+      "requires": [],
+      "success": {
+        "text": "闻苇帮你核对五片区域的步道与休整点。你知道路可以回访，专项工作仍要带着具体证据去做。",
+        "clues": [
+          "route-map"
+        ],
+        "objectives": [],
+        "trustNpc": "innkeeper"
+      },
+      "failure": {
+        "text": "你没有把路线与地名对应清楚；地图还在这里，也可以先走近处确认。没有任何道路因此关闭。",
+        "clock": 0
+      }
+    },
+    {
+      "id": "prepare-relief",
+      "location": "lantern-inn",
+      "title": "让救济清单变成可执行的分工",
+      "prompt": "协调绳索、饮水和支撑木的负责者，核查遗漏，或设计能让志愿者理解的交接方法。",
+      "skills": [
+        "persuasion",
+        "investigation",
+        "survival"
+      ],
+      "dc": 12,
+      "requires": [],
+      "success": {
+        "text": "救济清单写清谁送物资、谁核对接应。你拥有实际准备，尚未把任何一场未做的救援算成成功。",
+        "clues": [
+          "supply-plan"
+        ],
+        "objectives": [
+          "supplies-prepared"
+        ],
+        "trustNpc": "innkeeper"
+      },
+      "failure": {
+        "text": "人手与器材的分工仍对不上，准备没有完成。可以请安置所补名单，或改变协调办法。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "rescue-courier",
+      "location": "courier-house",
+      "title": "接回检修台后的送信人",
+      "prompt": "确认阿循所处位置，用绳梯接应、稳住踏板，或寻找能够安全把人带回街面的办法。",
+      "skills": [
+        "athletics",
+        "acrobatics",
+        "investigation",
+        "medicine"
+      ],
+      "dc": 10,
+      "requires": [],
+      "success": {
+        "text": "阿循回到安全街面，喝过水后说明受困经过。他只见过公文，并没有见到遗嘱原件；你没有替他增加证词。",
+        "clues": [
+          "witness-safe"
+        ],
+        "objectives": [
+          "courier-rescued"
+        ],
+        "trustNpc": "courier"
+      },
+      "failure": {
+        "text": "接应位置仍不稳，阿循还在能够暂时支撑的高台等待。你没有把他接回；可换用绳索、求助或重新勘查。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "recover-dispatch",
+      "location": "courier-house",
+      "title": "核对封皮里的旧命令",
+      "prompt": "根据回执查找送达簿对应柜格，用纸边、日期或印章核对封皮与原件，不把怀疑当成证据。",
+      "skills": [
+        "investigation",
+        "perception",
+        "history"
+      ],
+      "dc": 12,
+      "requires": [
+        "broken-dispatch"
+      ],
+      "success": {
+        "text": "原件写着先保仓区，并要求改送配重石。你保留了文本出处；它没有计算低街和盐田承担的水压。",
+        "clues": [
+          "first-order"
+        ],
+        "objectives": [
+          "orders-secured"
+        ]
+      },
+      "failure": {
+        "text": "封皮与原件尚未可靠对应，你没有取得完整命令。渡口的货运副联可能从另一条来源核对。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "trace-messenger",
+      "location": "courier-house",
+      "title": "追出阿循的盐沼路线",
+      "prompt": "按自行车上的泥痕比对送达簿、询问往来邮工，或从路线习惯推断最后几站。",
+      "skills": [
+        "survival",
+        "investigation",
+        "insight"
+      ],
+      "dc": 10,
+      "requires": [],
+      "success": {
+        "text": "送达簿指向芦苇营地、渡口和三灯望标。阿循调查的不是预言，而是一条留有副联和观测点的实际路线。",
+        "clues": [
+          "marsh-route"
+        ],
+        "objectives": [],
+        "trustNpc": "courier"
+      },
+      "failure": {
+        "text": "路线上仍有歧义，你尚未取得可靠下一站。可以去盐市问货运人，也可以改变比对办法。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "bargain-boats",
+      "location": "salt-market",
+      "title": "谈成船队与安置的具体责任",
+      "prompt": "说明乘客交接与停靠点，协调船主和搬运工，或拿出可核查的船次安排让各方共同确认。",
+      "skills": [
+        "persuasion",
+        "investigation",
+        "insight"
+      ],
+      "dc": 12,
+      "requires": [],
+      "success": {
+        "text": "船主和搬运工确认出船、接应与安置责任。低街居民尚待实际转移，船队现在能被组织去执行。",
+        "clues": [
+          "relief-boats"
+        ],
+        "objectives": [
+          "boats-committed"
+        ],
+        "trustNpc": "harbor-agent"
+      },
+      "failure": {
+        "text": "船次与责任没有谈拢，船队尚未承诺投入。可以带安置名单回来，或直接研究别的接应方法。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "examine-cargo",
+      "location": "salt-market",
+      "title": "把配重石货票与装载数对上",
+      "prompt": "核对吨数、时间、承运印和磨痕，观察票据更换，或让搬运工说明亲自装过什么。",
+      "skills": [
+        "investigation",
+        "perception",
+        "persuasion"
+      ],
+      "dc": 12,
+      "requires": [],
+      "success": {
+        "text": "配重石在新票上被写成普通仓堤建材，同批吨数和承运印却没有变。你得到继续核对公文的可靠起点。",
+        "clues": [
+          "cargo-switch"
+        ],
+        "objectives": [
+          "cargo-traced"
+        ]
+      },
+      "failure": {
+        "text": "相似货票仍不能证明是同一批石料。你没有查清用途，可以换一种证据或去采场核对。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "hear-harbor-case",
+      "location": "salt-market",
+      "title": "让港商把愿意承担的事说清",
+      "prompt": "用已核实的调令询问停航、检修与就业安排，辨认利益与威胁，或争取具体而非笼统承诺。",
+      "skills": [
+        "insight",
+        "persuasion",
+        "investigation"
+      ],
+      "dc": 12,
+      "requires": [
+        "first-order"
+      ],
+      "success": {
+        "text": "柳晏承认航期与就业是真实顾虑，也愿意把检修人手和责任写清。他没有得到“出钱便免查”的保证。",
+        "clues": [
+          "merchant-offer"
+        ],
+        "objectives": [
+          "merchant-heard"
+        ],
+        "trustNpc": "harbor-agent"
+      },
+      "failure": {
+        "text": "谈话停在口号和相互防备上，你没有取得具体条件。可以带公开事实回来，或改从另一方需求谈起。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "inspect-counterflow",
+      "location": "lower-sluice",
+      "title": "证明逆流不是普通涨潮",
+      "prompt": "读取闸尺与涡流、比对潮表，或请石工逐项讲清今天与以往哪里不同。",
+      "skills": [
+        "nature",
+        "investigation",
+        "perception"
+      ],
+      "dc": 10,
+      "requires": [],
+      "success": {
+        "text": "闸尺与水纹共同证明失衡持续超过正常涨潮，线索指向旧闸配重。神明索命仍只是传闻。",
+        "clues": [
+          "reversed-tide"
+        ],
+        "objectives": [
+          "reverse-mapped"
+        ],
+        "trustNpc": "sluice-worker"
+      },
+      "failure": {
+        "text": "水纹与潮表没有形成可靠对应，你尚未查清逆流。渡口和望标也保留了观测记录。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "shore-up-wall",
+      "location": "lower-sluice",
+      "title": "把救济木料用在最薄弱的堤缝",
+      "prompt": "依照救济分工搬运支撑、辨认承压点，或与石工配合加固；目标是支稳这一段而非宣称修好全城。",
+      "skills": [
+        "athletics",
+        "investigation",
+        "survival"
+      ],
+      "dc": 12,
+      "requires": [
+        "supply-plan"
+      ],
+      "success": {
+        "text": "支撑在薄弱堤缝就位，局部进水压力缓解。陶壁确认低街堤身暂时稳住，系统故障仍要继续查。",
+        "clues": [
+          "lowerwall-stable"
+        ],
+        "objectives": [
+          "lowerwall-stable"
+        ],
+        "trustNpc": "sluice-worker"
+      },
+      "failure": {
+        "text": "支撑角度不够可靠，堤身尚未稳住。器材没有被叙述成损毁，你可以换布置或请人核查。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "find-maintenance-hatch",
+      "location": "lower-sluice",
+      "title": "从工地图找出旧闸检修线索",
+      "prompt": "阅读模糊标牌、核对旧支撑编号，或顺着维修者留下的记号确认相连设施。",
+      "skills": [
+        "investigation",
+        "history",
+        "perception"
+      ],
+      "dc": 10,
+      "requires": [],
+      "success": {
+        "text": "你区分出北面的采场、工坊与双层旧闸，并确认下层泄压与上层主闸不是同一套装置。",
+        "clues": [
+          "lock-route"
+        ],
+        "objectives": [],
+        "trustNpc": "sluice-worker"
+      },
+      "failure": {
+        "text": "旧编号仍混在一起，检修关系没查清。可以从采场的结构痕迹或工坊原图另行核实。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "count-missing",
+      "location": "refuge",
+      "title": "把报失名单按真实去向核对",
+      "prompt": "交叉比对姓名、船次与亲属描述，安抚焦急者，或建立不重复登记的核对方法。",
+      "skills": [
+        "investigation",
+        "insight",
+        "medicine"
+      ],
+      "dc": 10,
+      "requires": [],
+      "success": {
+        "text": "善黎把已上岸、重复报失与尚需寻找的人分开登记。你保存了真实去向，没有把未知者写成平安。",
+        "clues": [
+          "missing-register"
+        ],
+        "objectives": [
+          "missing-recorded"
+        ],
+        "trustNpc": "refuge-doctor"
+      },
+      "failure": {
+        "text": "几份报失仍互相矛盾，你没有完成名单核对。可以问接应人，或用另一种方法整理身份。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "relay-relief",
+      "location": "refuge",
+      "title": "执行低街转移并核对到达人数",
+      "prompt": "利用已承诺船队组织分批接应、搬运行动不便者，或逐一核对船次与高处安置。",
+      "skills": [
+        "persuasion",
+        "athletics",
+        "medicine",
+        "investigation"
+      ],
+      "dc": 12,
+      "requires": [
+        "relief-boats"
+      ],
+      "success": {
+        "text": "接应组分批转移低街居民，善黎完成到达人数核对。高处安置真实完成，未恢复的房屋和财物仍待另行处理。",
+        "clues": [
+          "evacuation-ready"
+        ],
+        "objectives": [
+          "residents-protected"
+        ],
+        "trustNpc": "refuge-doctor"
+      },
+      "failure": {
+        "text": "船次交接出现遗漏，转移尚未完成。你没有取得居民全部到达的记录，可重整分工或改变接应办法。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "hear-child-song",
+      "location": "refuge",
+      "title": "认真听完那首不完整的旧歌",
+      "prompt": "安静陪伴孩子、复唱节拍，或核对不同孩子记住的句子，不把他们当作提供答案的道具。",
+      "skills": [
+        "performance",
+        "insight",
+        "persuasion"
+      ],
+      "dc": 10,
+      "requires": [],
+      "success": {
+        "text": "你记下“可留其声，可返其名”的片段。善黎建议与潮碑上的原句核对，而非急着解释成献祭预言。",
+        "clues": [
+          "song-fragment"
+        ],
+        "objectives": [],
+        "trustNpc": "refuge-doctor"
+      },
+      "failure": {
+        "text": "孩子没有愿意把歌唱完整，你没有取得新词句。可以去潮碑找原文，或先照顾他们的其他需要。",
+        "clock": 0
+      }
+    },
+    {
+      "id": "speak-pilot",
+      "location": "reed-camp",
+      "title": "向盐沼领航员核对旧渠道",
+      "prompt": "带着送信路线请乌芦区分观测点，认真听她说明水路，或把路线与现场水纹对应。",
+      "skills": [
+        "survival",
+        "persuasion",
+        "nature"
+      ],
+      "dc": 12,
+      "requires": [
+        "marsh-route"
+      ],
+      "success": {
+        "text": "乌芦把三处观测点连在同一张草图上。盐田与城区共同受配重影响，不能把盐沼当成可以随便排水的空地。",
+        "clues": [
+          "canal-pattern"
+        ],
+        "objectives": [],
+        "trustNpc": "pilot"
+      },
+      "failure": {
+        "text": "乌芦没有认同你的路线推断，渠道关系仍不明。可先在渡口核对节拍，或换一种问法。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "map-dry-path",
+      "location": "reed-camp",
+      "title": "为人而非地图核对高地便道",
+      "prompt": "实地辨认坡度和接应位置，询问行动不便者需要，或与向导确认哪些地标在潮水中仍可靠。",
+      "skills": [
+        "survival",
+        "perception",
+        "medicine"
+      ],
+      "dc": 10,
+      "requires": [],
+      "success": {
+        "text": "高地便道、停靠与接应点核对完成。你知道它可支持后续撤离，但仍要具体组织每次行动。",
+        "clues": [
+          "dry-route"
+        ],
+        "objectives": [],
+        "trustNpc": "pilot"
+      },
+      "failure": {
+        "text": "路线仍有一处接应无法确认，便道安排没有完成。你可以观察另一个地标，或请当地人核对。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "supply-marsh",
+      "location": "reed-camp",
+      "title": "把城里的承诺真正送到盐沼",
+      "prompt": "照救济分工分发饮水和绳索，协调邮递接应，或向营地讲清每一份物资由谁使用。",
+      "skills": [
+        "persuasion",
+        "athletics",
+        "investigation"
+      ],
+      "dc": 12,
+      "requires": [
+        "supply-plan"
+      ],
+      "success": {
+        "text": "营地收到并核对补给与接应。乌芦愿意继续合作，因为城市这次拿出了具体行动。",
+        "clues": [
+          "marsh-supplied"
+        ],
+        "objectives": [
+          "marsh-supplied"
+        ],
+        "trustNpc": "pilot"
+      },
+      "failure": {
+        "text": "送达与分发仍对不上，营地没有确认补给落实。你可以重核清单或换一种交接办法。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "rescue-mail-cart",
+      "location": "ferry",
+      "title": "把运信车上的人和档案接回来",
+      "prompt": "固定双索、分次移动车上人员，或利用浅滩与空箱安排不冒失的接应。",
+      "skills": [
+        "athletics",
+        "survival",
+        "investigation"
+      ],
+      "dc": 12,
+      "requires": [],
+      "success": {
+        "text": "车上人员和档案箱回到码头，澄野核对封箱联。你保住记录，也没有为了显得勇敢把更多人推下水。",
+        "clues": [
+          "ferry-manifest"
+        ],
+        "objectives": [
+          "ferry-rescued"
+        ],
+        "trustNpc": "ferry-keeper"
+      },
+      "failure": {
+        "text": "双索接应还不可靠，车上人员仍在能暂时支撑的浅滩等待。可改接应顺序、换绳路或请人一起勘察。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "compare-duplicate-order",
+      "location": "ferry",
+      "title": "用货运副联从另一头核实调令",
+      "prompt": "把改写货票与封箱副联的印章、吨数和日期交叉核对，或请护货人说明原始交接。",
+      "skills": [
+        "investigation",
+        "history",
+        "persuasion"
+      ],
+      "dc": 12,
+      "requires": [
+        "cargo-switch"
+      ],
+      "success": {
+        "text": "副联证实先保仓区与改送配重石的同一调令。即使邮舍调查受挫，你仍有独立来源继续追查。",
+        "clues": [
+          "first-order"
+        ],
+        "objectives": [
+          "orders-secured"
+        ],
+        "trustNpc": "ferry-keeper"
+      },
+      "failure": {
+        "text": "副联与货票未能可靠对应，你还没有取得调令证据。可以换核对字段，或回邮舍查原联。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "read-tideposts",
+      "location": "ferry",
+      "title": "把水纹变成可核对的时间差",
+      "prompt": "在已确认逆流的基础上读界桩，比较灯标回摆节拍，或请摆渡人演示规律而非猜测。",
+      "skills": [
+        "nature",
+        "perception",
+        "investigation"
+      ],
+      "dc": 12,
+      "requires": [
+        "reversed-tide"
+      ],
+      "success": {
+        "text": "你记录了固定的回摆时间差。外海低潮仍可预测，未来能与潮仪一起求得受控排水窗口。",
+        "clues": [
+          "tidal-delay"
+        ],
+        "objectives": [],
+        "trustNpc": "ferry-keeper"
+      },
+      "failure": {
+        "text": "几次回摆没有形成可靠节拍，你未取得时间差。可以延长不同观察、请另一位船工核对或研究灯标。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "read-memorial-names",
+      "location": "memorial",
+      "title": "照他们自己的称呼保存名字",
+      "prompt": "核对碑面、旧名册与家属习惯，复原被泥覆盖的字，或请看碑人区分一人的多个称呼。",
+      "skills": [
+        "history",
+        "investigation",
+        "religion"
+      ],
+      "dc": 10,
+      "requires": [],
+      "success": {
+        "text": "名字簿保留本人认可的称呼，没有让后代替他们答应任何事。安末说，记住一个人也包括尊重他说过“不”。",
+        "clues": [
+          "names-list"
+        ],
+        "objectives": [
+          "names-preserved"
+        ],
+        "trustNpc": "name-keeper"
+      },
+      "failure": {
+        "text": "几个名字还无法可靠辨认，你没有完成名册核对。可以改变光线、比对另一册记录或询问家属。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "answer-lost-names",
+      "location": "memorial",
+      "title": "复原被省略的退出见证句",
+      "prompt": "带孩子记住的歌核对碑文、复原节拍与词序，或请看碑人解释登记与告别的区别。",
+      "skills": [
+        "religion",
+        "performance",
+        "history"
+      ],
+      "dc": 12,
+      "requires": [
+        "song-fragment"
+      ],
+      "success": {
+        "text": "完整见证句写着愿留者留、愿返者返、后来者须再问。你获得可用于记忆院核对的原话，没有得到新的魔法能力。",
+        "clues": [
+          "witness-phrase"
+        ],
+        "objectives": [],
+        "trustNpc": "name-keeper"
+      },
+      "failure": {
+        "text": "歌与碑文的缺口仍未接上，你未得到完整见证句。可以从目录原件核对其出处，再换方法复原。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "study-chapel-map",
+      "location": "memorial",
+      "title": "读出破礼拜堂里的临时设施图",
+      "prompt": "辨认地砖的旧水道、核对碑年与目录编号，或仔细寻找被淤泥遮住的连续线条。",
+      "skills": [
+        "investigation",
+        "history",
+        "perception"
+      ],
+      "dc": 10,
+      "requires": [],
+      "success": {
+        "text": "地砖标明记忆院曾是临时设施，并留下原卷编号。你找到查原契约的另一条独立路线。",
+        "clues": [
+          "memorial-map"
+        ],
+        "objectives": [],
+        "trustNpc": "name-keeper"
+      },
+      "failure": {
+        "text": "水道线条仍有断裂，你未取得可靠原卷索引。可以换角度或在沉沙蓄池找结构证据。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "read-terrace-mechanism",
+      "location": "tidal-fields",
+      "title": "弄懂盐田怎样替城市缓冲",
+      "prompt": "观察细闸开合、比较高低池淤线，或请田主沿真实水路说明流向。",
+      "skills": [
+        "nature",
+        "survival",
+        "investigation"
+      ],
+      "dc": 10,
+      "requires": [],
+      "success": {
+        "text": "你确认缓冲池与下层泄压相互配合，不能把海门全开。淤层也能用来追踪上游冷却系统。",
+        "clues": [
+          "terrace-mechanism"
+        ],
+        "objectives": [],
+        "trustNpc": "grower"
+      },
+      "failure": {
+        "text": "高低池与流向尚未对应，你没有弄清机制。可以观察另一处闸，或回下闸核对刻度。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "negotiate-growers",
+      "location": "tidal-fields",
+      "title": "让盐田合作有明确边界",
+      "prompt": "拿已完成的居民转移说明共同风险，讨论补偿、限度和轮值，或认真区分大家愿意与不愿承担的工作。",
+      "skills": [
+        "persuasion",
+        "insight",
+        "investigation"
+      ],
+      "dc": 12,
+      "requires": [
+        "evacuation-ready"
+      ],
+      "success": {
+        "text": "共同体同意有边界的导流与接应授权，并要求后续公开核对。你没有用城市危机抹掉他们的生计。",
+        "clues": [
+          "growers-support"
+        ],
+        "objectives": [
+          "growers-committed"
+        ],
+        "trustNpc": "grower"
+      },
+      "failure": {
+        "text": "合作仍停在相互担忧上，盐田尚未授权。可带更具体工程方案回来，或换一个可履行的分工。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "recover-engineer-diary",
+      "location": "tidal-fields",
+      "title": "保全工程师不光彩的那一页",
+      "prompt": "按名字簿核对油布日记的主人和日期，说服程汀保留原页，或从工程注记证明其出处。",
+      "skills": [
+        "investigation",
+        "history",
+        "persuasion"
+      ],
+      "dc": 12,
+      "requires": [
+        "names-list"
+      ],
+      "success": {
+        "text": "日记承认旧撤离缺口，也把替潮写成临时泵站轮值。程汀同意保留原页，家族不再以沉默换清白。",
+        "clues": [
+          "engineer-diary"
+        ],
+        "objectives": [
+          "diary-secured"
+        ],
+        "trustNpc": "grower"
+      },
+      "failure": {
+        "text": "日记出处或公开范围没有谈清，你尚未得到可用记录。可以请目录员核对，或改变保全与询问办法。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "triangulate-beacon",
+      "location": "beacon",
+      "title": "用三处观测点推算原配重",
+      "prompt": "沿渠道草图比较光向和标尺，用计算、自然观察或可重复的演示解释怎样共同平衡水压。",
+      "skills": [
+        "investigation",
+        "nature",
+        "arcana"
+      ],
+      "dc": 12,
+      "requires": [
+        "canal-pattern"
+      ],
+      "success": {
+        "text": "三点记录给出配重应有的分担方式。移走的一组正会偏向仓区，工坊现在有依据核对机械原图。",
+        "clues": [
+          "counterweight-design"
+        ],
+        "objectives": [],
+        "trustNpc": "signal-keeper"
+      },
+      "failure": {
+        "text": "观测与推算还不能重复验证，你未确认配重原理。可增加一处对照、换计算法或请技师核查。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "chart-beacon-fault",
+      "location": "beacon",
+      "title": "找出失步信号的机械原因",
+      "prompt": "利用渡口时间差检查遮光板与齿槽，对照值班记录，或观察每次误闪发生在哪个位置。",
+      "skills": [
+        "investigation",
+        "perception",
+        "sleightOfHand"
+      ],
+      "dc": 12,
+      "requires": [
+        "tidal-delay"
+      ],
+      "success": {
+        "text": "错位齿槽使遮光板卡住。罗澈记下可核对故障，灯标的问题无需用秘密神谕解释。",
+        "clues": [
+          "broken-beacon"
+        ],
+        "objectives": [
+          "signal-mapped"
+        ],
+        "trustNpc": "signal-keeper"
+      },
+      "failure": {
+        "text": "误闪仍没对应到具体部件，你尚未查明故障。可以先整理记录，或改变检查办法。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "repair-beacon",
+      "location": "beacon",
+      "title": "让所有人重新看到同一份信号",
+      "prompt": "按故障记录调整齿槽、协调值班者逐盏核时，或用合理手段恢复共同节拍。",
+      "skills": [
+        "sleightOfHand",
+        "investigation",
+        "performance"
+      ],
+      "dc": 12,
+      "requires": [
+        "broken-beacon"
+      ],
+      "success": {
+        "text": "三灯恢复同步，船只与院顶潮仪能公开读取同一信号。你修好了信号，没有替远处的闸门作任何操作。",
+        "clues": [
+          "beacon-online"
+        ],
+        "objectives": [
+          "beacon-stable"
+        ],
+        "trustNpc": "signal-keeper"
+      },
+      "failure": {
+        "text": "共同节拍尚未稳定，灯标未修复。可重查对照记录或用不同工具调整，不会自动损毁灯塔。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "inspect-foundation",
+      "location": "stone-quarry",
+      "title": "从采场淤线查出承压裂缝",
+      "prompt": "带旧闸线索读浸水高度、核对吊机偏移，或请矿工指出配重移走前后的差别。",
+      "skills": [
+        "investigation",
+        "nature",
+        "perception"
+      ],
+      "dc": 12,
+      "requires": [
+        "lock-route"
+      ],
+      "success": {
+        "text": "不同痕迹共同指向偏置承压。你找到可以先支稳的局部裂缝，仍需工坊确认可靠处理办法。",
+        "clues": [
+          "foundation-fracture"
+        ],
+        "objectives": [],
+        "trustNpc": "quarry-lead"
+      },
+      "failure": {
+        "text": "裂缝与调料时间尚未可靠对应，你没有查清承压问题。可以去工坊比原图，或换观察点。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "evacuate-miners",
+      "location": "stone-quarry",
+      "title": "沿高地接应线撤出采场人员",
+      "prompt": "按已核对便道组织分批行走、辅助行动困难者，或协调领班与接应点逐一确认人数。",
+      "skills": [
+        "survival",
+        "athletics",
+        "persuasion",
+        "medicine"
+      ],
+      "dc": 12,
+      "requires": [
+        "dry-route"
+      ],
+      "success": {
+        "text": "采场人员到达高地接应点，石穗核完人数和装载簿。机器留待检修，人的安全先被真实落实。",
+        "clues": [
+          "miners-safe"
+        ],
+        "objectives": [
+          "miners-protected"
+        ],
+        "trustNpc": "quarry-lead"
+      },
+      "failure": {
+        "text": "撤离队与接应人数还没对上，行动尚未完成。可调整分组或核对另一个接应点。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "reserve-stone-loads",
+      "location": "stone-quarry",
+      "title": "把配重材料留给实际维修",
+      "prompt": "用配重原理核对吨数与用途，说服领班更正装载计划，或设计所有人能检查的材料交接。",
+      "skills": [
+        "investigation",
+        "persuasion",
+        "athletics"
+      ],
+      "dc": 12,
+      "requires": [
+        "counterweight-design"
+      ],
+      "success": {
+        "text": "对应重量的石料明确留给旧闸与灯塔，装载簿写下去向。准备材料不会自动产生修复结果。",
+        "clues": [
+          "stone-loads"
+        ],
+        "objectives": [
+          "stone-committed"
+        ],
+        "trustNpc": "quarry-lead"
+      },
+      "failure": {
+        "text": "吨数、用途或交接没有核清，石料尚未落实。可以带工坊清单回来，或换一种分工方法。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "draw-blueprints",
+      "location": "lock-workshop",
+      "title": "从原理核对未删的维修次序",
+      "prompt": "带配重观测比较历代注释、向工匠解释差异，或将传动关系逐项画出来验证。",
+      "skills": [
+        "investigation",
+        "arcana",
+        "history"
+      ],
+      "dc": 12,
+      "requires": [
+        "counterweight-design"
+      ],
+      "success": {
+        "text": "景轮核对出先稳定、再泄压、后隔离归档与校准冷却的程序。旧注记所说替潮是工程轮值，不需要牺牲生命。",
+        "clues": [
+          "maintenance-procedure"
+        ],
+        "objectives": [],
+        "trustNpc": "engineer"
+      },
+      "failure": {
+        "text": "注释冲突仍没解决，你未取得可靠操作程序。可以从现场部件交叉核对，或等待工匠的独立查证。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "brace-foundation",
+      "location": "lock-workshop",
+      "title": "按裂缝位置落实临时支撑",
+      "prompt": "把承压痕迹带给工匠，共同调整支撑角度、协调装配，或用能验证受力的方法稳定局部结构。",
+      "skills": [
+        "athletics",
+        "investigation",
+        "survival"
+      ],
+      "dc": 12,
+      "requires": [
+        "foundation-fracture"
+      ],
+      "success": {
+        "text": "工匠把临时支撑安装到位，旧闸局部结构稳住。系统泄压和归档隔离还没有完成。",
+        "clues": [
+          "emergency-brace"
+        ],
+        "objectives": [
+          "oldlock-stable"
+        ],
+        "trustNpc": "engineer"
+      },
+      "failure": {
+        "text": "支撑受力还没可靠验证，临时稳定尚未完成。可以换布置或补现场对照，不会被叙述成结构已经倒塌。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "assemble-repair-team",
+      "location": "lock-workshop",
+      "title": "请工匠把维修承诺写成轮值",
+      "prompt": "用已保留石料安排工具与人手，询问每位工匠能负责什么，或建立明确交接。",
+      "skills": [
+        "persuasion",
+        "investigation",
+        "insight"
+      ],
+      "dc": 12,
+      "requires": [
+        "stone-loads"
+      ],
+      "success": {
+        "text": "工坊把器材、轮值与灯塔工作分清。景轮愿意带队执行核准程序，但不会替居民决定记忆的未来。",
+        "clues": [
+          "repair-team"
+        ],
+        "objectives": [
+          "repair-team"
+        ],
+        "trustNpc": "engineer"
+      },
+      "failure": {
+        "text": "轮值仍有空缺，检修队没有组织完成。可以换分工或核对资源，不必用威胁迫使工匠服从。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "interview-commander",
+      "location": "gatehouse",
+      "title": "把提案、批准和执行分开",
+      "prompt": "带调令核对登记日期，问霍青亲见与职责，或比较公文往返时序而非先宣判所有守军有罪。",
+      "skills": [
+        "investigation",
+        "insight",
+        "persuasion"
+      ],
+      "dc": 12,
+      "requires": [
+        "first-order"
+      ],
+      "success": {
+        "text": "霍青提供可核对命令链，港务提案、议场批准与守闸执行被分开。调查有了责任范围，而非一群方便责怪的人。",
+        "clues": [
+          "command-chain"
+        ],
+        "objectives": [
+          "command-verified"
+        ],
+        "trustNpc": "gate-commander"
+      },
+      "failure": {
+        "text": "职责与日期仍没理清，你未核对命令链。可以取得副联再问，或改变问题顺序。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "secure-original-order",
+      "location": "gatehouse",
+      "title": "用信差证言核验带附注的原联",
+      "prompt": "带阿循已经核实的见闻逐项比对印章与知会范围，向守闸长说明保全证据而非立即夺权。",
+      "skills": [
+        "investigation",
+        "persuasion",
+        "history"
+      ],
+      "dc": 12,
+      "requires": [
+        "witness-safe"
+      ],
+      "success": {
+        "text": "原联的附注与信差见闻相符，你保留完整命令和出处。霍青没有因此交出不相关的军政权力。",
+        "clues": [
+          "sealed-order"
+        ],
+        "objectives": [
+          "official-proof"
+        ],
+        "trustNpc": "gate-commander"
+      },
+      "failure": {
+        "text": "原联与证言仍有待核实，你没有取得完整证明。渡口封箱联能提供另一条独立核对路线。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "secure-duplicate-order",
+      "location": "gatehouse",
+      "title": "用渡口封箱联核验同一完整命令",
+      "prompt": "将已救回的货运档案与营房副联核对封印、编号及附注，用来源证明代替对人的猜测。",
+      "skills": [
+        "investigation",
+        "history",
+        "persuasion"
+      ],
+      "dc": 12,
+      "requires": [
+        "ferry-manifest"
+      ],
+      "success": {
+        "text": "渡口与营房副联互证完整命令。即使信差的路线调查受挫，附注责任仍可被公开核查。",
+        "clues": [
+          "sealed-order"
+        ],
+        "objectives": [
+          "official-proof"
+        ],
+        "trustNpc": "gate-commander"
+      },
+      "failure": {
+        "text": "两份副联尚未形成可靠对应，你未取得完整证明。可换核对项目或回查信差原联。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "raise-lower-gates",
+      "location": "old-gates",
+      "title": "按程序先开下层泄压闸",
+      "prompt": "依据维修次序核对阀位、协调检修者分次转动，或沿标尺验证每一步压力变化，不碰上层主闸。",
+      "skills": [
+        "athletics",
+        "investigation",
+        "sleightOfHand"
+      ],
+      "dc": 12,
+      "requires": [
+        "maintenance-procedure"
+      ],
+      "success": {
+        "text": "下层泄压逐次执行，系统压力缓解，记忆院冷却仍受控。主闸没有被贸然全开。",
+        "clues": [
+          "lower-gates-open"
+        ],
+        "objectives": [
+          "pressure-relieved"
+        ],
+        "trustNpc": "inspector"
+      },
+      "failure": {
+        "text": "压力验证还不可靠，下层泄压尚未完成。可以退回检修台换操作次序，没有出现配置外的爆闸或伤亡。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "authorize-inspection",
+      "location": "old-gates",
+      "title": "让木偶巡守认出合法检修路线",
+      "prompt": "按完整命令核对授权，以原指令交接、观察巡守规律，或用安全诱导使其让出核准路线。",
+      "skills": [
+        "investigation",
+        "persuasion",
+        "stealth"
+      ],
+      "dc": 12,
+      "requires": [
+        "sealed-order"
+      ],
+      "success": {
+        "text": "核准检修路线得到确认，巡守木偶不再挡路。你取得通行，不取得指挥守闸军的特权。",
+        "clues": [
+          "inspection-pass"
+        ],
+        "objectives": [
+          "guard-bypassed"
+        ],
+        "trustNpc": "inspector"
+      },
+      "failure": {
+        "text": "巡守仍未确认路线，通行安排没有完成。可研究鸣哨旁路，改用安全诱导或在自愿时迎战。",
+        "clock": 1
+      },
+      "encounter": {
+        "name": "失步巡守木偶",
+        "hp": 8,
+        "maxHp": 8,
+        "ac": 11,
+        "attackBonus": 1,
+        "damageDie": 4,
+        "damageBonus": 0,
+        "dex": -1,
+        "sleepImmune": true
+      }
+    },
+    {
+      "id": "read-bypass-sequence",
+      "location": "old-gates",
+      "title": "找出不伤守卫的鸣哨旁路",
+      "prompt": "对照调令所列检修口令，观察旧牌和巡守周期，或向检修员询问空台交接流程。",
+      "skills": [
+        "investigation",
+        "stealth",
+        "perception"
+      ],
+      "dc": 12,
+      "requires": [
+        "first-order"
+      ],
+      "success": {
+        "text": "你找到按序鸣哨、空台交接与保留退路的流程。它能支持灯塔安全交接，不要求杀伤守卫。",
+        "clues": [
+          "bypass-sequence"
+        ],
+        "objectives": [],
+        "trustNpc": "inspector"
+      },
+      "failure": {
+        "text": "鸣哨和巡守周期还没对应，你未弄清旁路。可以改观察节拍或用完整授权路线。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "inspect-memory-silt",
+      "location": "cistern",
+      "title": "把蓄池淤层与冷却槽对应",
+      "prompt": "运用盐田缓冲知识读取淤层、比较沉积物，或询问沉沙员历次退水的变化。",
+      "skills": [
+        "nature",
+        "investigation",
+        "arcana"
+      ],
+      "dc": 12,
+      "requires": [
+        "terrace-mechanism"
+      ],
+      "success": {
+        "text": "银灰沉积与记忆院冷却槽相符，证明水路长期相连。这一证据无需把水声解释成神谕。",
+        "clues": [
+          "memory-silt"
+        ],
+        "objectives": [],
+        "trustNpc": "silt-reader"
+      },
+      "failure": {
+        "text": "淤层出处还不能可靠对应，你未取得连接证据。可以换样本对照或查记忆院目录。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "recover-accident-records",
+      "location": "cistern",
+      "title": "把铁箱记录和工程日记互证",
+      "prompt": "按日记日期查退水槽铁箱，核对撤离船次和改抄痕迹，或请沉沙员区分原始记录与后加批注。",
+      "skills": [
+        "investigation",
+        "history",
+        "perception"
+      ],
+      "dc": 12,
+      "requires": [
+        "engineer-diary"
+      ],
+      "success": {
+        "text": "旧箱与日记互证撤离缺口及后来删改。你把当年的损失与现在的责任分开，没有替逝者制造新要求。",
+        "clues": [
+          "old-accident"
+        ],
+        "objectives": [
+          "old-accident-mapped"
+        ],
+        "trustNpc": "silt-reader"
+      },
+      "failure": {
+        "text": "铁箱记录与日记还未可靠对应，你没有查清旧事故。礼拜堂原卷编号也能引向契约原件。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "drain-archive",
+      "location": "cistern",
+      "title": "让记忆院先恢复安全排水",
+      "prompt": "按已开启下层闸的压力逐项疏通退水槽、协调沉沙员操作，或设计可逐步验证的排水步骤。",
+      "skills": [
+        "athletics",
+        "investigation",
+        "survival"
+      ],
+      "dc": 12,
+      "requires": [
+        "lower-gates-open"
+      ],
+      "success": {
+        "text": "退水槽恢复工作，记忆院冷却走廊不再积压。你可以据此争取查阅，不代表能任意读取私人记忆。",
+        "clues": [
+          "archive-drained"
+        ],
+        "objectives": [
+          "archive-accessible"
+        ],
+        "trustNpc": "silt-reader"
+      },
+      "failure": {
+        "text": "排水验证还不稳，记忆院未确认安全。可改变疏通次序或核对另一段压力。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "request-original-access",
+      "location": "archive-court",
+      "title": "以安全记录争取有限查阅",
+      "prompt": "提交实际排水记录，说明调查范围，或帮助工作人员划清公开文件与私人记忆。",
+      "skills": [
+        "persuasion",
+        "investigation",
+        "insight"
+      ],
+      "dc": 12,
+      "requires": [
+        "archive-drained"
+      ],
+      "success": {
+        "text": "容笺核对检修记录，安排目录员陪同查原件。许可明确范围，私人记忆没有被一并开放。",
+        "clues": [
+          "archivist-access"
+        ],
+        "objectives": [],
+        "trustNpc": "deputy"
+      },
+      "failure": {
+        "text": "范围与安全记录尚未谈清，你未取得查阅安排。可补核对、换问题，或从公开潮碑索引查起。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "hear-archive-staff",
+      "location": "archive-court",
+      "title": "让工作人员只为亲见之事作证",
+      "prompt": "用完整命令核对改封皮、异常上报与日常登记日期，辨认推测，或建立不把所有人一概定罪的问询。",
+      "skills": [
+        "insight",
+        "investigation",
+        "persuasion"
+      ],
+      "dc": 12,
+      "requires": [
+        "sealed-order"
+      ],
+      "success": {
+        "text": "工作人员留下具体日期和职责范围，承认各自疏忽。你获得有出处证词，没有让他们替居民同意续存。",
+        "clues": [
+          "staff-testimony"
+        ],
+        "objectives": [
+          "staff-heard"
+        ],
+        "trustNpc": "deputy"
+      },
+      "failure": {
+        "text": "证言仍混着推测，工作人员没有确认完整记录。可换一份可核对日期，或请他们分别说明。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "fund-record-copies",
+      "location": "archive-court",
+      "title": "把保存历史变成抄写与存放计划",
+      "prompt": "参考盐沼实际补给安排纸张、抄写与高地存放，划清公开许可，或设计能追溯出处的索引。",
+      "skills": [
+        "investigation",
+        "persuasion",
+        "history"
+      ],
+      "dc": 12,
+      "requires": [
+        "marsh-supplied"
+      ],
+      "success": {
+        "text": "抄写人员、器材与两处存放点落实，范围限于获准公开记录。你准备保全历史，没有擅占私人记忆。",
+        "clues": [
+          "copies-plan"
+        ],
+        "objectives": [
+          "copies-backed"
+        ],
+        "trustNpc": "deputy"
+      },
+      "failure": {
+        "text": "来源或人手安排仍有缺口，抄写计划未落实。可以改变分工、补索引，或先核实公开范围。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "read-original-contract",
+      "location": "catalogue",
+      "title": "从旧事故原卷读出完整契约",
+      "prompt": "凭旧事故日期与有限查阅安排比对原件、誊本和封皮，核对限期、退出与维修附录。",
+      "skills": [
+        "investigation",
+        "history",
+        "arcana"
+      ],
+      "dc": 12,
+      "requires": [
+        "old-accident",
+        "archivist-access"
+      ],
+      "success": {
+        "text": "原件规定三十年应急维护与本人退出权，期满须再问。机械退出程序仍在，原文没有要求后人献命。",
+        "clues": [
+          "founding-contract"
+        ],
+        "objectives": [
+          "truth-secured"
+        ],
+        "trustNpc": "cataloguer"
+      },
+      "failure": {
+        "text": "原件与誊本还没核清，你未取得完整契约。可以用潮碑原卷编号走另一条核查路线。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "read-contract-by-index",
+      "location": "catalogue",
+      "title": "用潮碑编号和沉积证据查同一原约",
+      "prompt": "把礼拜堂原卷编号与冷却沉积来源交叉核对，查获准公开的工程契约部分，避开私人记录。",
+      "skills": [
+        "history",
+        "investigation",
+        "religion"
+      ],
+      "dc": 12,
+      "requires": [
+        "memorial-map",
+        "memory-silt"
+      ],
+      "success": {
+        "text": "两条独立来源对应同一公开工程原约。你核对出三十年限期、退出权和机械程序，避开了私人记忆。",
+        "clues": [
+          "founding-contract"
+        ],
+        "objectives": [
+          "truth-secured"
+        ],
+        "trustNpc": "cataloguer"
+      },
+      "failure": {
+        "text": "编号与工程附件仍有歧义，你未核实原约。可查旧事故和陪同原件，或换核对字段。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "trace-consent-gap",
+      "location": "catalogue",
+      "title": "查明谁没有被重新问过",
+      "prompt": "沿命令链比对续存登记和期满通知，统计默认许可，或与目录员核实哪些签名只能代表本人。",
+      "skills": [
+        "investigation",
+        "insight",
+        "history"
+      ],
+      "dc": 12,
+      "requires": [
+        "command-chain"
+      ],
+      "success": {
+        "text": "期满没有逐人重问的缺口得到证明。你记录默认延长的具体做法，没有让一次签字变成世代义务。",
+        "clues": [
+          "consent-gap"
+        ],
+        "objectives": [
+          "consent-gap"
+        ],
+        "trustNpc": "cataloguer"
+      },
+      "failure": {
+        "text": "通知与许可名单还没可靠对应，你未查清缺口。可以改变核对分组或请护理师核查同意流程。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "ask-preserved-witnesses",
+      "location": "healing-ward",
+      "title": "按退出见证句问回声原意",
+      "prompt": "用已核实见证句按许可播放固定记录，耐心分清录声和回应，或由护理师引导完整询问。",
+      "skills": [
+        "religion",
+        "insight",
+        "performance"
+      ],
+      "dc": 12,
+      "requires": [
+        "witness-phrase"
+      ],
+      "success": {
+        "text": "有限回应与固定记录核对了本人原始选择。回声没有回答没保存过的问题，也没有向你授予神力。",
+        "clues": [
+          "names-answered"
+        ],
+        "objectives": [
+          "witnesses-answered"
+        ],
+        "trustNpc": "caregiver"
+      },
+      "failure": {
+        "text": "词序或许可范围还不清，回应未被可靠核对。可以请护理师重排询问，或先查原条款。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "secure-ward-care",
+      "location": "healing-ward",
+      "title": "给活人保留照护与等待空间",
+      "prompt": "依据已完成转移安排床位、护理轮值和家属接应，或把调查与日常照护分开协调。",
+      "skills": [
+        "medicine",
+        "persuasion",
+        "investigation"
+      ],
+      "dc": 12,
+      "requires": [
+        "evacuation-ready"
+      ],
+      "success": {
+        "text": "护理师确认床位、接应和逐人询问顺序，调查没有挤占眼前照护。没有人被迫为了方便而同意保存。",
+        "clues": [
+          "ward-safety"
+        ],
+        "objectives": [
+          "ward-secured"
+        ],
+        "trustNpc": "caregiver"
+      },
+      "failure": {
+        "text": "床位与接应仍对不上，照护安排没有完成。可换轮值、补去向核对或先减少调查干扰。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "record-unbound-name",
+      "location": "healing-ward",
+      "title": "让你的离奇背景成为待查的问题",
+      "prompt": "拿名字簿比对自述与旧名，谈一段你愿意承认的往事，或让护理师记录哪些身份还未证明。",
+      "skills": [
+        "history",
+        "insight",
+        "religion"
+      ],
+      "dc": 12,
+      "requires": [
+        "names-list"
+      ],
+      "success": {
+        "text": "你的自述和旧名相似处被认真留下，但没有被判定为神格、王位或继承能力。个人故事有了新问题，规则卡仍保持原有边界。",
+        "clues": [
+          "unbound-name"
+        ],
+        "objectives": [
+          "identity-recorded"
+        ],
+        "trustNpc": "caregiver"
+      },
+      "failure": {
+        "text": "相似处尚不能可靠说明，身份联系没有新证据。你可以承认未知、改查另一段记录，或让问题留到以后。",
+        "clock": 0
+      }
+    },
+    {
+      "id": "replay-core-terms",
+      "location": "echo-hall",
+      "title": "听见契约没有被删去的退出方案",
+      "prompt": "用原约与沉积连接核对原声、日期和机械附录，或请录声员逐段说明能够证明什么。",
+      "skills": [
+        "investigation",
+        "arcana",
+        "history"
+      ],
+      "dc": 12,
+      "requires": [
+        "founding-contract",
+        "memory-silt"
+      ],
+      "success": {
+        "text": "完整条款确认三种未来：自愿限期续存、保全抄件后退出，或公共限期托管再问。都需先稳住水压，也都不需献命。",
+        "clues": [
+          "core-terms"
+        ],
+        "objectives": [
+          "contract-understood"
+        ],
+        "trustNpc": "recordist"
+      },
+      "failure": {
+        "text": "原声与条款仍未逐项对上，你未确认可执行方案。可以重排比对或从潮仪检验机械部分。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "preserve-public-record",
+      "location": "echo-hall",
+      "title": "让证据可以被其他人独立核对",
+      "prompt": "依抄写计划整理核心条款、命令日期与获准录声，标明出处和私密边界，或组织有对照的公开阅读。",
+      "skills": [
+        "investigation",
+        "history",
+        "persuasion"
+      ],
+      "dc": 12,
+      "requires": [
+        "copies-plan",
+        "core-terms"
+      ],
+      "success": {
+        "text": "公开记录保留原文和出处，私人段落没有被擅播。各方现在能自己核对，而不是只相信你的讲述。",
+        "clues": [
+          "public-record"
+        ],
+        "objectives": [
+          "record-safe"
+        ],
+        "trustNpc": "recordist"
+      },
+      "failure": {
+        "text": "出处或公开范围仍有遗漏，记录未达到可核对要求。可补索引、换整理办法或问清许可。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "renew-voluntary-witnesses",
+      "location": "echo-hall",
+      "title": "重新问，而不是替后来者答应",
+      "prompt": "在许可缺口与有限回应证据上组织易懂问询，说明退出日期和边界，或让不同意者也能被认真记录。",
+      "skills": [
+        "persuasion",
+        "insight",
+        "religion"
+      ],
+      "dc": 12,
+      "requires": [
+        "consent-gap",
+        "names-answered"
+      ],
+      "success": {
+        "text": "有能力表达意愿的登记者得到重新询问，自愿范围、退出和复问日期写清。没有人替未出生的人签字。",
+        "clues": [
+          "voluntary-witnesses"
+        ],
+        "objectives": [
+          "voluntary-witnesses"
+        ],
+        "trustNpc": "recordist"
+      },
+      "failure": {
+        "text": "问询仍有不理解或不明确的部分，自愿见证没有核定。可以改变说明方式或请护理师逐人核查。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "verify-three-controls",
+      "location": "observatory",
+      "title": "让未来方案先通过机械检验",
+      "prompt": "把原契约和维修程序放到潮仪上比对，推演冷却、隔离与排水次序，或让技师重复验证你的解释。",
+      "skills": [
+        "arcana",
+        "investigation",
+        "nature"
+      ],
+      "dc": 12,
+      "requires": [
+        "maintenance-procedure",
+        "founding-contract"
+      ],
+      "success": {
+        "text": "潮仪确认先隔离强制归档、保持冷却，再受控排水与校准稳压。方案通过检验，现场操作仍须实际执行。",
+        "clues": [
+          "three-controls"
+        ],
+        "objectives": [
+          "safe-procedure"
+        ],
+        "trustNpc": "tide-scholar"
+      },
+      "failure": {
+        "text": "次序还不能重复验证，你没有取得可靠现场程序。可以拆开验证其中一段或补齐观测。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "calibrate-observatory",
+      "location": "observatory",
+      "title": "把修好的灯标接入共同校准",
+      "prompt": "依据公开同步灯标校准院顶潮仪，比较误差、协调观察，或用可验证节拍建立基准。",
+      "skills": [
+        "investigation",
+        "performance",
+        "arcana"
+      ],
+      "dc": 12,
+      "requires": [
+        "beacon-online"
+      ],
+      "success": {
+        "text": "灯标与潮仪读数一致，齿轮室有了公开校准基准。此处的准备不会自动稳定远处装置。",
+        "clues": [
+          "calibration-ready"
+        ],
+        "objectives": [
+          "calibration-ready"
+        ],
+        "trustNpc": "tide-scholar"
+      },
+      "failure": {
+        "text": "误差仍未消除，校准没有完成。可以换对照时间点或核查另一根指针。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "calculate-drainage-window",
+      "location": "observatory",
+      "title": "计算不把洪水甩给盐田的排水窗口",
+      "prompt": "将渡口时间差与外海潮表核对，解释缓冲池的作用，或请技师独立重复推算。",
+      "skills": [
+        "nature",
+        "investigation",
+        "survival"
+      ],
+      "dc": 12,
+      "requires": [
+        "tidal-delay"
+      ],
+      "success": {
+        "text": "可受控排水的低潮窗口核对完成，前提是下层泄压已完成。海门全开仍不在安全方案之内。",
+        "clues": [
+          "drainage-window"
+        ],
+        "objectives": [
+          "window-mapped"
+        ],
+        "trustNpc": "tide-scholar"
+      },
+      "failure": {
+        "text": "潮窗计算还不能互证，你没有得到可靠窗口。可以补另一组观测或改变推算方法。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "negotiate-harbor-support",
+      "location": "quay-assembly",
+      "title": "让港区出力，同时保留问责",
+      "prompt": "拿港务条件与公开证据谈检修人手和短暂停航，辨认交换中的免查要求，或协调可执行职责。",
+      "skills": [
+        "persuasion",
+        "insight",
+        "investigation"
+      ],
+      "dc": 12,
+      "requires": [
+        "merchant-offer",
+        "public-record"
+      ],
+      "success": {
+        "text": "港商签下有期限的人手与停航安排，接受命令继续被公开核对。援助不免除责任，生计也没有被一笔抹掉。",
+        "clues": [
+          "harbor-support"
+        ],
+        "objectives": [
+          "harbor-committed"
+        ],
+        "trustNpc": "assembly-clerk"
+      },
+      "failure": {
+        "text": "合作与免查条件仍混在一起，港区尚未授权。可以换分工或先让另一方说明担忧。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "draft-civic-charter",
+      "location": "quay-assembly",
+      "title": "让盐田和城区都能撤回今天的授权",
+      "prompt": "以盐田合作和公开记录制定轮值、补偿核对与复议日期，或让不同群体分别说明授权边界。",
+      "skills": [
+        "persuasion",
+        "investigation",
+        "insight"
+      ],
+      "dc": 12,
+      "requires": [
+        "growers-support",
+        "public-record"
+      ],
+      "success": {
+        "text": "协作章程写明轮值、补偿和复议日期。到场者没有代表永远的居民，未来的人仍可修改安排。",
+        "clues": [
+          "civic-charter"
+        ],
+        "objectives": [
+          "charter-ready"
+        ],
+        "trustNpc": "assembly-clerk"
+      },
+      "failure": {
+        "text": "章程仍有一方边界不清，授权尚未形成。可以拆开谈具体职责或补交接安排。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "prepare-public-hearing",
+      "location": "quay-assembly",
+      "title": "把责任材料交给能独立核查的人",
+      "prompt": "将完整命令与公开记录整理为来源清楚的听证材料，区分提案、批准和普通执行，或协调独立复核。",
+      "skills": [
+        "investigation",
+        "history",
+        "persuasion"
+      ],
+      "dc": 12,
+      "requires": [
+        "sealed-order",
+        "public-record"
+      ],
+      "success": {
+        "text": "独立听证的材料与核查程序落实。谁有责将靠事实继续调查，不靠你一句定罪或自封领主。",
+        "clues": [
+          "hearing-ready"
+        ],
+        "objectives": [
+          "hearing-ready"
+        ],
+        "trustNpc": "assembly-clerk"
+      },
+      "failure": {
+        "text": "材料出处或职责区分仍有遗漏，听证尚未准备好。可以补副联、重排证据或换核查程序。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "enter-lighthouse-with-pass",
+      "location": "lighthouse-landing",
+      "title": "凭核准检修安排进入灯塔",
+      "prompt": "用已核验的旧闸流程与栈台守卫交接，说明工作范围和撤离职责，不要求无关效忠。",
+      "skills": [
+        "persuasion",
+        "investigation",
+        "insight"
+      ],
+      "dc": 10,
+      "requires": [
+        "inspection-pass"
+      ],
+      "success": {
+        "text": "于栈核准具体检修线路与交接，灯塔通行落实。守卫继续保护撤离道，没有变成你的私人部下。",
+        "clues": [
+          "lighthouse-access"
+        ],
+        "objectives": [
+          "lighthouse-accessible"
+        ],
+        "trustNpc": "lighthouse-guard"
+      },
+      "failure": {
+        "text": "工作范围或交接仍不清，通行尚未确认。可以改用鸣哨旁路的安全交接，或补检修说明。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "enter-lighthouse-by-bypass",
+      "location": "lighthouse-landing",
+      "title": "用不伤人的旁路完成安全交接",
+      "prompt": "按已知鸣哨次序把巡守引向空台，观察岗哨视野并说明撤离安排，或让守卫核对旁路规程。",
+      "skills": [
+        "stealth",
+        "investigation",
+        "performance"
+      ],
+      "dc": 12,
+      "requires": [
+        "bypass-sequence"
+      ],
+      "success": {
+        "text": "空台交接与退路被确认，核准检修线路打开。你没有伤害守卫，也没有把潜行描述成任意瞬移。",
+        "clues": [
+          "lighthouse-access"
+        ],
+        "objectives": [
+          "lighthouse-accessible"
+        ],
+        "trustNpc": "lighthouse-guard"
+      },
+      "failure": {
+        "text": "旁路次序或岗哨交接仍不清，通行尚未落实。可以用完整授权路线，或改变安全诱导方法。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "secure-lighthouse-exit",
+      "location": "lighthouse-landing",
+      "title": "先给检修者和病人留一条退路",
+      "prompt": "把船队和高地便道接成具体撤离分工，核对停靠与搬运位置，或让守卫逐项演练交接。",
+      "skills": [
+        "survival",
+        "persuasion",
+        "athletics",
+        "medicine"
+      ],
+      "dc": 12,
+      "requires": [
+        "relief-boats",
+        "dry-route"
+      ],
+      "success": {
+        "text": "船队、高地接应与栈台人员确认撤离位置。检修的勇气没有建立在堵死别人退路之上。",
+        "clues": [
+          "exit-route"
+        ],
+        "objectives": [
+          "exits-secured"
+        ],
+        "trustNpc": "lighthouse-guard"
+      },
+      "failure": {
+        "text": "停靠和交接仍有不可靠处，退路尚未落实。可以换接应点或调整人员顺序。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "isolate-archive",
+      "location": "gear-room",
+      "title": "按安全次序断开强制归档",
+      "prompt": "带三套控制程序和通行安排核对离合器，分次操作并观察冷却，或让轴房工与你交叉确认。",
+      "skills": [
+        "investigation",
+        "sleightOfHand",
+        "arcana"
+      ],
+      "dc": 12,
+      "requires": [
+        "three-controls",
+        "lighthouse-access"
+      ],
+      "success": {
+        "text": "归档与冷却按次序分离，旧约不再自动接入新登记和后人。旧回声仍被保存，去留需要最后决定。",
+        "clues": [
+          "archive-isolated"
+        ],
+        "objectives": [
+          "archive-isolated"
+        ],
+        "trustNpc": "gear-keeper"
+      },
+      "failure": {
+        "text": "离合器次序尚未可靠核对，隔离未完成。可换检查方法或请已组织的检修队协助，机器没有配置外地爆炸。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "isolate-with-repair-team",
+      "location": "gear-room",
+      "title": "让工坊轮值共同完成同一隔离",
+      "prompt": "带已组织检修队按三套控制分人核查，协调同步离合、验证冷却，或通过工具标记避免误操作。",
+      "skills": [
+        "athletics",
+        "persuasion",
+        "investigation"
+      ],
+      "dc": 12,
+      "requires": [
+        "repair-team",
+        "three-controls"
+      ],
+      "success": {
+        "text": "工坊轮值与宋离交叉核对隔离，冷却仍运行，强制归档已断开。这是独立办法，同一结果不会重复兑现。",
+        "clues": [
+          "archive-isolated"
+        ],
+        "objectives": [
+          "archive-isolated"
+        ],
+        "trustNpc": "gear-keeper"
+      },
+      "failure": {
+        "text": "分工或同步核查仍不可靠，隔离尚未完成。可以缩小步骤、换协调办法或按单人检修程序核查。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "open-sea-channel",
+      "location": "gear-room",
+      "title": "把安全潮窗落实成受控排水",
+      "prompt": "依据外海窗口与已完成下层泄压，分次操作阀位、核查缓冲池读数，或协调两端信号。",
+      "skills": [
+        "athletics",
+        "investigation",
+        "nature"
+      ],
+      "dc": 12,
+      "requires": [
+        "drainage-window",
+        "lower-gates-open"
+      ],
+      "success": {
+        "text": "海门在低潮窗口逐次开启，缓冲池与城区读数保持受控。你没有把洪水直接转嫁给盐田。",
+        "clues": [
+          "sea-channel-open"
+        ],
+        "objectives": [
+          "sea-gate-open"
+        ],
+        "trustNpc": "gear-keeper"
+      },
+      "failure": {
+        "text": "两端读数还没可靠同步，受控海门尚未打开。可以换信号分工或核查另一段阀位。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "stabilize-tide-heart",
+      "location": "tide-heart",
+      "title": "先稳住现在，再谈未来",
+      "prompt": "利用已隔离归档和共同校准信号，调整稳压与冷却、核对每次读数，或请静井守人重复验证。",
+      "skills": [
+        "arcana",
+        "investigation",
+        "nature"
+      ],
+      "dc": 12,
+      "requires": [
+        "archive-isolated",
+        "calibration-ready"
+      ],
+      "success": {
+        "text": "逆流停止继续扩大，当前潮压与冷却稳定。装置没有替居民决定记忆的去留；最后的选择仍在你们手里。",
+        "clues": [
+          "tide-stable"
+        ],
+        "objectives": [
+          "tide-stable"
+        ],
+        "trustNpc": "well-tender"
+      },
+      "failure": {
+        "text": "稳压读数还不可靠，当前稳定尚未完成。可以改变校准办法或请工匠核查，不会自动触发结局。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "prepare-voluntary-renewal",
+      "location": "tide-heart",
+      "title": "为愿意留下者准备有期限的续存",
+      "prompt": "依据完整条款与重新征询的自愿名单核对申请，说明退出、复问和维护轮值，或让每项授权可追溯。",
+      "skills": [
+        "persuasion",
+        "religion",
+        "investigation"
+      ],
+      "dc": 12,
+      "requires": [
+        "core-terms",
+        "voluntary-witnesses"
+      ],
+      "success": {
+        "text": "续存准备只覆盖明确同意者，退出和复问日期可检查。没有回声被提前续期，也没有人替孩子答应。",
+        "clues": [
+          "renewal-ready"
+        ],
+        "objectives": [
+          "renewal-ready"
+        ],
+        "trustNpc": "well-tender"
+      },
+      "failure": {
+        "text": "申请或退出边界仍不清，续存方案未准备好。可以改变说明方式、核对自愿范围，或准备另一种未来。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "prepare-release",
+      "location": "tide-heart",
+      "title": "为愿意离开者准备真正能执行的退出",
+      "prompt": "在归档隔离、受控排水与本人意愿基础上核对终止顺序，安排抄件与告别，或检验不会误伤冷却的步骤。",
+      "skills": [
+        "religion",
+        "investigation",
+        "arcana"
+      ],
+      "dc": 12,
+      "requires": [
+        "archive-isolated",
+        "sea-channel-open",
+        "names-answered"
+      ],
+      "success": {
+        "text": "终止意愿和机械退出顺序全部核对，获准抄件仍须实际保全。准备没有提前释放或抹去任何回声。",
+        "clues": [
+          "release-ready"
+        ],
+        "objectives": [
+          "release-ready"
+        ],
+        "trustNpc": "well-tender"
+      },
+      "failure": {
+        "text": "终止顺序仍有未核实处，退出方案没有准备好。可以问清本人意愿、换验证方法，或先准备其他未来。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "finish-memory-copies",
+      "location": "oath-bridge",
+      "title": "在最后选择前，把获准历史真正保全",
+      "prompt": "按抄写计划逐项核对公开记录、索引和两处存放，校正转录误差，或安排可追溯的交接。",
+      "skills": [
+        "investigation",
+        "history",
+        "persuasion"
+      ],
+      "dc": 12,
+      "requires": [
+        "copies-plan",
+        "public-record"
+      ],
+      "success": {
+        "text": "获准文字与录声抄件的双份索引保存到高地和邮舍。你保住历史证据，也承认抄件不等同原来的回声体验。",
+        "clues": [
+          "memory-copies"
+        ],
+        "objectives": [
+          "copies-preserved"
+        ],
+        "trustNpc": "letter-keeper"
+      },
+      "failure": {
+        "text": "抄件或交接仍有缺口，保全没有完成。可重核来源、改变抄写分工，不会凭失败销毁原记录。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "agree-return-pact",
+      "location": "oath-bridge",
+      "title": "让人知道安全以后怎样回家",
+      "prompt": "以已完成转移和检修退路制定返家复查、替代住处与家属交接，或让安置人员逐项确认。",
+      "skills": [
+        "persuasion",
+        "medicine",
+        "investigation"
+      ],
+      "dc": 12,
+      "requires": [
+        "evacuation-ready",
+        "exit-route"
+      ],
+      "success": {
+        "text": "接应与安置所确认返家顺序和复查，无法立即返家者有替代住处。没有承诺所有财物已经恢复。",
+        "clues": [
+          "return-pact"
+        ],
+        "objectives": [
+          "return-pact"
+        ],
+        "trustNpc": "letter-keeper"
+      },
+      "failure": {
+        "text": "返家顺序或替代住处仍没核清，约定尚未落实。可以换安置分工或先听尚不能返家的居民。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "confirm-council-mandate",
+      "location": "oath-bridge",
+      "title": "把公共委托写得可以撤回",
+      "prompt": "结合听证与协作章程核对各方授权，写清期限、复问和撤回办法，或逐项检查缺席者如何参与后续修改。",
+      "skills": [
+        "persuasion",
+        "investigation",
+        "insight"
+      ],
+      "dc": 12,
+      "requires": [
+        "hearing-ready",
+        "civic-charter"
+      ],
+      "success": {
+        "text": "有期限的公共维护委托形成，授权可撤回、责任可核查。你促成了合作，没有因此登上统治者的位置。",
+        "clues": [
+          "council-mandate"
+        ],
+        "objectives": [
+          "council-mandate"
+        ],
+        "trustNpc": "letter-keeper"
+      },
+      "failure": {
+        "text": "委托仍有边界不清，公共授权没有核定。可以分开谈具体事项或换复核办法，不会强迫任何一方永久服从。",
+        "clock": 1
+      }
+    },
+    {
+      "id": "choose-voluntary-renewal",
+      "location": "oath-bridge",
+      "title": "最终选择：只为重新同意者限期续存",
+      "prompt": "所有必要前提已成立。与见证人核对有期限的自愿续存、退出入口和公共维护，明确启动这一未来；执行后本战役结束。",
+      "skills": [
+        "persuasion",
+        "investigation",
+        "religion"
+      ],
+      "dc": 10,
+      "requires": [
+        "renewal-ready",
+        "council-mandate",
+        "memory-copies"
+      ],
+      "success": {
+        "text": "你明确启动有期限的自愿续存与公共维护，保留退出和复问。此决定结束本战役，不把其他准备方案也当作已经执行。",
+        "clues": [],
+        "objectives": [],
+        "trustNpc": "letter-keeper",
+        "ending": "voluntary-renewal"
+      },
+      "failure": {
+        "text": "最后授权仍有未讲清处，续存尚未启动，战役没有结束。你可换说明办法，或选择已经准备好的另一个未来。",
+        "clock": 0
+      }
+    },
+    {
+      "id": "choose-open-tide",
+      "location": "oath-bridge",
+      "title": "最终选择：保全获准历史后执行退出",
+      "prompt": "所有必要前提已成立。核对已表达的终止意愿、双份抄件与机械退出程序，明确执行释放；执行后本战役结束。",
+      "skills": [
+        "religion",
+        "investigation",
+        "persuasion"
+      ],
+      "dc": 10,
+      "requires": [
+        "release-ready",
+        "memory-copies",
+        "exit-route"
+      ],
+      "success": {
+        "text": "你明确执行已核对意愿的退出与释放，保全获准历史并留下公开责任核查。此决定结束本战役。",
+        "clues": [],
+        "objectives": [],
+        "trustNpc": "letter-keeper",
+        "ending": "open-tide"
+      },
+      "failure": {
+        "text": "最后终止核对仍有未讲清处，释放没有开始，战役没有结束。你可换核对办法，或选择已准备好的另一个未来。",
+        "clock": 0
+      }
+    },
+    {
+      "id": "choose-public-custody",
+      "location": "oath-bridge",
+      "title": "最终选择：公共限期托管，逐人再问",
+      "prompt": "所有必要前提已成立。核对公共委托、港区职责和照护安排，明确启动有限期托管与逐人重问；执行后本战役结束。",
+      "skills": [
+        "investigation",
+        "persuasion",
+        "insight"
+      ],
+      "dc": 10,
+      "requires": [
+        "harbor-support",
+        "council-mandate",
+        "memory-copies",
+        "ward-safety"
+      ],
+      "success": {
+        "text": "你明确启动有期限的公共托管、维护与逐人重问，不替全体回声一并续存或释放。此决定结束本战役。",
+        "clues": [],
+        "objectives": [],
+        "trustNpc": "letter-keeper",
+        "ending": "public-custody"
+      },
+      "failure": {
+        "text": "最后委托仍有未讲清处，托管没有启动，战役没有结束。你可改核对方法，或选择已经准备好的另一个未来。",
+        "clock": 0
+      }
+    }
+  ],
+  "clocks": [
+    {
+      "id": "low-street-response",
+      "title": "低街抢险与后援",
+      "max": 100,
+      "stoppedBy": [
+        "lowerwall-stable",
+        "residents-protected"
+      ],
+      "thresholds": [
+        {
+          "at": 8,
+          "text": "邮工公开一份送达抄件，补出阿循与旧闸的回执线索。它没有证明信件内容是真的。",
+          "clue": "broken-dispatch"
+        },
+        {
+          "at": 18,
+          "text": "盐沼信使送到邮舍路线副本，芦苇营地与望标的联系成了可查事实。",
+          "clue": "marsh-route"
+        },
+        {
+          "at": 34,
+          "text": "船主们在安置所反复协调后终于签下出船分工。漫长等待留在抢险手记里，居民转移还要执行。",
+          "clue": "relief-boats",
+          "objective": "boats-committed"
+        },
+        {
+          "at": 58,
+          "text": "城里的救援组经过多轮接应，完成低街居民向高处的转移并核对人数。此刻已有安置结果，旧闸系统与返家安排仍未解决。",
+          "clue": "evacuation-ready",
+          "objective": "residents-protected"
+        }
+      ]
+    },
+    {
+      "id": "old-lock-response",
+      "title": "旧闸险情与独立检修",
+      "max": 100,
+      "stoppedBy": [
+        "oldlock-stable",
+        "pressure-relieved"
+      ],
+      "thresholds": [
+        {
+          "at": 15,
+          "text": "工匠贴出区分泄压闸和主闸的旧检修图，采场与工坊的联系可以公开核对。",
+          "clue": "lock-route"
+        },
+        {
+          "at": 31,
+          "text": "矿工将淤线和吊机偏移交给工坊，配重井偏置承压的裂缝得到独立确认。",
+          "clue": "foundation-fracture"
+        },
+        {
+          "at": 53,
+          "text": "轮闸师完成缓慢的独立查图，公布稳定、泄压、隔离与冷却的维修次序。程序不需要献命，现场操作仍待执行。",
+          "clue": "maintenance-procedure"
+        },
+        {
+          "at": 82,
+          "text": "工坊救急队终于装好临时支撑，旧闸局部结构稳住。长期泄压、归档和水利安排仍须具体处理。",
+          "clue": "emergency-brace",
+          "objective": "oldlock-stable"
+        }
+      ]
+    },
+    {
+      "id": "archive-inquiry",
+      "title": "记忆院的独立核查",
+      "max": 100,
+      "stoppedBy": [
+        "tide-stable"
+      ],
+      "thresholds": [
+        {
+          "at": 22,
+          "text": "看碑人和护理师核对出一份名字簿，保留本人认可的称呼，并拒绝让后人替签。",
+          "clue": "names-list"
+        },
+        {
+          "at": 44,
+          "text": "修复礼拜堂的人公布旧水道图与目录编号，原卷调查多了一条独立入口。",
+          "clue": "memorial-map"
+        },
+        {
+          "at": 71,
+          "text": "目录员完成原件与誊本的独立比对，公开工程契约的限期、退出权与机械程序。原文没有要求献出后人生命。",
+          "clue": "founding-contract",
+          "objective": "truth-secured"
+        },
+        {
+          "at": 96,
+          "text": "录声员核对完未删条款，公开三种可执行未来的工程部分。选择仍需实际修复、授权和最后确认，核查不会自行结束战役。",
+          "clue": "core-terms",
+          "objective": "contract-understood"
+        }
+      ]
+    }
+  ],
+  "endings": {
+    "retreat": {
+      "title": "把还没答完的问题带走",
+      "text": "你在能安全离开的地方结束旅程，已完成的救援、发现与承诺仍有记录。没有完成的修复与调查不会被写成成功。暮汐城的人继续自己的工作；你不需要把离开伪装成整个世界都已得到答案。"
+    },
+    "voluntary-renewal": {
+      "title": "只替愿意留下的人留灯",
+      "text": "潮压已经稳定，低街居民有接应和返家复查，旧约不再强制接入后来者。你明确启动有期限的自愿续存：愿意留下的记忆保留，愿退出者仍有程序。公共委托负责维护、听证与定期重问，公开抄件让责任可以核查。城市保留了能够再次听见某些声音的温柔，也接受持续照护的工作与代价。今天没有人为未出生的孩子签字。",
+      "requires": [
+        "tide-stable",
+        "residents-protected",
+        "archive-isolated",
+        "renewal-ready",
+        "voluntary-witnesses",
+        "council-mandate",
+        "copies-preserved",
+        "return-pact"
+      ],
+      "clues": [
+        "tide-stable",
+        "renewal-ready",
+        "council-mandate",
+        "memory-copies"
+      ]
+    },
+    "open-tide": {
+      "title": "让海潮带走被允许离开的声音",
+      "text": "潮压稳定，归档隔离，受控海门与居民退路都已落实。你明确执行已核对本人意愿的退出方案：需要终止的旧回声逐项停止保存，获准文字与录声抄件留下可追溯历史。公开听证继续，活着的人按返家与复查安排重建生活。人们失去再次听见部分原回声的机会，也结束了以保存之名不断延期的义务。思念没有被宣布不重要，只是终于允许告别。",
+      "requires": [
+        "tide-stable",
+        "residents-protected",
+        "archive-isolated",
+        "sea-gate-open",
+        "release-ready",
+        "witnesses-answered",
+        "copies-preserved",
+        "exits-secured",
+        "return-pact",
+        "hearing-ready"
+      ],
+      "clues": [
+        "tide-stable",
+        "release-ready",
+        "memory-copies",
+        "exit-route"
+      ]
+    },
+    "public-custody": {
+      "title": "给尚未出生的人留一页空白",
+      "text": "潮压稳定、强制接入停止，公开历史与低街安置已有实际保障。你明确启动有限期公共托管：港区与盐田共同承担维护，独立听证核对旧责任，护理师逐人重问后再分别办理续存或退出。没有人在今夜替所有回声一并作答。这个方案保留时间，也要求居民继续劳动、复议和监督；英雄离开以后，城市仍有可撤回的委托。最后一封未来来信没有被写满，空白留给真正会生活在那里的人。",
+      "requires": [
+        "tide-stable",
+        "residents-protected",
+        "archive-isolated",
+        "harbor-committed",
+        "council-mandate",
+        "copies-preserved",
+        "ward-secured",
+        "return-pact"
+      ],
+      "clues": [
+        "tide-stable",
+        "harbor-support",
+        "council-mandate",
+        "memory-copies",
+        "ward-safety"
+      ]
+    }
+  },
+  "backstoryHooks": [
+    {
+      "id": "first-light",
+      "location": "lantern-inn",
+      "question": "闻苇问：当所有人都说事情太大，你通常先照顾哪个具体的人？这与你既有的理想、亏欠或合作理由怎样相连？",
+      "tags": [
+        "责任",
+        "救援"
+      ],
+      "truthStatus": "unresolved"
+    },
+    {
+      "id": "letter-to-future",
+      "location": "courier-house",
+      "question": "若这封信真的寄给多年后的孩子，你会希望自己的哪个承诺被他们看见，哪个决定允许他们推翻？",
+      "tags": [
+        "家人",
+        "承诺"
+      ],
+      "truthStatus": "unresolved"
+    },
+    {
+      "id": "stranger-in-marsh",
+      "location": "reed-camp",
+      "question": "乌芦问你曾在哪里被当作外来者。你愿意怎样换取帮助，而不把别人当成你传奇里的工具？",
+      "tags": [
+        "流亡",
+        "身份"
+      ],
+      "truthStatus": "unresolved"
+    },
+    {
+      "id": "name-and-claim",
+      "location": "memorial",
+      "question": "名字簿是否让你想起自己使用过的名字、失忆或神明身份声明？哪些已经是你认可的背景，哪些需要证据、可以保留未知？",
+      "tags": [
+        "失忆",
+        "神明",
+        "假名"
+      ],
+      "truthStatus": "unresolved"
+    },
+    {
+      "id": "failed-rescue",
+      "location": "ferry",
+      "question": "这次谨慎接应是否让你想起以前错过或完成的救援？如果你愿意，讲一个会影响今日风险选择的具体记忆。",
+      "tags": [
+        "亏欠",
+        "救援"
+      ],
+      "truthStatus": "unresolved"
+    },
+    {
+      "id": "family-page",
+      "location": "tidal-fields",
+      "question": "程汀不愿公开祖父失误。你的家族、师承或组织也有你想保护而不愿粉饰的一页吗？",
+      "tags": [
+        "家族",
+        "师承"
+      ],
+      "truthStatus": "unresolved"
+    },
+    {
+      "id": "orders-and-oaths",
+      "location": "gatehouse",
+      "question": "霍青问：你认为什么时候该服从命令，什么时候该要求说明？你已有的誓约会让这个问题更容易还是更难？",
+      "tags": [
+        "誓约",
+        "服从"
+      ],
+      "truthStatus": "unresolved"
+    },
+    {
+      "id": "memory-consent",
+      "location": "healing-ward",
+      "question": "如果有人保存你的记忆，你希望谁能读取、保存多久、怎样退出？答案是角色意愿，不会自动改变世界记录或授予能力。",
+      "tags": [
+        "记忆",
+        "同意"
+      ],
+      "truthStatus": "unresolved"
+    },
+    {
+      "id": "power-or-care",
+      "location": "gear-room",
+      "question": "面对能维持城市的机器，你更愿意被叫作掌控者还是照护者？这与你宣称的王位、神格或普通职业有何矛盾？身份声明尚需证据。",
+      "tags": [
+        "权力",
+        "神格"
+      ],
+      "truthStatus": "unresolved"
+    },
+    {
+      "id": "blank-page",
+      "location": "oath-bridge",
+      "question": "给未来居民的最后一封信，你愿意写下什么，又愿意有意留白什么？你希望伙伴怎样记住这次决定？",
+      "tags": [
+        "未来",
+        "同伴"
+      ],
+      "truthStatus": "unresolved"
+    }
+  ]
+}

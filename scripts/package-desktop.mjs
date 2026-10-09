@@ -9,11 +9,15 @@ import {
   sha256,
   prepareElectron,
 } from "../desktop/distribution.mjs";
+import windowsSigning from "../desktop/windows-signing.cjs";
 
 if (process.platform !== "win32")
   throw new Error("Squirrel.Windows packaging must run on Windows.");
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const version = await assertReleaseVersion(root);
+const signing = await windowsSigning.preflightSigning();
+if (!signing)
+  console.warn("UNSIGNED desktop build: no trusted publisher certificate is configured. See docs/windows-signing.md. Set LANTERN_SIGN_REQUIRED=1 to prohibit this output.");
 const app = join(root, "dist", "desktop", "app");
 const manifest = JSON.parse(
   await readFile(
@@ -75,11 +79,26 @@ if (
   !files.some((file) => /\.zip$/.test(file.name))
 )
   throw new Error("Forge did not produce both Setup.exe and portable ZIP.");
+const packaged = join(app, "out", "LanternTable-win32-x64");
+const packagedManifest = JSON.parse(
+  await readFile(join(packaged, "resources", "runtime", "desktop-release.json"), "utf8"),
+);
+let signature = { status: "unsigned", reason: "No publisher code-signing certificate configured." };
+if (signing) {
+  const binaries = await windowsSigning.verifySignedDirectory(packaged, signing);
+  const setup = files.find((file) => /-Setup\.exe$/.test(file.name));
+  const installer = await windowsSigning.verifySignedFile(join(output, setup.name), signing, signing.thumbprint);
+  signature = {
+    status: "signed", algorithm: "sha256", timestamp: "rfc3161",
+    certificate: signing.certificate, binaries,
+    installer: { name: setup.name, ...installer },
+  };
+}
 files.sort((a, b) => a.name.localeCompare(b.name));
 await writeFile(
   join(output, "desktop-release.json"),
   JSON.stringify(
-    { ...manifest, electronDistribution, artifacts: files },
+    { ...packagedManifest, electronDistribution, signature, artifacts: files },
     null,
     2,
   ),

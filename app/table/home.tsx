@@ -37,10 +37,11 @@ import { CharacterDetails } from "./character-details";
 import { Adventure } from "./adventure";
 import { Settings } from "./settings";
 import { Multiplayer } from "./multiplayer";
+import { Workshop } from "./workshop";
 import "../table.css";
 import "./extended.css";
 
-type Section = "lobby" | "characters" | "camp" | "rules" | "adventure" | "multiplayer";
+type Section = "lobby" | "characters" | "camp" | "rules" | "adventure" | "multiplayer" | "workshop";
 export default function Home() {
   const [data, setData] = useState<Bootstrap | null>(null),
     [section, setSection] = useState<Section>("lobby");
@@ -315,6 +316,7 @@ export default function Home() {
             </button>
           ))}
           {data?.local && <button className={`nav-item ${section === "multiplayer" ? "active" : ""}`} onClick={() => navigate("multiplayer")}><Users size={19} /><span>多人组队</span>{section === "multiplayer" && <span className="nav-dot" />}</button>}
+          {data?.local && <button className={`nav-item ${section === "workshop" ? "active" : ""}`} onClick={() => navigate("workshop")}><ScrollText size={19} /><span>剧本工坊</span>{section === "workshop" && <span className="nav-dot" />}</button>}
           {view && (
             <button
               className={`nav-item ${section === "adventure" ? "active" : ""}`}
@@ -340,7 +342,7 @@ export default function Home() {
             <div>
               <strong>旅人</strong>
               <small>
-                v{data?.version || "0.3.0-beta.1"} ·{" "}
+                v{data?.version || "0.3.0-beta.2"} ·{" "}
                 {data?.local ? "本机冒险桌" : "私人冒险桌"}
               </small>
             </div>
@@ -372,21 +374,22 @@ export default function Home() {
                     : section === "rules"
                       ? "新手手册"
                       : section === "multiplayer" ? "多人组队"
+                      : section === "workshop" ? "剧本工坊"
                       : view?.title}
             </span>
           </div>
           <div className="topbar-right">
             <span className="status-pill">
               <span className={data?.aiReady ? "live-dot" : "neutral-dot"} />
-              {data?.aiReady ? "AI 主持人已连接" : "规则桌已就绪"}
+              {data?.aiReady ? "AI 主持人已配置" : "规则模式"}
             </span>
             {data?.local && (
               <button
-                className="icon-button"
+                className="ai-settings-button"
                 aria-label="本机 AI 设置"
                 onClick={() => setSettings(true)}
               >
-                <Settings2 size={20} />
+                <Settings2 size={18} /> AI 设置
               </button>
             )}
             <button
@@ -442,9 +445,11 @@ export default function Home() {
         ) : (
           <>
             {section === "multiplayer" && <Multiplayer data={data} back={() => navigate("lobby")} help={() => setHelp(true)} refresh={refresh} />}
+            {section === "workshop" && data.local && <Workshop aiReady={data.aiReady} settings={() => setSettings(true)} refresh={refresh} play={id => create(id)} />}
             {section === "lobby" && (
               <main className="lobby page-content">
                 {data.local && <div className="play-mode-choice"><div><strong>今晚，怎样冒险？</strong><span>单人随时出发，也可以邀请朋友坐到同一张桌边。</span></div><button className="button primary" onClick={() => create()}>单人冒险</button><button className="button secondary" onClick={() => navigate("multiplayer")}><Users size={17} />多人组队</button></div>}
+                {data.local && <section className="solo-ai-access"><div><strong>单人 AI 主持人 · {data.aiReady ? "已配置" : "尚未接入"}</strong><p>登录 Codex 或接入 API，即可自由对话并生成剧本。也可以先用规则模式体验掷骰与预设故事。</p></div><button className="button secondary" onClick={() => setSettings(true)}>登录 Codex / 接入 API</button></section>}
                 <section className="hero-banner">
                   <div className="hero-shade" />
                   <div className="hero-copy">
@@ -835,7 +840,7 @@ export default function Home() {
         )}
         <footer className="app-footer">
           <span>
-            ✦ 灯火之下 v{data?.version || "0.3.0-beta.1"} · 原创故事，透明骰子
+            ✦ 灯火之下 v{data?.version || "0.3.0-beta.2"} · 原创故事，透明骰子
           </span>
           <button onClick={() => navigate("rules")}>
             SRD 5.1 教学子集 · CC BY 4.0

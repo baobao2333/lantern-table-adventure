@@ -56,7 +56,7 @@ export class RoomService {
     this.ensureOpen();
     const id = randomUUID(), seatId = randomUUID(), seatToken = token(), inviteCode = token();
     const room: RoomState = {
-      id, game: createGame(id, seatId, hero, campaignId, "party", id.slice(0, 8).toUpperCase()),
+      id, game: createGame(id, seatId, hero, campaignId, "party", id.slice(0, 8).toUpperCase(), this.options.campaign?.(campaignId)),
       status: "lobby", stateVersion: 0, eventSeq: 0, serverEpoch: 1,
       seats: [{ id: seatId, userId: seatId, heroId: hero.id, host: true, ready: false, revoked: false, tokenHash: hash(seatToken), recoveryHash: hash(token()), lastSeen: this.clock.wall(), online: true }],
       inviteHash: hash(inviteCode), queue: [], operation: null, vote: null, timeoutHeroIds: [], timers: { ...DEFAULT_ROOM_TIMERS }, contentDigest: "",
