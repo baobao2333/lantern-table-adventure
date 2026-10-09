@@ -1,12 +1,17 @@
 name: Windows desktop release
 on:
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "Existing version tag to rebuild and publish (empty builds only)"
+        required: false
+        type: string
   push:
     tags: ["v*"]
 permissions:
   contents: write
 concurrency:
-  group: windows-release-${{ github.ref }}
+  group: windows-release-${{ inputs.release_tag || github.ref_name }}
   cancel-in-progress: false
 jobs:
   build:
@@ -15,12 +20,22 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           persist-credentials: false
+          ref: ${{ inputs.release_tag && format('refs/tags/{0}', inputs.release_tag) || github.ref }}
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version: "24.21.0"
           package-manager-cache: false
       - run: npm ci
-      - run: node scripts/check-release-version.mjs
+      - name: Check release version
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: |
+          if ($env:RELEASE_TAG) {
+            node scripts/check-release-version.mjs --tag $env:RELEASE_TAG
+          } else {
+            node scripts/check-release-version.mjs
+          }
+          if ($LASTEXITCODE -ne 0) { throw 'Release version check failed.' }
       - run: npm run content:check
       - run: npm test
       - run: npx tsc --noEmit
@@ -42,15 +57,18 @@ jobs:
           if-no-files-found: error
           include-hidden-files: false
       - name: Publish formal GitHub Release
-        if: startsWith(github.ref, 'refs/tags/')
+        if: startsWith(github.ref, 'refs/tags/') || inputs.release_tag != ''
         shell: pwsh
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
         run: |
           $ErrorActionPreference = 'Stop'
-          $tag = $env:GITHUB_REF.Substring(10)
+          $tag = if ($env:RELEASE_TAG) { $env:RELEASE_TAG } else { $env:GITHUB_REF.Substring(10) }
+          $version = (Get-Content -LiteralPath 'package.json' -Raw | ConvertFrom-Json).version
+          if ($tag -ne "v$version") { throw 'Release tag must match the checked-out package version.' }
           $preview = $tag.Contains('-')
-          $releaseFlags = if ($preview) { @('--prerelease') } else { @('--prerelease=false') }
+          [string[]]$releaseFlags = if ($preview) { @('--prerelease') } else { @('--prerelease=false') }
           $null = & gh release view $tag --repo $env:GITHUB_REPOSITORY 2>$null
           if ($LASTEXITCODE -ne 0) {
             & gh release create $tag --repo $env:GITHUB_REPOSITORY --verify-tag --draft @releaseFlags --title "灯火之下 $tag" --notes-file 'dist/release/RELEASE_NOTES.md'
