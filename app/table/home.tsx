@@ -26,7 +26,8 @@ import { CLASSES } from "@/lib/game/characters";
 import type { HeroBuildInput, Message, View } from "@/lib/game/types";
 import type { Command } from "@/lib/game/engine";
 import { Avatar, RuleContent, Transcript } from "./components";
-import { api, type Bootstrap, type ToolContext, registerTools } from "./client";
+import { api, definitivelyRejected, type Bootstrap, type ToolContext, registerTools } from "./client";
+import { pendingRequest, loadPendingRequest, savePendingRequest, clearPendingRequest, type PendingRequest } from "./request-journal";
 import {
   buildHero,
   createDefaultHeroInput,
@@ -35,10 +36,11 @@ import { CharacterBuilder } from "./character-builder";
 import { CharacterDetails } from "./character-details";
 import { Adventure } from "./adventure";
 import { Settings } from "./settings";
+import { Multiplayer } from "./multiplayer";
 import "../table.css";
 import "./extended.css";
 
-type Section = "lobby" | "characters" | "camp" | "rules" | "adventure";
+type Section = "lobby" | "characters" | "camp" | "rules" | "adventure" | "multiplayer";
 export default function Home() {
   const [data, setData] = useState<Bootstrap | null>(null),
     [section, setSection] = useState<Section>("lobby");
@@ -59,8 +61,8 @@ export default function Home() {
   const [campHeroId, setCampHeroId] = useState(""),
     [campMessages, setCampMessages] = useState<Message[]>([]);
   const [proposal, setProposal] = useState<string | null>(null);
-  const operating = useRef(false),
-    failedRequest = useRef<{ key: string; id: string } | null>(null);
+  const operating = useRef(false);
+  const [pending, setPending] = useState<PendingRequest | null>(null);
   const refresh = useCallback(async () => {
     const result = await api<Bootstrap>();
     setData(result);
@@ -69,6 +71,7 @@ export default function Home() {
   useEffect(() => {
     api<Bootstrap>()
       .then(async (result) => {
+        setPending(await loadPendingRequest(result.local));
         setData(result);
         setCampHeroId(result.heroes[0]?.id || "");
         const id = new URLSearchParams(location.search).get("adventure");
@@ -124,24 +127,36 @@ export default function Home() {
     history.replaceState(null, "", `?adventure=${id}`);
     return { id, status: r.view.game.status };
   }, []);
+  const recoverRejected = useCallback(async (error: unknown, request: PendingRequest) => {
+    if (!definitivelyRejected(error)) return;
+    await clearPendingRequest(request.requestId);
+    setPending(null);
+    const result = await api<{ view: View }>(undefined, `?id=${encodeURIComponent(request.id)}`).catch(() => null);
+    if (result) { setView(result.view); setProposal(null); }
+  }, []);
   const command = useCallback(
     async (action: Command) => {
       if (!view) throw new Error("请先进入冒险。");
       return run(async () => {
-        const key = JSON.stringify({ id: view.game.id, action });
-        const requestId =
-          failedRequest.current?.key === key
-            ? failedRequest.current.id
-            : crypto.randomUUID();
-        failedRequest.current = { key, id: requestId };
-        const r = await api<{ view: View; aiNotice?: string }>({
+        if (pendingRequest()) throw new Error("上次提交尚未确认，请先点击恢复上次行动。");
+        const requestId = crypto.randomUUID();
+        const payload = {
           op: "game.command",
           id: view.game.id,
           expectedVersion: view.version,
           command: action,
           requestId,
-        });
-        failedRequest.current = null;
+        };
+        await savePendingRequest(payload);
+        setPending(payload);
+        let r: { view: View; aiNotice?: string };
+        try { r = await api(payload); }
+        catch (error) {
+          await recoverRejected(error, payload);
+          throw error;
+        }
+        await clearPendingRequest(requestId);
+        setPending(null);
         setView(r.view);
         setProposal(null);
         if (r.aiNotice)
@@ -153,7 +168,7 @@ export default function Home() {
         };
       });
     },
-    [view, run],
+    [view, run, recoverRejected],
   );
   const toolContext = useRef<ToolContext | null>(null);
   useEffect(() => {
@@ -215,20 +230,37 @@ export default function Home() {
         });
         setCampMessages(r.messages);
       } else if (view) {
-        const r = await api<{ view: View; proposal?: { actionId: string } }>({
+        if (pendingRequest()) throw new Error("上次提交尚未确认，请先恢复上次行动。");
+        const payload = {
           op: "game.talk",
           id: view.game.id,
           expectedVersion: view.version,
           requestId: crypto.randomUUID(),
           text: input,
-        });
+        };
+        await savePendingRequest(payload); setPending(payload);
+        let r: { view: View; proposal?: { actionId: string } };
+        try { r = await api(payload); }
+        catch (error) {
+          await recoverRejected(error, payload);
+          throw error;
+        }
+        await clearPendingRequest(payload.requestId); setPending(null);
         setView(r.view);
         setProposal(r.proposal?.actionId || null);
       }
       setText("");
     });
   }
-  function navigate(next: Section) {
+  async function navigate(next: Section) {
+    if (data?.local && section === "multiplayer" && next !== "multiplayer") {
+      const exited = await run(async () => {
+        const response = await fetch("/api/rooms", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ op: "exit-session" }) });
+        if (!response.ok) throw new Error("无法暂停或离开当前房间，请稍后重试。");
+        return true;
+      });
+      if (!exited) return;
+    }
     setSection(next);
     setError("");
     setText("");
@@ -282,6 +314,7 @@ export default function Home() {
               {section === item.id && <span className="nav-dot" />}
             </button>
           ))}
+          {data?.local && <button className={`nav-item ${section === "multiplayer" ? "active" : ""}`} onClick={() => navigate("multiplayer")}><Users size={19} /><span>多人组队</span>{section === "multiplayer" && <span className="nav-dot" />}</button>}
           {view && (
             <button
               className={`nav-item ${section === "adventure" ? "active" : ""}`}
@@ -307,7 +340,7 @@ export default function Home() {
             <div>
               <strong>旅人</strong>
               <small>
-                v{data?.version || "0.2.3"} ·{" "}
+                v{data?.version || "0.3.0-beta.1"} ·{" "}
                 {data?.local ? "本机冒险桌" : "私人冒险桌"}
               </small>
             </div>
@@ -316,6 +349,16 @@ export default function Home() {
         </div>
       </aside>
       <div className="main-shell">
+        {pending && <div className="alert" role="status"><span>上次行动尚未收到确认。恢复会查询同一请求，已保存的骰子不会重掷。</span><button disabled={busy} onClick={() => void run(async () => {
+          let result: { view: View };
+          try { result = await api(pending); }
+          catch (error) {
+            await recoverRejected(error, pending);
+            throw error;
+          }
+          await clearPendingRequest(pending.requestId); setPending(null); setView(result.view); setSection("adventure");
+          history.replaceState(null, "", `?adventure=${result.view.game.id}`);
+        })}>恢复上次行动</button></div>}
         <header className="topbar">
           <div className="breadcrumb">
             冒险桌 <ChevronRight size={13} />
@@ -328,6 +371,7 @@ export default function Home() {
                     ? "营地夜话"
                     : section === "rules"
                       ? "新手手册"
+                      : section === "multiplayer" ? "多人组队"
                       : view?.title}
             </span>
           </div>
@@ -397,8 +441,10 @@ export default function Home() {
           </div>
         ) : (
           <>
+            {section === "multiplayer" && <Multiplayer data={data} back={() => navigate("lobby")} help={() => setHelp(true)} refresh={refresh} />}
             {section === "lobby" && (
               <main className="lobby page-content">
+                {data.local && <div className="play-mode-choice"><div><strong>今晚，怎样冒险？</strong><span>单人随时出发，也可以邀请朋友坐到同一张桌边。</span></div><button className="button primary" onClick={() => create()}>单人冒险</button><button className="button secondary" onClick={() => navigate("multiplayer")}><Users size={17} />多人组队</button></div>}
                 <section className="hero-banner">
                   <div className="hero-shade" />
                   <div className="hero-copy">
@@ -443,7 +489,7 @@ export default function Home() {
                     <h2>今晚，去哪里？</h2>
                     <p>先尝试短篇，也可以把河谷的故事分几晚慢慢展开。</p>
                   </div>
-                  <span className="version-note">单人 v0.2 · 多人筹备中</span>
+                  <span className="version-note">原创战役 · 自动存档</span>
                 </div>
                 <div className="campaign-grid">
                   {data.campaigns.map((campaign, index) => (
@@ -789,7 +835,7 @@ export default function Home() {
         )}
         <footer className="app-footer">
           <span>
-            ✦ 灯火之下 v{data?.version || "0.2.3"} · 原创故事，透明骰子
+            ✦ 灯火之下 v{data?.version || "0.3.0-beta.1"} · 原创故事，透明骰子
           </span>
           <button onClick={() => navigate("rules")}>
             SRD 5.1 教学子集 · CC BY 4.0
@@ -870,7 +916,7 @@ export default function Home() {
               {modal === "hero" ? "保存角色" : "准备好了，独自出发"}
             </button>
             <p className="subtle-note">
-              一级角色 · 新手救援房规 · 自动存档 · 多人将于 v0.3 开放
+              一级角色 · 新手救援房规 · 自动存档 · 可从多人组队邀请朋友
             </p>
           </section>
         </div>

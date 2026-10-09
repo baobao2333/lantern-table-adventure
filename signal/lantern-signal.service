@@ -1,0 +1,24 @@
+[Unit]
+Description=Lantern Table signaling service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=lantern
+Group=lantern
+WorkingDirectory=/opt/lantern-table/signal
+Environment=SIGNAL_HOST=0.0.0.0
+Environment=SIGNAL_PORT=8443
+Environment=SIGNAL_TLS_CERT=/opt/lantern-table/signal/signal-private/server-cert.pem
+Environment=SIGNAL_TLS_KEY=/opt/lantern-table/signal/signal-private/server-key.pem
+ExecStart=/usr/bin/node /opt/lantern-table/signal/start.mjs
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target

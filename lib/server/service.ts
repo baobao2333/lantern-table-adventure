@@ -72,7 +72,7 @@ function json(data: unknown, status = 200) {
 }
 function failure(error: unknown) {
   if (error instanceof repository.ApiError)
-    return json({ error: error.message }, error.status);
+    return json({ error: error.message, code: error.code }, error.status);
   if (error instanceof z.ZodError)
     return json({ error: "输入格式不正确，请检查名称或邀请码。" }, 400);
   // Never include database errors, request bodies or provider credentials in responses.
@@ -110,7 +110,7 @@ export async function handleGET(request: Request, userId: string) {
       userId,
       aiReady: runtime().aiReady,
       local: !!runtime().local,
-      version: "0.2.3",
+      version: "0.3.0-beta.1",
       heroes,
       campaigns: CAMPAIGNS.map(
         ({
@@ -183,7 +183,7 @@ export async function handlePOST(request: Request, userId: string) {
     if (body.op === "game.create") {
       if (body.mode !== "solo")
         throw new repository.ApiError(
-          "多人模式将于 v0.3 开放。本版本请先独自上路。",
+          "多人请从桌面版的多人组队入口创建房间。",
         );
       const hero = await repository.ownedHero(body.heroId, userId),
         alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -229,13 +229,16 @@ export async function handlePOST(request: Request, userId: string) {
         throw new repository.ApiError(
           "队伍存档已更新。请刷新当前冒险，再决定下一步行动。",
           409,
+          "stale_version",
         );
       if (body.op === "game.talk") {
         if (lease.game.status !== "active")
           throw new repository.ApiError("请先开始冒险，再与主持人交流。");
         const hero = lease.game.players.find((p) => p.userId === userId)!.hero;
         if (lease.game.world) {
-          const intent = await interpretWorld(lease.game, body.text);
+          const intent = await interpretWorld(lease.game, body.text, { actorId: userId }).catch(() => {
+            throw new repository.ApiError("主持人暂时无法理解这次输入，尚未执行行动。可改用规则按钮或稍后重试。", 503, "intent_failed");
+          });
           if (intent.kind === "proposal" && intent.idea)
             stageIdea(lease.game, hero, intent.idea);
           addMessage(lease.game, "player", body.text, hero.name);
@@ -255,7 +258,9 @@ export async function handlePOST(request: Request, userId: string) {
           );
           return json({ view: gameView(lease.game, version) });
         }
-        const intent = await interpret(lease.game, body.text);
+        const intent = await interpret(lease.game, body.text, { actorId: userId }).catch(() => {
+          throw new repository.ApiError("主持人暂时无法理解这次输入，尚未执行行动。可改用规则按钮或稍后重试。", 503, "intent_failed");
+        });
         addMessage(lease.game, "player", body.text, hero.name);
         addMessage(
           lease.game,

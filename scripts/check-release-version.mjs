@@ -17,8 +17,10 @@ export async function assertReleaseVersion(
   const metadata = JSON.parse(
     await readFile(join(projectRoot, "local", "release.json"), "utf8"),
   );
-  if (!/^\d+\.\d+\.\d+$/.test(pkg.version))
-    throw new Error("Release version must be a stable semantic version.");
+  const signal = JSON.parse(await readFile(join(projectRoot, "signal", "package.json"), "utf8"));
+  const signalLock = JSON.parse(await readFile(join(projectRoot, "signal", "package-lock.json"), "utf8"));
+  if (!/^\d+\.\d+\.\d+(?:-(?:alpha|beta|rc)\.[1-9]\d*)?$/.test(pkg.version))
+    throw new Error("Release version must be a semantic version (optionally alpha, beta or rc).");
   if (
     pkg.version !== lock.version ||
     pkg.version !== lock.packages?.[""].version ||
@@ -29,6 +31,8 @@ export async function assertReleaseVersion(
     );
   if (metadata.platform !== "windows-x64")
     throw new Error("Portable release platform must be windows-x64.");
+  if ([signal.version, signalLock.version, signalLock.packages?.[""].version].some(version => version !== pkg.version))
+    throw new Error("Signal package and lock versions must match the desktop release.");
   const server = await readFile(
     join(projectRoot, "local", "server.ts"),
     "utf8",

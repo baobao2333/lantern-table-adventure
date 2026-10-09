@@ -28,7 +28,7 @@ if (process.platform !== "win32")
     "Windows packaging uses native PowerShell archive tools. Run this on Windows or the Windows CI job.",
   );
 if (
-  !/^\d+\.\d+\.\d+$/.test(metadata.version) ||
+  !/^\d+\.\d+\.\d+(?:-(?:alpha|beta|rc)\.[1-9]\d*)?$/.test(metadata.version) ||
   !/^\d+\.\d+\.\d+$/.test(metadata.nodeVersion) ||
   !/^[a-f0-9]{64}$/.test(metadata.nodeArchiveSha256)
 )
@@ -111,6 +111,9 @@ for (const name of [
   "START.cmd",
   "release.json",
   "THIRD_PARTY_NOTICES.txt",
+  "node_modules",
+  "CODEX_LICENSE.txt",
+  "LICENSE",
 ])
   await cp(join(buildDirectory, name), join(packageDirectory, name), {
     recursive: true,

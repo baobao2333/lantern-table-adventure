@@ -156,7 +156,7 @@ export function Adventure({
   const pending = game.world?.proposal,
     currentTurn = game.combat?.order[game.combat.turn];
   const myTurn = !game.combat || currentTurn === hero?.id,
-    blocked = busy || !!game.pending || !!pending;
+    blocked = busy || !!game.pending || !!pending || hero?.hp === 0;
   const preparation =
     pending?.goalId &&
     game.world?.preparations.includes(`${pending.location}:${pending.skill}`);
@@ -180,7 +180,7 @@ export function Adventure({
         </button>
         <div>
           <span className="eyebrow">
-            SOLO ADVENTURE ·{" "}
+            {game.mode === "party" ? "PARTY ADVENTURE" : "SOLO ADVENTURE"} ·{" "}
             {view.world
               ? `第 ${view.world.session} 次游玩 · 自由探索`
               : `第 ${game.scene + 1} / ${view.sceneCount} 幕`}
@@ -222,8 +222,8 @@ export function Adventure({
           </div>
           {game.status === "waiting" && (
             <div className="waiting-card">
-              <h2>这是旧版本的等待存档</h2>
-              <p>v0.2 先开放单人冒险。请回大厅，带这位旅人创建一场单人故事。</p>
+              <h2>旅人们正在准备</h2>
+              <p>所有旅人准备就绪后，由房主开始冒险。</p>
               <button className="button primary" onClick={navigate}>
                 返回大厅
               </button>
@@ -634,6 +634,12 @@ export function Adventure({
                     >
                       饮用治疗药水 <Heart size={14} />
                     </button>
+                    {game.mode === "party" && game.players.filter(player => player.hero.id !== hero.id && player.hero.hp === 0).map(player => (
+                      <button key={player.hero.id} disabled={blocked || !myTurn || !hero.potions}
+                        onClick={() => void command({ kind: "potion", targetHeroId: player.hero.id })}>
+                        用自己的药水救起 {player.hero.name} · 主要动作 <Heart size={14} />
+                      </button>
+                    ))}
                     {hero.classId === "fighter" && (
                       <button
                         disabled={

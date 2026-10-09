@@ -1,0 +1,9 @@
+{
+  "name": "lantern-table-signal",
+  "version": "0.3.0-beta.1",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=24.0.0" },
+  "scripts": { "start": "node start.mjs", "certificate": "node generate-certificate.mjs" },
+  "dependencies": { "ws": "8.22.0", "selfsigned": "5.5.0" }
+}

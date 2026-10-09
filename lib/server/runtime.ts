@@ -1,4 +1,4 @@
-export type Completion = (system: string, prompt: unknown) => Promise<unknown>;
+export type Completion = (system: string, prompt: unknown, signal?: AbortSignal) => Promise<unknown>;
 export type TableRuntime = {
   DB: D1Database;
   aiReady: boolean;

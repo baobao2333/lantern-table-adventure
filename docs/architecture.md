@@ -1,6 +1,6 @@
 # 架构地图
 
-规则与存档是权威，AI 负责解释与叙事。云端和本机入口调用同一个服务；它们只负责提供身份、数据库和 AI 连接。浏览器拿到公开视图，不保存完整世界或模型凭据。
+规则与存档是权威，AI 负责解释与叙事。云端和本机入口调用同一个服务；它们只负责提供身份、数据库和 AI 连接。浏览器拿到公开视图，不保存完整世界或模型凭据。v0.3 桌面由独立 Node 子进程提供同一静态前端；房间协议使用单独的 SQLite 权威状态机。
 
 ```text
 Home / character builder / AI settings
@@ -15,6 +15,10 @@ Home / character builder / AI settings
 
 cloud: app/api/table/route.ts -> platform user + D1 + cloud provider
 local: local/server.ts       -> local-owner + SQLiteD1 + local provider
+desktop/main.mjs             -> isolated renderer + authenticated Node child
+multiplayer.tsx -> /api/rooms -> RoomGateway -> RoomService -> pure rule engine
+                              └-> P2P / pinned WSS -> remote RoomGateway
+/app request journal -> /api/client-journal -> SQLite client_journal
 ```
 
 ## 入口与模块
@@ -34,15 +38,22 @@ local: local/server.ts       -> local-owner + SQLiteD1 + local provider
 | `lib/game/character-builder.ts`、`characters.ts`、`types.ts` | 角色表创建、合法选择与规则数值；背景是人物声明，不能覆盖实际能力。 |
 | `lib/server/narrator.ts` | 构造当前公开上下文，校验模型输出，区分问题、建议与叙事；不提供未获得的世界秘密。 |
 | `local/provider.ts` | 兼容 API 与官方 Codex CLI 连接；Codex JSON schema 分别覆盖叙事、短篇行动与持续战役裁定。 |
+| `desktop/main.mjs`、`runtime-controller.mjs`、`ownership.mjs` | 单实例窗口、托盘与来源受限 IPC；独立 Node、管理 cookie、所有权锁、暂停和完整退出。 |
+| `local/migrate-desktop.ts` | 一次性一致性备份导入旧库，桌面独立数据库，失败不写完成标记。 |
+| `local/codex-auth.ts` | 固定官方 CLI 下载、归档与版本校验、显式官方浏览器登录和安全状态。 |
+| `local/client-journal.ts`、`app/table/request-journal.ts` | 发送前持久化完整请求；匹配 ID 才清理，跨窗口和应用重启恢复。 |
+| `local/rooms/{service,store,clock,types}.ts` | 房间权威、SQLite 原子状态／回执／事件、可暂停操作钟、投票、AI 围栏；参见 [多人协议](multiplayer.md)。 |
+| `local/room-gateway.ts` | 本机管理与远端受限 RPC 分界、加密席位凭据、唯一重连控制、快照淘汰和往返心跳。 |
+| `local/network/`、`signal/` | 原生 DataChannel／WSS、身份签名、TLS 固定、有界传输；信令与 STUN 自部署入口，明确无 TURN。 |
 | `local/settings.ts` | 本机设置保存；API 密钥用 DPAPI CurrentUser 加密，公开设置只包含 `hasKey`。 |
 
 ## 权威与存档
 
 `content/campaigns/*.json` 和 `content/worlds/*.json` 是故事内容来源，分别受 `campaign.schema.json` 和 `world.schema.json` 约束。`scripts/content-workflow.mjs` 检查结构、引用和语义，并生成 `lib/game/*-content.generated.mjs`。修改 JSON 后运行 `npm run content:sync`；不要直接编辑生成注册表。
 
-创建冒险时复制内容快照，使已有存档不会被一次内容更新悄悄改写。数据库保存角色、冒险、成员关系和营地日志。云端使用 D1，本机使用 `%LOCALAPPDATA%\LanternTable\adventures.sqlite`。浏览器的公开视图与页面状态不承担存档权威。
+创建冒险时复制内容快照，使已有存档不会被一次内容更新悄悄改写。数据库保存角色、冒险、成员关系和营地日志。云端使用 D1，旧浏览器启动包使用 `%LOCALAPPDATA%\LanternTable\adventures.sqlite`，桌面使用 `%LOCALAPPDATA%\LanternTable\desktop\adventures-desktop.sqlite`；首次升级复制导入，随后各自独立。浏览器的公开视图与页面状态不承担存档权威。
 
-写入先取得行动租约，核对 `expectedVersion` 与 `requestId`。已经结算的骰子与资源先保存；AI 超时不能造成重掷或重复消耗。最近的请求 ID 与存档版本防止重放和过期页面写入。SQLite batch 必须全部提交或全部回滚。
+写入先取得行动租约，核对 `expectedVersion` 与 `requestId`。已经结算的骰子与资源先保存；AI 超时不能造成重掷或重复消耗。单人最近的请求 ID 与存档版本防止重放和过期页面写入；客户端待确认日志使丢响应的请求阻止新命令，直到原请求恢复或确定拒绝。多人回执独立长期保存，以 room/seat/command ID 加内容摘要查询，先取原结果，再检查当前版本与阶段。SQLite batch 必须全部提交或全部回滚。
 
 自由输入先经过意图理解，再由规则核心接受或拒绝对应裁定。服务器决定 DC、奖励、资源和可接触目标；模型不能仅凭一段文字产生神器、未来线索或强制服从。地点可以回访，世界时钟跟随已结算的行动与休息，关闭程序不会推动时钟。
 
@@ -52,7 +63,7 @@ local: local/server.ts       -> local-owner + SQLiteD1 + local provider
 
 兼容 API 地址使用 HTTPS，只有明确的 localhost 服务允许 HTTP，凭据、查询参数和片段不能写进地址。响应体和等待时间都有上限；错误不回传服务商原文或请求内容。
 
-Codex 使用已安装的官方入口与当前用户登录，直接传参数和 stdin，不通过 shell 拼接提示词。每次调用使用临时空工作目录、只读 sandbox、ephemeral 会话和输出 schema；`--ignore-user-config` 保留登录认证并跳过用户连接配置，`--ignore-rules` 跳过个人或项目执行规则，项目说明读取上限设为 0。禁用 shell、浏览器、插件和其他相关工具，不再逐项覆盖 MCP：不完整的 server 配置会丢失 transport，导致 CLI 无法启动。超时或停止本机服务时结束子进程；临时输出随后清理。各账户的访问权限与使用额度仍由服务商决定。真实 JSON 冒烟验证使用 Codex CLI 0.149.1；旧 CLI 不支持这些选项时需要更新。选项含义见[官方 CLI 说明](https://learn.chatgpt.com/docs/developer-commands?surface=cli)。
+Codex 使用已安装的官方入口与当前用户登录，直接传参数和 stdin，不通过 shell 拼接提示词。每次调用使用临时空工作目录、只读 sandbox、ephemeral 会话和输出 schema；`--ignore-user-config` 保留登录认证并跳过用户连接配置，`--ignore-rules` 跳过个人或项目执行规则，项目说明读取上限设为 0。禁用 shell、浏览器、插件和其他相关工具，不再逐项覆盖 MCP：不完整的 server 配置会丢失 transport，导致 CLI 无法启动。超时或停止本机服务时结束子进程；临时输出随后清理。各账户的访问权限与使用额度仍由服务商决定。旧版曾用 CLI 0.149.1 做真实 JSON 冒烟；桌面安装器固定当前版本在 `desktop/codex-release.json`，本轮不使用个人账户自动调用模型。旧 CLI 不支持这些选项时需要更新。选项含义见[官方 CLI 说明](https://learn.chatgpt.com/docs/developer-commands?surface=cli)。
 
 ## 构建与验收
 
@@ -65,6 +76,8 @@ Codex 使用已安装的官方入口与当前用户登录，直接传参数和 s
 | `scripts/verify-local.mjs` | 隔离数据目录中的实际 HTTP 边界、持久存档、DPAPI 密钥和兼容 API fixture；不使用个人凭据。 |
 | `scripts/package-release.mjs` | 官方 Node ZIP 校验、明确文件 allowlist、许可证、ZIP 与逐文件 SHA256。 |
 | `scripts/verify-release.mjs` | 解压最终 ZIP，检查文件与秘密排除，再用包内 Node 启动包内服务完成回归。 |
+| `scripts/build-desktop.mjs`、`package-desktop.mjs`、`verify-desktop.mjs` | Electron安装包与便携版、运行时版本／指纹清单、真实隔离启动和 IPC 退出验收。 |
+| `signal/package.mjs` | 辅助服务源码 ZIP 与 SHA256；独立锁文件，不包含证书私钥或用户数据。 |
 | `.github/workflows/windows-release.yml` | Windows 依次验收并上传产物；合法版本标签创建或更新正式 Release。 |
 
 实际账户的 AI 连通与浏览器交互需要在最终集成版另外验证；fixture 回归只证明调用协议、状态保存和凭据边界。Sites 云端发布仍由 `.openai/hosting.json` 与相应生命周期脚本管理。

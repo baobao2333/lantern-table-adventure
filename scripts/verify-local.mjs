@@ -220,6 +220,25 @@ try {
     true,
   );
   assert.equal(apiCalls, 2);
+  const startPayload = { op: "game.command", id: gameId, expectedVersion: game.result.view.version,
+    requestId: crypto.randomUUID(), command: { kind: "action", actionId: game.result.view.actions[0].id } };
+  assert.equal((await request("/api/client-journal?kind=solo", { kind: "solo", op: "save", payload: startPayload })).status, 200);
+  const started = await request("/api/table", startPayload);
+  assert.equal(started.status, 200);
+  await stop(); await start();
+  const journal = (await request("/api/client-journal?kind=solo")).result.pending;
+  assert.deepEqual(journal, startPayload);
+  const recovered = await request("/api/table", journal);
+  assert.equal(recovered.result.view.version, started.result.view.version);
+  assert.deepEqual(recovered.result.view.game.messages, started.result.view.game.messages);
+  assert.equal((await request("/api/client-journal?kind=solo", { kind: "solo", op: "clear", requestId: journal.requestId })).result.pending, null);
+  const stale = await request("/api/table", { ...startPayload, requestId: crypto.randomUUID() });
+  assert.equal(stale.status, 409); assert.equal(stale.result.code, "stale_version");
+  const failedIntent = await request("/api/table", { op: "game.talk", id: gameId, expectedVersion: recovered.result.view.version,
+    requestId: crypto.randomUUID(), text: "如何向守钟人打听失踪的钟声？" });
+  assert.equal(failedIntent.status, 503); assert.equal(failedIntent.result.code, "intent_failed");
+  const afterFailure = (await request(`/api/table?id=${gameId}`)).result.view;
+  assert.equal(afterFailure.version, recovered.result.view.version);
   await stop();
   const missingCliDirectory = join(dataDirectory, "missing-cli");
   await start(missingCliDirectory, true);

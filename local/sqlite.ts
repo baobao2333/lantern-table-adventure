@@ -43,6 +43,7 @@ export class SQLiteD1 {
   readonly sqlite: DatabaseSync;
   constructor(filename: string, migrationsDirectory: string) {
     this.sqlite = new DatabaseSync(filename);
+    try {
     this.sqlite.exec(
       "PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000;",
     );
@@ -69,6 +70,10 @@ export class SQLiteD1 {
         this.sqlite.exec("ROLLBACK");
         throw error;
       }
+    }
+    } catch (error) {
+      this.sqlite.close();
+      throw error;
     }
   }
   prepare(sql: string) {

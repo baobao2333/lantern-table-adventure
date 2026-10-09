@@ -4,6 +4,7 @@ import { mkdtemp, writeFile, readFile, rm } from "node:fs/promises";
 import { join, delimiter } from "node:path";
 import { tmpdir } from "node:os";
 import { LocalError, type SettingsStore, type Settings } from "./settings";
+import { codexExecutable } from "./codex-auth";
 
 type CLI = { command: string; prefix: string[] };
 const activeChildren = new Set<() => void>();
@@ -41,8 +42,10 @@ function run(
   input: string,
   cwd: string,
   timeout: number,
+  signal?: AbortSignal,
 ): Promise<string> {
   return new Promise((resolve, reject) => {
+    if (signal?.aborted) return reject(new LocalError("AI 请求已取消。", 499));
     const environment = { ...process.env };
     delete environment.OPENAI_API_KEY;
     delete environment.CODEX_API_KEY;
@@ -70,6 +73,11 @@ function run(
       else child.kill("SIGKILL");
     };
     activeChildren.add(terminate);
+    const abort = () => {
+      terminate();
+      done(new LocalError("AI 请求已取消。", 499));
+    };
+    signal?.addEventListener("abort", abort, { once: true });
     const timer = setTimeout(() => {
       terminate();
       done(new LocalError("Codex 等待超时。规则存档已保留，请稍后重试。", 503));
@@ -79,6 +87,7 @@ function run(
       finished = true;
       activeChildren.delete(terminate);
       clearTimeout(timer);
+      signal?.removeEventListener("abort", abort);
       error ? reject(error) : resolve(stdout);
     }
     child.stdout?.on("data", (chunk) => {
@@ -183,6 +192,7 @@ async function codexCompletion(
   settings: Settings,
   system: string,
   prompt: unknown,
+  signal?: AbortSignal,
 ) {
   const directory = await mkdtemp(join(tmpdir(), "lantern-codex-"));
   try {
@@ -243,7 +253,7 @@ async function codexCompletion(
       args.push("-c", `features.${feature}=false`);
     if (settings.model) args.push("--model", settings.model);
     args.push("-");
-    await run(cli, args, JSON.stringify(prompt), directory, 70_000);
+    await run(cli, args, JSON.stringify(prompt), directory, 70_000, signal);
     const result = await readFile(outputFile, "utf8");
     if (result.length > 20_000)
       throw new LocalError("Codex 返回内容过长。", 503);
@@ -256,7 +266,12 @@ async function apiCompletion(
   settings: Settings,
   system: string,
   prompt: unknown,
+  signal?: AbortSignal,
 ) {
+  const controller = new AbortController();
+  const terminate = () => controller.abort();
+  activeChildren.add(terminate);
+  try {
   const response = await fetch(`${settings.baseUrl}/chat/completions`, {
     method: "POST",
     headers: {
@@ -271,7 +286,7 @@ async function apiCompletion(
       ],
       response_format: { type: "json_object" },
     }),
-    signal: AbortSignal.timeout(65_000),
+    signal: AbortSignal.any([controller.signal, AbortSignal.timeout(65_000), ...(signal ? [signal] : [])]),
     redirect: "error",
   });
   if (!response.ok)
@@ -304,27 +319,35 @@ async function apiCompletion(
       503,
     );
   return JSON.parse(text);
+  } finally {
+    activeChildren.delete(terminate);
+  }
 }
-export function createProvider(store: SettingsStore, cli = findCodex()) {
+export function createProvider(store: SettingsStore, cli?: CLI, dataDirectory?: string) {
+  const currentCLI = () => {
+    const installed = dataDirectory && codexExecutable(dataDirectory);
+    return installed ? { command: installed, prefix: [] } : cli ?? findCodex();
+  };
   return {
-    codexAvailable: Boolean(cli),
+    get codexAvailable() { return Boolean(currentCLI()); },
     ready: () => {
       const s = store.snapshot();
       return s.provider === "api"
         ? Boolean(s.apiKey && s.model)
-        : s.provider === "codex" && Boolean(cli);
+        : s.provider === "codex" && Boolean(currentCLI());
     },
-    completion: async (system: string, prompt: unknown): Promise<unknown> => {
+    completion: async (system: string, prompt: unknown, signal?: AbortSignal): Promise<unknown> => {
       const settings = store.snapshot();
       if (settings.provider === "api")
-        return apiCompletion(settings, system, prompt);
+        return apiCompletion(settings, system, prompt, signal);
       if (settings.provider === "codex") {
+        const cli = currentCLI();
         if (!cli)
           throw new LocalError(
             "没有找到官方 Codex CLI。请安装后运行 codex login，再重启灯火之下。",
             503,
           );
-        return codexCompletion(cli, settings, system, prompt);
+        return codexCompletion(cli, settings, system, prompt, signal);
       }
       throw new LocalError("请在 AI 设置中连接 Codex 或兼容 API。", 503);
     },

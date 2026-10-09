@@ -420,10 +420,10 @@ export function checkConcentration(
     );
   return roll;
 }
-function chapter(game: Game): number {
+function chapter(game: Pick<Game, "world">): number {
   return game.world?.session ?? 1;
 }
-export function arcaneRecoveryAvailable(game: Game, hero: Hero): boolean {
+export function arcaneRecoveryAvailable(game: Pick<Game, "world">, hero: Hero): boolean {
   return (
     !!hero.build &&
     hero.classId === "wizard" &&

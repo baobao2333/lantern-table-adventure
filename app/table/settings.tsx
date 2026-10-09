@@ -9,6 +9,7 @@ type Config = {
   hasKey: boolean;
   codexAvailable: boolean;
 };
+type CodexStatus = { installed: boolean; authenticated: boolean; loginRunning: boolean; installing: boolean; version: string; error?: string; downloadedBytes?: number; totalBytes?: number };
 async function settings(body?: unknown) {
   const response = await fetch(
     "/api/settings",
@@ -40,6 +41,33 @@ export function Settings({
   const [busy, setBusy] = useState(false),
     [message, setMessage] = useState(""),
     [error, setError] = useState("");
+  const [codex, setCodex] = useState<CodexStatus | null>(null);
+  useEffect(() => {
+    if (config?.provider !== "codex") return;
+    let active = true, fetching = false;
+    const refresh = () => {
+      if (fetching) return;
+      fetching = true;
+      return fetch("/api/codex", { cache: "no-store", signal: AbortSignal.timeout(15_000) }).then(async r => await r.json() as CodexStatus).then((value) => {
+      if (!active) return;
+      setCodex(value);
+      if (value.error) setError(value.error);
+      }).catch(() => { if (active) setError("无法读取 Codex 登录状态。"); }).finally(() => { fetching = false; });
+    };
+    void refresh();
+    const timer = setInterval(() => void refresh(), 2500);
+    return () => { active = false; clearInterval(timer); };
+  }, [config?.provider]);
+  async function codexAction(op: "install" | "login" | "cancel") {
+    setError("");
+    try {
+      const response = await fetch("/api/codex", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ op }) });
+      const result = await response.json() as { error?: string };
+      if (!response.ok) throw new Error(result.error || "无法完成 Codex 操作。");
+      setMessage(op === "install" ? "正在下载并校验官方 Codex，请稍候。" : op === "login" ? "请在系统浏览器中完成官方登录，完成后保存设置。" : "已取消。");
+      setCodex(previous => previous ? { ...previous, installing: op === "install", loginRunning: op === "login" } : previous);
+    } catch (e) { setError(e instanceof Error ? e.message : "无法完成 Codex 操作。"); }
+  }
   useEffect(() => {
     settings()
       .then((r) => setConfig(r.config))
@@ -117,7 +145,7 @@ export function Settings({
               >
                 <option value="none">只使用规则桌</option>
                 <option value="api">OpenAI 兼容 API</option>
-                <option value="codex">已登录的 Codex CLI</option>
+                <option value="codex">登录 Codex</option>
               </select>
             </label>
             {config.provider === "api" && (
@@ -167,10 +195,14 @@ export function Settings({
             {config.provider === "codex" && (
               <>
                 <p className="scope-note">
-                  {config.codexAvailable
-                    ? "已找到 Codex CLI。请先在终端运行 codex login 完成登录，再测试连接。"
-                    : "尚未找到 Codex CLI。先按本机使用说明安装 Codex，运行 codex login，然后重启灯火之下。"}
+                  {codex?.authenticated ? "已通过官方 Codex 登录。" : codex?.loginRunning ? "正在等待系统浏览器完成登录…" : codex?.installing ? "正在下载并校验官方 Codex…" : codex?.installed ? `官方 Codex ${codex.version} 已安装，请登录。` : "安装官方 Codex 后，即可在系统浏览器中登录。"}
                 </p>
+                {codex?.installing && <p className="subtle-note">首次下载约 160 MB：已下载 {((codex.downloadedBytes || 0) / 1_048_576).toFixed(1)} MB{codex.totalBytes ? ` / ${(codex.totalBytes / 1_048_576).toFixed(1)} MB` : ""}。完成后会校验官方归档；可随时取消。</p>}
+                <div className="settings-actions">
+                  {!codex?.installed && <button className="button secondary" disabled={!codex || codex.installing} onClick={() => void codexAction("install")}>安装官方 Codex</button>}
+                  {codex?.installed && <button className="button secondary" disabled={codex.loginRunning} onClick={() => void codexAction("login")}>{codex.authenticated ? "重新登录" : "登录 Codex"}</button>}
+                  {(codex?.loginRunning || codex?.installing) && <button className="text-button" onClick={() => void codexAction("cancel")}>取消</button>}
+                </div>
                 <label className="field">
                   Codex 模型 <span>选填</span>
                   <input

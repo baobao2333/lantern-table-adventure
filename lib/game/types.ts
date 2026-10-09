@@ -355,6 +355,12 @@ export type Intent = {
   response?: string;
 };
 export type Resolution = { state: Game; fact: string; rolls: Roll[] };
+export type GameResolutionOptions = {
+  teamDecision?: boolean;
+  system?: boolean;
+};
+export type PartyRestChoice = { hitDie?: boolean; arcaneRecovery?: boolean };
+export type PartyRestChoices = Record<string, PartyRestChoice>;
 export type PublicGame = Omit<Game, "campaignSnapshot" | "requestIds">;
 export type View = {
   game: PublicGame;

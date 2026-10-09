@@ -28,6 +28,15 @@ export type Bootstrap = {
   campaigns: Overview[];
   games: Saved[];
 };
+export class TableRequestError extends Error {
+  readonly status: number;
+  readonly code?: string;
+  constructor(message: string, status: number, code?: string) { super(message); this.status = status; this.code = code; }
+}
+export function definitivelyRejected(error: unknown) {
+  return error instanceof TableRequestError && (["stale_version", "intent_failed"].includes(error.code || "") ||
+    (error.status >= 400 && error.status < 500 && error.status !== 409));
+}
 export async function api<T>(body?: unknown, query = ""): Promise<T> {
   const response = await fetch(
     `/api/table${query}`,
@@ -39,8 +48,8 @@ export async function api<T>(body?: unknown, query = ""): Promise<T> {
         }
       : { cache: "no-store" },
   );
-  const data = (await response.json()) as { error?: string };
-  if (!response.ok) throw new Error(data.error || "暂时无法完成操作，请重试。");
+  const data = (await response.json()) as { error?: string; code?: string };
+  if (!response.ok) throw new TableRequestError(data.error || "暂时无法完成操作，请重试。", response.status, data.code);
   return data as T;
 }
 export type WebTool = {

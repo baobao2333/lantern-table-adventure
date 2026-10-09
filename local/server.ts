@@ -14,8 +14,20 @@ import { configureRuntime } from "@/lib/server/runtime";
 import { SQLiteD1 } from "./sqlite";
 import { SettingsStore, LocalError } from "./settings";
 import { createProvider, stopProvider } from "./provider";
+import { createCodexAuth } from "./codex-auth";
+import { migrateDesktopData } from "./migrate-desktop";
+import { acquireServiceOwnership } from "../desktop/ownership.mjs";
+import { timingSafeEqual, randomUUID } from "node:crypto";
+import { RoomService } from "./rooms/index";
+import { RoomGateway } from "./room-gateway";
+import { protectSecret } from "./network/identity.mjs";
+import { interpret, interpretWorld, narrate } from "../lib/server/narrator";
+import { ownedHero, ApiError } from "../lib/server/repository";
+import type { HeroBuildInput } from "../lib/game/types";
+import type { RoomRequest } from "./rooms/types";
+import { ClientJournal } from "./client-journal";
 
-export const VERSION = "0.2.3";
+export const VERSION = "0.3.0-beta.1";
 const releaseDirectory = dirname(fileURLToPath(import.meta.url));
 const dataDirectory = process.env.LANTERN_DATA_DIR
   ? resolve(process.env.LANTERN_DATA_DIR)
@@ -23,16 +35,32 @@ const dataDirectory = process.env.LANTERN_DATA_DIR
       process.env.LOCALAPPDATA || join(homedir(), "AppData", "Local"),
       "LanternTable",
     );
-const port = Number(process.env.LANTERN_PORT || 4173);
-if (!Number.isInteger(port) || port < 1024 || port > 65535)
+const desktop = process.env.LANTERN_DESKTOP === "1";
+const instanceId = process.env.LANTERN_INSTANCE_ID || randomUUID();
+const adminToken = process.env.LANTERN_ADMIN_TOKEN;
+if (desktop && (!adminToken || adminToken.length < 32 || !process.send))
+  throw new Error("Desktop service requires an authenticated parent process.");
+let port = Number(process.env.LANTERN_PORT || (desktop ? 0 : 4173));
+if (!Number.isInteger(port) || (port !== 0 && port < 1024) || port > 65535 || (!desktop && port === 0))
   throw new Error("LANTERN_PORT must be an integer from 1024 to 65535.");
 mkdirSync(dataDirectory, { recursive: true });
+const releaseOwnership = desktop ? acquireServiceOwnership(dataDirectory, instanceId) : () => {};
+process.once("exit", releaseOwnership);
+const databasePath = desktop
+  ? migrateDesktopData({
+      legacyDirectory: process.env.LANTERN_LEGACY_DATA_DIR || dirname(dataDirectory),
+      desktopDirectory: dataDirectory,
+      migrationsDirectory: join(releaseDirectory, "migrations"),
+    }).databasePath
+  : join(dataDirectory, "adventures.sqlite");
 const database = new SQLiteD1(
-  join(dataDirectory, "adventures.sqlite"),
+  databasePath,
   join(releaseDirectory, "migrations"),
 );
 const settings = new SettingsStore(dataDirectory),
-  provider = createProvider(settings);
+  provider = createProvider(settings, undefined, dataDirectory);
+const codex = createCodexAuth(dataDirectory);
+let authError = "";
 function updateRuntime() {
   configureRuntime({
     DB: database as unknown as D1Database,
@@ -42,8 +70,19 @@ function updateRuntime() {
   });
 }
 updateRuntime();
-const staticRoot = resolve(releaseDirectory, "client"),
-  origin = `http://127.0.0.1:${port}`;
+const rooms = new RoomService(database.sqlite, {
+  aiReady: provider.ready,
+  interpret: (game, actorId, text, signal) => game.world ? interpretWorld(game, text, { actorId, signal }) : interpret(game, text, { actorId, signal }),
+  narrate: (game, fact, actorId, signal) => narrate(game, fact, { actorId, signal }),
+  protectSecret,
+  onUpdate: id => gateway?.onUpdate(id),
+});
+const gateway = new RoomGateway(rooms, database.sqlite, dataDirectory);
+const clientJournal = new ClientJournal(database.sqlite);
+const roomTimer = setInterval(() => rooms.tick(), 250);
+roomTimer.unref();
+const staticRoot = resolve(releaseDirectory, "client");
+let origin = `http://127.0.0.1:${port}`;
 const types: Record<string, string> = {
   ".html": "text/html; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
@@ -88,15 +127,15 @@ function boundary(request: IncomingMessage) {
   )
     throw new LocalError("操作需要 JSON 请求。", 415);
 }
-async function bodyOf(request: IncomingMessage) {
-  if (Number(request.headers["content-length"]) > 16_384)
+async function bodyOf(request: IncomingMessage, maximum = 16_384) {
+  if (Number(request.headers["content-length"]) > maximum)
     throw new LocalError("输入太长。", 413);
   const chunks: Buffer[] = [];
   let size = 0;
   for await (const chunk of request) {
     const bytes = Buffer.from(chunk);
     size += bytes.length;
-    if (size > 16_384) throw new LocalError("输入太长。", 413);
+    if (size > maximum) throw new LocalError("输入太长。", 413);
     chunks.push(bytes);
   }
   return Buffer.concat(chunks).toString("utf8");
@@ -107,6 +146,63 @@ async function dispatch(incoming: IncomingMessage): Promise<Response> {
   if (url.origin !== origin) throw new LocalError("请使用本机服务地址。", 403);
   if (!["GET", "POST"].includes(incoming.method || ""))
     return json({ error: "不支持的请求方式。" }, 405);
+  if (desktop && url.pathname.startsWith("/api/")) {
+    const cookie = String(incoming.headers.cookie || "").split(";").map(value => value.trim()).find(value => value.startsWith("lantern_admin="))?.slice(14) || "";
+    const expected = Buffer.from(adminToken!);
+    const received = Buffer.from(cookie);
+    if (received.length !== expected.length || !timingSafeEqual(expected, received))
+      throw new LocalError("本机管理会话已失效，请重新启动应用。", 401);
+  }
+  if (url.pathname === "/api/client-journal") {
+    const kind = url.searchParams.get("kind");
+    if (kind !== "solo" && kind !== "room") throw new LocalError("未知的待确认行动类型。");
+    if (incoming.method === "POST") {
+      const input = JSON.parse(await bodyOf(incoming, 65_536));
+      if (!input || input.kind !== kind) throw new LocalError("待确认行动格式不正确。");
+      if (input.op === "save") clientJournal.save(kind, input.payload);
+      else if (input.op === "clear") clientJournal.clear(kind, input.requestId);
+      else throw new LocalError("未知的待确认行动操作。");
+    }
+    return json({ pending: clientJournal.read(kind) });
+  }
+  if (url.pathname === "/api/codex") {
+    if (incoming.method === "GET") return json({ ...(await codex.status()), error: authError });
+    const input = JSON.parse(await bodyOf(incoming));
+    if (input?.op === "cancel") {
+      codex.cancel();
+      return json({ ok: true });
+    }
+    if (input?.op !== "install" && input?.op !== "login") throw new LocalError("未知 Codex 操作。");
+    authError = "";
+    void codex[input.op as "install" | "login"]().then(updateRuntime).catch(() => {
+      authError = input.op === "install" ? "官方 Codex 安装未完成，请检查网络后重试。" : "官方 Codex 登录未完成，请在系统浏览器中完成登录后重试。";
+    });
+    return json({ accepted: true }, 202);
+  }
+  if (url.pathname === "/api/rooms") {
+    if (incoming.method === "GET") {
+      const id = url.searchParams.get("id");
+      if (!id) return json(gateway.list());
+      const role = url.searchParams.get("role") === "guest" ? "guest" : "host";
+      if (role === "host") rooms.heartbeat(id, rooms.hostSeatToken(id));
+      return json(gateway.state(id, role));
+    }
+    const input = JSON.parse(await bodyOf(incoming, 65_536));
+    if (!input || typeof input !== "object" || Array.isArray(input)) throw new LocalError("房间请求格式不正确。");
+    if (input.op === "create") {
+      const hero = await ownedHero(String(input.heroId || ""), "local-owner");
+      const created = rooms.create(hero, String(input.campaignId || ""));
+      return json({ role: "host", state: "connected", snapshot: created.snapshot });
+    }
+    if (input.op === "join") return json(await gateway.join(String(input.invitation || ""), input.build as HeroBuildInput));
+    if (input.op === "reconnect") return json(await gateway.reconnect(String(input.id || "")));
+    if (input.op === "leave") return json(gateway.leave());
+    if (input.op === "exit-session") { gateway.pause(); gateway.leave(); return json({ ok: true }); }
+    if (input.op === "publish") return json(await gateway.publish(String(input.id || ""), input.configuration || {}));
+    if (input.op === "recover") return json(await gateway.recover(String(input.id || "")));
+    if (input.op === "request") return json(await gateway.request(String(input.id || ""), input.role === "guest" ? "guest" : "host", input.payload as RoomRequest));
+    throw new LocalError("未知房间操作。");
+  }
   if (url.pathname === "/api/settings") {
     if (incoming.method === "GET")
       return json({ config: settings.safe(provider.codexAvailable) });
@@ -151,12 +247,15 @@ async function dispatch(incoming: IncomingMessage): Promise<Response> {
       incoming.method === "POST" ? await bodyOf(incoming) : undefined;
     if (body) {
       const input = JSON.parse(body);
+      if (["game.create", "game.command", "game.talk"].includes(input?.op) &&
+          (rooms.list().some(room => room.status === "active") || gateway.list().active?.role === "guest"))
+        throw new LocalError("请先暂停或离开多人冒险，再开始单人行动。", 409);
       if (
         input?.op === "game.join" ||
         (input?.op === "game.create" && input?.mode === "party")
       )
         throw new LocalError(
-          "本机 0.2 版本支持单人冒险；局域网组队将在 0.3 版本开放。",
+          "请从多人组队入口创建房间；单人存档不能直接转换为多人存档。",
         );
     }
     const request = new Request(url, {
@@ -214,11 +313,11 @@ async function respond(incoming: IncomingMessage, outgoing: ServerResponse) {
     response = json(
       {
         error:
-          error instanceof LocalError
+          error instanceof LocalError || error instanceof ApiError
             ? error.message
             : "本机服务未能完成操作，请检查输入或稍后重试。",
       },
-      error instanceof LocalError ? error.status : 400,
+      error instanceof LocalError || error instanceof ApiError ? error.status : 400,
     );
   }
   outgoing.writeHead(response.status, {
@@ -243,6 +342,9 @@ server.on("error", (error) => {
   process.exitCode = 1;
 });
 server.listen(port, "127.0.0.1", () => {
+  port = (server.address() as import("node:net").AddressInfo).port;
+  origin = `http://127.0.0.1:${port}`;
+  process.send?.({ type: "ready", port, version: VERSION, instanceId });
   console.log(
     `灯火之下 ${VERSION}\n本机地址：${origin}\n存档目录：${dataDirectory}\n按 Ctrl+C 停止服务；存档会保留。`,
   );
@@ -257,16 +359,34 @@ server.listen(port, "127.0.0.1", () => {
   }
 });
 let stopping = false;
-function stop() {
+function stop(requestId?: string) {
   if (stopping) return;
   stopping = true;
   stopProvider();
+  codex.cancel();
+  clearInterval(roomTimer);
+  gateway.close();
+  rooms.close();
   server.close(() => {
     database.close();
+    process.send?.({ type: "stopped", instanceId, requestId });
     process.exit(0);
   });
   server.closeIdleConnections();
   setTimeout(() => process.exit(0), 5000).unref();
 }
-process.on("SIGINT", stop);
-process.on("SIGTERM", stop);
+process.on("SIGINT", () => stop());
+process.on("SIGTERM", () => stop());
+if (desktop) {
+  process.on("message", (message: unknown) => {
+    const input = message as { type?: string; instanceId?: string; requestId?: string };
+    if (input.instanceId !== instanceId) return;
+    if (input.type === "shutdown") stop(input.requestId);
+    if (input.type === "pause") {
+      stopProvider();
+      gateway.pause();
+      process.send?.({ type: "paused", instanceId, requestId: input.requestId });
+    }
+  });
+  process.on("disconnect", () => stop());
+}

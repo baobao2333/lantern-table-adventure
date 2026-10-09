@@ -4,6 +4,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { mkdir, cp, readdir, readFile, writeFile } from "node:fs/promises";
 import { localViteConfig } from "../local/vite.config.mjs";
 import { assertReleaseVersion } from "./check-release-version.mjs";
+import { copyRuntimeDependencies, runtimeDependencies } from "./copy-runtime-dependencies.mjs";
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const sourceIndex = process.argv.indexOf("--source");
 const sourceRoot =
@@ -34,6 +35,7 @@ await buildServer({
   target: "node24",
   sourcemap: false,
   legalComments: "inline",
+  external: runtimeDependencies,
   tsconfigRaw: {
     compilerOptions: { baseUrl: sourceRoot, paths: { "@/*": ["./*"] } },
   },
@@ -50,7 +52,9 @@ for (const name of ["README_CN.md", "START.cmd", "release.json"])
   await cp(resolve(projectRoot, "local", name), resolve(outputDirectory, name));
 for (const name of ["CHANGELOG.md", "ROADMAP.md"])
   await cp(resolve(projectRoot, name), resolve(outputDirectory, name));
-const notices = [];
+await cp(resolve(projectRoot, "desktop", "CODEX_LICENSE.txt"), resolve(outputDirectory, "CODEX_LICENSE.txt"));
+await cp(resolve(projectRoot, "LICENSE"), resolve(outputDirectory, "LICENSE"));
+const notices = await copyRuntimeDependencies(sourceRoot, outputDirectory);
 for (const name of [
   "react",
   "react-dom",

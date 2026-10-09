@@ -7,7 +7,7 @@ import {
   isExplorationSpell,
   spellAvailability,
 } from "./spells.ts";
-import type { Action, Game, Hero, Resolution, Skill } from "./types.ts";
+import type { Action, Game, GameResolutionOptions, Hero, Resolution, Skill } from "./types.ts";
 import type { Opportunity, WorldConfig, WorldProposal } from "./world-types.ts";
 
 function config(game: Game): WorldConfig {
@@ -162,6 +162,8 @@ export function stageIdea(
     location = world.locations[game.scene];
   if (game.status !== "active" || game.combat || game.pending)
     throw new Error("请先完成当前的规则行动。");
+  if (game.mode === "party" && hero.hp <= 0)
+    throw new Error("角色已经倒地，不能执行行动。请等待同伴救援。");
   if (game.world!.proposal) throw new Error("请先确认或放弃已经说明的行动。");
   if (!Object.hasOwn(SKILLS, idea.skill)) throw new Error("未支持的技能。");
   const goal = idea.goalId
@@ -275,10 +277,13 @@ export function resolveWorld(
   userId: string,
   command: { kind: string; actionId?: string },
   die: Die = randomDie,
+  options: GameResolutionOptions = {},
 ): Resolution {
   const game = structuredClone(input),
     hero = game.players.find((p) => p.userId === userId)?.hero;
   if (!hero || game.status !== "active") throw new Error("当前不能行动。");
+  if (game.mode === "party" && hero.hp <= 0 && command.kind !== "cancel" && !(options.teamDecision && command.kind === "session"))
+    throw new Error("角色已经倒地，不能执行行动。请等待同伴救援。");
   if (game.combat || game.pending) throw new Error("请先完成当前的规则行动。");
   const cfg = config(game),
     world = game.world!,
@@ -286,11 +291,15 @@ export function resolveWorld(
     rolls: Resolution["rolls"] = [];
   let fact = "";
   if (command.kind === "cancel") {
+    if (world.proposal && world.proposal.actorId !== hero.id && !options.system)
+      throw new Error("只有提案所属玩家可以放弃；系统超时可以关闭提案。");
     world.proposal = null;
     fact = "你放弃了尚未执行的提案，世界时间没有推进。";
   } else if (command.kind === "action") {
     if (world.proposal) throw new Error("请先确认或放弃当前提案。");
     if (command.actionId?.startsWith("travel:")) {
+      if (game.mode === "party" && !options.teamDecision)
+        throw new Error("移动全队需要通过团队投票。");
       const id = command.actionId.slice(7);
       if (!location.exits.includes(id)) throw new Error("这里没有这条路径。");
       game.scene = cfg.locations.findIndex((l) => l.id === id);
@@ -326,6 +335,8 @@ export function resolveWorld(
       : undefined;
     if (proposal.goalId && !goal)
       throw new Error("行动条件已改变，请重新提出方法。");
+    if (game.mode === "party" && (proposal.travelTo || goal?.success.ending) && !options.teamDecision)
+      throw new Error("移动全队或决定结局需要通过团队投票。");
     const preparation = `${location.id}:${proposal.skill}`;
     const advantage = !!goal && world.preparations.includes(preparation);
     if (advantage)
@@ -405,6 +416,8 @@ export function resolveWorld(
     if (roll) game.messages[game.messages.length - 1].roll = roll;
     advanceTime(game, elapsed);
   } else if (command.kind === "session") {
+    if (game.mode === "party" && !options.teamDecision)
+      throw new Error("章节休整需要通过团队投票。");
     if (world.proposal || game.combat || !location.safeRest)
       throw new Error("章节休整需要没有待结算行动的安全地点。");
     if (game.turns - world.restAt < 12)

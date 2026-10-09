@@ -4,9 +4,11 @@ import type { Game, Hero, Message } from "../game/types";
 type GameRow = { id: string; data: string; version: number; room_code: string };
 export class ApiError extends Error {
   status: number;
-  constructor(message: string, status = 400) {
+  readonly code?: string;
+  constructor(message: string, status = 400, code?: string) {
     super(message);
     this.status = status;
+    this.code = code;
   }
 }
 export function database() {

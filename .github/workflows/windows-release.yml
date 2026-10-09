@@ -1,4 +1,4 @@
-name: Windows portable release
+name: Windows desktop release
 on:
   workflow_dispatch:
   push:
@@ -24,15 +24,19 @@ jobs:
       - run: npm run content:check
       - run: npm test
       - run: npx tsc --noEmit
+      - run: npm run lint
       - run: npm run build:local
       - run: node scripts/verify-local.mjs
-      - run: node scripts/package-release.mjs
-      - run: node scripts/verify-release.mjs
+      - run: node scripts/build-desktop.mjs --skip-local
+      - run: npm run release:desktop
+      - run: npm run verify:desktop
+      - run: npm run release:signal
       - run: node scripts/release-notes.mjs
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: lantern-table-windows-x64
           path: |
+            dist/desktop/release/*
             dist/release/*.zip
             dist/release/*.zip.sha256
           if-no-files-found: error
@@ -45,16 +49,17 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
           $tag = $env:GITHUB_REF.Substring(10)
+          $preview = $tag.Contains('-')
+          $releaseFlags = if ($preview) { @('--prerelease') } else { @('--prerelease=false') }
           $null = & gh release view $tag --repo $env:GITHUB_REPOSITORY 2>$null
           if ($LASTEXITCODE -ne 0) {
-            & gh release create $tag --repo $env:GITHUB_REPOSITORY --verify-tag --title "灯火之下 $tag" --notes-file 'dist/release/RELEASE_NOTES.md'
+            & gh release create $tag --repo $env:GITHUB_REPOSITORY --verify-tag --draft @releaseFlags --title "灯火之下 $tag" --notes-file 'dist/release/RELEASE_NOTES.md'
             if ($LASTEXITCODE -ne 0) { throw 'Release creation failed.' }
-          } else {
-            & gh release edit $tag --repo $env:GITHUB_REPOSITORY --verify-tag --draft=false --prerelease=false --title "灯火之下 $tag" --notes-file 'dist/release/RELEASE_NOTES.md'
-            if ($LASTEXITCODE -ne 0) { throw 'Release update failed.' }
           }
-          $assets = @(Get-ChildItem -LiteralPath 'dist/release' -File | Where-Object { $_.Name -like '*.zip' -or $_.Name -like '*.zip.sha256' })
+          $assets = @(Get-ChildItem -LiteralPath 'dist/desktop/release' -File) + @(Get-ChildItem -LiteralPath 'dist/release' -File | Where-Object { $_.Name -like '*.zip' -or $_.Name -like '*.zip.sha256' })
           if ($assets.Count -eq 0) { throw 'No verified release assets were found.' }
           $uploadArguments = @('release', 'upload', $tag, '--repo', $env:GITHUB_REPOSITORY, '--clobber') + @($assets.FullName)
           & gh @uploadArguments
           if ($LASTEXITCODE -ne 0) { throw 'Release upload failed.' }
+          & gh release edit $tag --repo $env:GITHUB_REPOSITORY --verify-tag --draft=false @releaseFlags --title "灯火之下 $tag" --notes-file 'dist/release/RELEASE_NOTES.md'
+          if ($LASTEXITCODE -ne 0) { throw 'Release publication failed.' }

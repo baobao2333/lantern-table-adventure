@@ -1,0 +1,13 @@
+services:
+  signal:
+    build:
+      context: ..
+      dockerfile: signal/Dockerfile
+    init: true
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    ports: ["8443:8443/tcp"]
+    volumes:
+      - ./signal-private:/certificates:ro

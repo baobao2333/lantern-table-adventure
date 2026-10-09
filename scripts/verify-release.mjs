@@ -55,7 +55,7 @@ try {
     assert.equal(sha256(await readFile(filename)), match[1]);
     names.add(match[2]);
     assert.equal(
-      /(^|\/)(node_modules|\.env[^/]*|\.dev\.vars[^/]*|auth\.json|settings\.json|adventures\.sqlite[^/]*)($|\/)/i.test(
+      /(^|\/)(\.env[^/]*|\.dev\.vars[^/]*|auth\.json|settings\.json|adventures\.sqlite[^/]*)($|\/)/i.test(
         match[2],
       ),
       false,
